@@ -162,4 +162,7 @@ void				ft_catch_sigwinch(int signum);
 /*FT_LINE_EDITION*/
 int                 ft_line_edition(t_env *env_c, t_shell *shelli, t_lexer *lexer);
 
+
+char **ft_fill_av(char *line);
+
 #endif
