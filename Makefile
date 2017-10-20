@@ -88,6 +88,7 @@ SRCS = src/line_edition/line_edition.c\
 	   src/built-in/tool_for_cd.c \
 	   src/quote/fill_av.c \
 	   src/quote/count1.c \
+	   src/quote/count2.c \
 	   src/main.c
 					
 OBJ = $(SRCS:.c=.o) 
