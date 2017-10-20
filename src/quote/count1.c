@@ -56,7 +56,7 @@ static void     ft_skip_quote(char *line, int *i)
         *i += 1;
         while (line[*i])
         {
-            *i += (line[*i] == '\\' && line[*i + 1] == '\'' && line[*i + 1] == c) ? 2 : 0;            
+            *i += (line[*i] == '\\' && line[*i + 1] != '\'' && line[*i + 1] == c) ? 2 : 0;            
             if (line[*i] == c)
             {
                 *i += 1;
