@@ -1,90 +1,118 @@
 #include "../../inc/sh21.h"
 
-// char	*ft_strndup(const char *s1, int size)
-// {
-// 	char *str;
+int     ft_count_av1(char *line);
 
-// 	if ((str = (char *)malloc(sizeof(*str) * (size + 1))) == NULL)
-//         return (NULL);
-// 	ft_strncpy(str, s1, size);
-// 	return (str);
-// }
-
-int		ft_echap_char(char *line, char c)
+static int		ft_echap_char(char *line, char c, int *i, int *count)
 {
+    int ret;
+
+    ret = 0;
 	if (*line != '\\')
-		return (0);
+		ret = 0;
 	else if (!line[1])
-		return (-1);
-	else if (line[1] == '\\')
-		return (2);
+		ret = -1;
 	else
-		return (c != '\'') ? 2 : 0;
+        ret = (c != '\'') ? 1 : 0;
+    *count += (ret == 1) ? 1 : 0;
+    *i += (ret == 1) ? 2 : 0;
+    return (ret);
 }
 
-int		ft_nb_space(char *line)
+static int		ft_skip_useless(char *line)
 {
 	int i;
 
-	i = 0;
-	while (line[i] == ' ')
-		i++;
-	return (i);
-}
-
-int     index_to_end_quote(char *line, int *i, char c)
-{
-    *i += 1;
-    while (line[*i])
-    {
-        *i += ft_echap_char(&line[*i], c);
-        if (line[*i] == c)
-            return (1);
-        *i += 1;
-    }
-    return (0);
-}
-
-int     ft_check_quote(char *line, int *i)
-{
-    if (line[*i] == '\'' || line[*i] == '"')
-    {
-        if (line[*i] == line[*i + 1])
-        {
-            *i += ft_nb_space(&line[*i + 2]) + 1;
-            return (0);
-        }
-        if (index_to_end_quote(line, i, line[*i]) == 1)
-            return (line[*i + 1] == ' ' || !line[*i + 1]) ? 1 : 0;
-    }
-    else if (line[*i] == ' ' || !line[*i + 1])
-        return (1);
-    return (0);
-}
-
-int     ft_count_av(char *line)
-{
-    int i;
-    int count;
-
-    count = 0;
     i = 0;
     while (line[i])
     {
-        if (ft_check_quote(line, &i))
+        if (line[i] != ' ')
+            break ;
+	    while (line[i] == ' ')
+            i++;
+        if ((line[i] == '\'' || line[i] == '"') && line[i] == line[i + 1])
+            i += 2;
+    }
+	return (i);
+}
+
+static void     ft_skip_quote(char *line, int *i, int *count)
+{
+    int save;
+    char c;
+    
+    save = *i;
+    if (line[*i] == '\'' || line[*i] == '"')
+    {
+        c = line[*i];
+        *i += 1;
+        while (line[*i])
         {
-            count++;
-            i += ft_nb_space(&line[i + 1]);
+            if (ft_echap_char(&line[*i], c, i, count) == 0)
+            {
+                if (line[*i] == c)
+                {
+                    *i += 1;
+                    return ;
+                }
+                *count += 1;
+                *i += 1;
+            }
         }
-        i++;
+    }
+}
+
+static void    ft_skip_word(char *line, int *i, int *count)
+{
+    while (line[*i] != ' ' && line[*i] != '"' && line[*i])
+    {
+        if (ft_echap_char(&line[*i], 0, i, count) == 0)
+        {
+            *i += 1;
+            *count += 1;
+        }
+    }
+}
+
+int     ft_count_av2(char *line, char **av)
+{
+    int i;
+    int j;
+    int count;
+    int space;
+
+    count = 0;
+    i = 0;
+    j = 0;
+    space = 0;
+    while (line[i])
+    {
+        ft_skip_word(line, &i, &count);
+        ft_skip_quote(line, &i, &count);
+        space = ft_skip_useless(&line[i]);
+        if (space > 0 || !line[i])
+        {
+            i += space;
+            av[j] = (char*)malloc(sizeof(char) * (count + 1));
+            ft_putnbr(count);
+            write(1, " ; ", 3);
+            j++;
+            count = 0;
+        }
     }
     return (count);
-
 }
 
 char **ft_fill_av(char *line)
 {
+    char **av;
+    int ret;
+
     write(1, "\n" , 1);
-    ft_putnbr(ft_count_av(line));
+    ret = ft_count_av1(line);
+    if (!(av = (char**)malloc(sizeof(char*) * (ret + 1))))
+        return (NULL);
+    av[ret] = NULL;
+    write(1, "\n", 1);
+    ft_count_av2(line , av);
     return (NULL);
 }
