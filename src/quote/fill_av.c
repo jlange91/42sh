@@ -63,7 +63,7 @@ static void     ft_skip_quote(char *line, int *i, int *count)
 
 static void    ft_skip_word(char *line, int *i, int *count)
 {
-    while (line[*i] != ' ' && line[*i] != '"' && line[*i])
+    while (line[*i] != ' ' && line[*i] != '\'' && line[*i] != '"' && line[*i])
     {
         if (ft_echap_char(&line[*i], 0, i, count) == 0)
         {
