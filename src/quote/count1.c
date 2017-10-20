@@ -1,5 +1,7 @@
 #include "../../inc/sh21.h"
 
+int     ft_char_escape(char c);
+
 // char	*ft_strndup(const char *s1, int size)
 // {
 // 	char *str;
@@ -10,16 +12,19 @@
 // 	return (str);
 // }
 
-static int		ft_echap_char(char *line, char c)
+static int		ft_backslash(char *line, int *i)
 {
-	if (*line != '\\')
-		return (0);
-	else if (!line[1])
-		return (-1);
-	else if (line[1] == '\\')
-		return (2);
-	else
-		return (c != '\'') ? 2 : 0;
+    int ret;
+
+    ret = 0;
+	if (line[*i] != '\\')
+		ret = 0;
+	else if (!ft_char_escape(line[*i + 1]))
+        ret = 1;
+    else
+        ret = 2;
+    *i += (ret > 0) ? ret : 0;
+    return (ret);
 }
 
 static int		ft_skip_useless(char *line)
@@ -48,15 +53,16 @@ static void     ft_skip_quote(char *line, int *i)
     if (line[*i] == '\'' || line[*i] == '"')
     {
         c = line[*i];
+        *i += 1;
         while (line[*i])
         {
-            *i += 1;
-            *i += ft_echap_char(&line[*i], c);
+            *i += (line[*i] == '\\' && line[*i + 1] == '\'' && line[*i + 1] == c) ? 2 : 0;            
             if (line[*i] == c)
             {
                 *i += 1;
                 return ;
             }
+            *i += 1;
         }
     }
 }
@@ -65,8 +71,8 @@ static void    ft_skip_word(char *line, int *i)
 {
     while (line[*i] != ' ' && line[*i] != '\'' && line[*i] != '"' && line[*i])
     {
-        *i += ft_echap_char(&line[*i], 0);
-        *i += 1;
+        if (ft_backslash(line, i) == 0)
+            *i += 1;
     }
 }
 

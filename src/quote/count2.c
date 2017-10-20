@@ -1,18 +1,20 @@
 #include "../../inc/sh21.h"
 
-static int		ft_echap_char(char *line, char c, int *i, int *count)
+int     ft_char_escape(char c);
+
+static int		ft_backslash(char *line, int *i, int *count)
 {
     int ret;
 
     ret = 0;
-	if (*line != '\\')
+	if (line[*i] != '\\')
 		ret = 0;
-	else if (!line[1])
-		ret = -1;
-	else
-        ret = (c != '\'') ? 1 : 0;
-    *count += (ret == 1) ? 1 : 0;
-    *i += (ret == 1) ? 2 : 0;
+	else if (!ft_char_escape(line[*i + 1]))
+        ret = 1;
+    else
+        ret = 2;
+    *count += (ret == 2) ? 1 : 0;
+    *i += (ret > 0) ? ret : 0;
     return (ret);
 }
 
@@ -45,16 +47,15 @@ static void     ft_skip_quote(char *line, int *i, int *count)
         *i += 1;
         while (line[*i])
         {
-            if (ft_echap_char(&line[*i], c, i, count) == 0)
+            *count += (line[*i] == '\\' && line[*i + 1] != '\'' && line[*i + 1] == c) ? 1 : 0;            
+            *i += (line[*i] == '\\' && line[*i + 1] != '\'' && line[*i + 1] == c) ? 2 : 0;
+            if (line[*i] == c)
             {
-                if (line[*i] == c)
-                {
-                    *i += 1;
-                    return ;
-                }
-                *count += 1;
                 *i += 1;
+                return ;
             }
+            *count += 1;
+            *i += 1;
         }
     }
 }
@@ -63,7 +64,7 @@ static void    ft_skip_word(char *line, int *i, int *count)
 {
     while (line[*i] != ' ' && line[*i] != '\'' && line[*i] != '"' && line[*i])
     {
-        if (ft_echap_char(&line[*i], 0, i, count) == 0)
+        if (ft_backslash(line, i, count) == 0)
         {
             *i += 1;
             *count += 1;
