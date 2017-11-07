@@ -30,19 +30,20 @@ static	void	ft_print_hour(void)
 	ft_putstr("] ");
 }
 
-static	int	ft_print_current_work(void)
+static	int	ft_print_current_work(t_env *env)
 {
 	char	dir[256];
 
-	//ft_putstr(find_var("PWD", env);
-	getcwd(dir, sizeof(dir));
+	ft_memset(dir, 0, sizeof(dir));
+	ft_putstr(find_var("PWD", env));
+//	getcwd(dir, sizeof(dir));
     ft_putstr(GREEN_FRONT);
 	ft_putendl(dir);
 	ft_putstr(RESET);
 	return (ft_strlen(dir));
 }
 
-void			ft_display_prompt(t_shell *shell)
+void			ft_display_prompt(t_shell *shell, t_env *env)
 {
 	int			len;
 	char		host[256];
@@ -62,6 +63,6 @@ void			ft_display_prompt(t_shell *shell)
 	ft_putstr(host);
 	ft_putstr(RESET);
 	ft_putchar(' ');
-	len += ft_print_current_work();
+	len += ft_print_current_work(env);
 	shell->len_prompt = len + 3;
 }

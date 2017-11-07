@@ -7,9 +7,9 @@ void    ft_free_tab(char **str)
     if (str)
     {
         i = 0;
-        while (str[i])
+        while (str[i] != NULL)
         {
-            free(str[i]);
+			free(str[i]);
             i++;
         }
         free(str);

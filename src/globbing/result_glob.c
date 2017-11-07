@@ -30,14 +30,14 @@ static char    **ft_opendir_current(t_env *env)
 	i = -1;
 	tmp_tab = NULL;
 	pwd = find_var("PWD", env);
-	if ((tmp_tab = (char **)malloc(sizeof(char *) *
-					(ft_count_file(pwd) + 1))) == NULL)
-	{
-		ft_putendl_fd("Error malloc", 2);
-		return (NULL);
-	}
 	if ((path = opendir(pwd)) != NULL)
 	{
+		if ((tmp_tab = (char **)malloc(sizeof(char *) *
+						(ft_count_file(pwd) + 1))) == NULL)
+		{
+			ft_putendl_fd("Error malloc", 2);
+			return (NULL);
+		}
 		while ((file = readdir(path)) != NULL)
 			if (file->d_name[0] != '.')
 				tmp_tab[++i] = ft_strdup(file->d_name);
@@ -90,7 +90,7 @@ static char        *ft_result_final(char *pattern, char *tmp_tab, char *before)
 
 char        **ft_result(t_env *env, t_glob *g, char **str_tab)
 {
-	if ((g->new_tab = (char **)malloc(sizeof(char *) * (100 + 1))) == NULL)
+	if ((g->new_tab = (char **)malloc(sizeof(char *) * (ft_count_dtab(str_tab) + 1 * 50))) == NULL)				// not good malloc, too big
 		return (NULL);
 	g->i = -1;
 	g->j = -1;
@@ -109,8 +109,13 @@ char        **ft_result(t_env *env, t_glob *g, char **str_tab)
 					g->new_tab[++(g->j)] = ft_strdup(g->tmp);
 			free(g->before);
 			free(g->after);
+			ft_free_tab(g->tmp_tab);
 		}
 	g->new_tab[++(g->j)] = NULL;
-	ft_free_tab(g->tmp_tab);
+	if (g->j == 0)
+	{
+		ft_free_tab(g->new_tab);
+		g->new_tab = NULL;
+	}
 	return (g->new_tab);
 }

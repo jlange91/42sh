@@ -54,26 +54,27 @@ static t_glob  *ft_init_glob(char *line)
     return (new);
 }
 
-void    ft_parse_glob(char *line, t_glob **glob, t_env *env)
+int    ft_parse_glob(char *line, t_glob **glob, t_env *env)
 {
     char    **str_tab;
+	int		flag;
 
+	flag = 0;
     if (line && ft_strlen(line) == 0)
-        return ;
+        return (flag);
     else if (!(ft_glob_here(line)))
-        return ;
+        return (flag);
     else
     {
         str_tab = NULL;
         *glob = ft_init_glob(line);
         if ((str_tab = ft_strsplit2((*glob)->line)) != NULL)
         {
-            ft_get_glob(glob, str_tab, env);
+            if (ft_get_glob(glob, str_tab, env))
+				flag = 1;
             ft_free_tab(str_tab);
         }
-        free((*glob)->line);
-        ft_print_glob((*glob)->tab_str);
-        ft_free_tab((*glob)->tab_str);
-        free(*glob);
+		free((*glob)->line);
     }
+	return (flag);
 }

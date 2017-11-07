@@ -12,7 +12,7 @@ static void    ft_display_autocompl(t_autocompl *begin, t_auto *select)
     ft_memset(&info_str, 0, sizeof(info_str));
     tmp = ft_strjoin(select->str, begin->data);
     stat(tmp, &info_str);
-    if (begin == select->current)
+    if (begin == select->current && select->can_print >= 1)
     {
         ft_putstr(ORANGE_FRONT);
         ft_putstr(PURPLE_BACK);
@@ -166,7 +166,7 @@ int    ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag)
         return (ft_print_simple_auto(select, begin));
 }
 
-void ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total)
+void ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total, t_env *env)
 {
     t_autocompl *begin;
     static int count;
@@ -176,7 +176,7 @@ void ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total)
     {
         ft_init_value(shell, select);
         if (shell->autocompl->jump > select->row)
-            ft_multi_pages(select, shell, begin, total);
+            ft_multi_pages(select, shell, begin, total, env);
         else
         {
             if (!shell->autocompl->arrow && count++ < 1)

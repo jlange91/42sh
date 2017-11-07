@@ -6,7 +6,8 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:56 by stvalett          #+#    #+#             */
-/*   Updated: 2017/10/17 17:10:12 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/02 18:35:21 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/10/18 19:54:05 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +57,29 @@ static inline char  *ft_getstr(t_shell *shell, t_lineterm *begin, int nbr)
 
 static int    ft_key_and_char(t_shell *shell, long c, t_env *env)
 {
-	if (c == CL)
+	if (c == CL && !shell->auto_active && !shell->multiauto_active)
 	{
+		t_lineterm *tmp;
+
 		tputs(shell->term->clrstr, 1, ft_inputstr);
-        shell->keyflag->cl = 1;
-		ft_free_dlist(&shell->line);
+		ft_display(shell, 0, 1, env);
+		shell->keyflag->cl = 1;
+		tmp = shell->line->begin;
+		tmp = ft_dont_get_prompt(tmp);
+		if (shell->line_dup->begin)
+			ft_free_dlist(&shell->line_dup);
+		while (tmp)
+		{
+			ft_fill_back_dlst(shell->line_dup, tmp->c, 1);
+			tmp = tmp->next;
+		}
 		return (0);
 	}
 	if ((ft_is_key(shell->line, shell, c, env) == 0 && ft_isprint((char)c)))
 	{
-        shell->auto_active = 0;
-        shell->multiauto_active = 0;
-        shell->count_tab = 0;
+		shell->auto_active = 0;
+		shell->multiauto_active = 0;
+		shell->count_tab = 0;
 		if (shell->line->lnk_before)
 			ft_insert_dlnk(shell->line->end, shell, c, 1);
 		else
@@ -93,18 +105,18 @@ static int    ft_key_and_char(t_shell *shell, long c, t_env *env)
  * **********************************************************************************/
 static int  ft_key_or_escape(long c, t_shell *shell, int ret, t_env *env)
 { 
-    if ((char)c == '\n' && !shell->count_tab)
-        return (ft_reset_line(shell, ret));
-    if ((shell->auto_active == 1 || shell->multiauto_active == 1)
-            && (c == LEFT || c == RIGHT ||
-                c == DOWN || c == UP || c == TAB))
-    {
-        tputs(shell->term->upstr, 1, ft_inputstr);
-        tputs(shell->term->upstr, 1, ft_inputstr);
-    }
+	if ((char)c == '\n' && !shell->count_tab)
+		return (ft_reset_line(shell, ret, env));
+	if ((shell->auto_active == 1 || shell->multiauto_active == 1)
+			&& (c == LEFT || c == RIGHT ||
+				c == DOWN || c == UP || c == TAB))
+	{
+		tputs(shell->term->upstr, 1, ft_inputstr);
+		tputs(shell->term->upstr, 1, ft_inputstr);
+	}
 	if (!ft_key_and_char(shell, c, env))
-        return (0);
-    return (1);
+		return (0);
+	return (1);
 }
 
 static void	ft_line_input_split(t_shell *shell, int *nbr, int *ret, t_env *env)
@@ -113,10 +125,10 @@ static void	ft_line_input_split(t_shell *shell, int *nbr, int *ret, t_env *env)
 	*ret = 0;
 	shell->history->active = 0;
 	shell->line->lnk_before = 0;
-    shell->keyflag->cl = 0;
 	shell->autocompl->jump = 0;
-	ft_init_console(shell, shell->line);
-    ft_init_simple_autocompl(shell, env);
+	shell->quotes = 0;
+	ft_init_console(shell, shell->line, env);
+	ft_init_simple_autocompl(shell, env);
 	ft_display_char(shell->line->begin, shell);
 }
 
@@ -134,24 +146,36 @@ char    *ft_line_input(t_shell *shell, t_env *env)
 {
 	long c;
 	int nbr;
-    int ret;
+	int ret;
 
 	if (isatty(0))
 	{
-        shell_g = shell;
-        g_env = env;
+		shell_g = shell;
+		g_env = env;
 		c = 0;
 		ft_line_input_split(shell, &nbr, &ret, env);
-       	while (read(0, &c, sizeof(c)))
+		if (shell->keyflag->cl)
+		{
+			t_lineterm *tmp;
+
+			tmp = shell->line_dup->begin;
+			while (tmp)
+			{
+				ft_fill_back_dlst(shell->line, tmp->c, 1);
+				tmp = tmp->next;
+			}
+			ft_display(shell, &nbr, 0, env);
+		}
+		while (read(0, &c, sizeof(c)))
 		{
 			if (!ft_key_or_escape(c, shell, ret, env))
-                break;
-			ret = ft_display(shell, &nbr, 0);
-            shell_g->ret_signal = ret;
+				break;
+			ret = ft_display(shell, &nbr, 0, env);
+			shell_g->ret_signal = ret;
 			c = 0;
-            shell->keyflag->backspace = 0;
-            shell->keyflag->underline = 0;
-            shell->keyflag->mleft = 0;
+			shell->keyflag->backspace = 0;
+			shell->keyflag->underline = 0;
+			shell->keyflag->mleft = 0;
 		}
 		return (ft_getstr(shell, shell->line->begin, nbr));
 	}

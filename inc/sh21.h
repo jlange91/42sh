@@ -126,6 +126,8 @@ typedef struct          s_senti_auto
     int                 updaterow;
     int                 arrow;
     int                 clr_yes;
+	int					can_print;
+	int					possiblitie;
     t_autocompl         *begin;
     t_autocompl         *current;
     t_autocompl         *end;
@@ -137,6 +139,7 @@ typedef struct          s_shell
     int                 nbr_hist;
     int                 ret_signal;
     int                 move_cursor;
+	int					quotes;
     int                 count_tab;          //how time touch tab
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
@@ -175,7 +178,6 @@ typedef struct          s_glob
 typedef struct      s_env
 {
     char            *line_str;
-    char            **av;
     char            *line_env;
     char            *getenv_path;
     int             index;

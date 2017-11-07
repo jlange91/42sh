@@ -13,7 +13,7 @@ int ft_cursor_update(void)
     return (row);
 }
 
-void    ft_display_autocompletion(t_shell *shell, int *down)
+void    ft_display_autocompletion(t_shell *shell, int *down, t_env *env)
 {
     int         total;
     int         i;
@@ -24,7 +24,7 @@ void    ft_display_autocompletion(t_shell *shell, int *down)
     total = 0;
     shell->line->last = 1;
     shell->autocompl->jump = 0;
-    ft_menu_autocompletion(shell->autocompl, shell, &total);
+    ft_menu_autocompletion(shell->autocompl, shell, &total, env);
     *down = shell->autocompl->jump;
     if (shell->autocompl->clr_yes)
         tputs(tgoto(tgetstr("cm", NULL), 0, shell->autocompl->updaterow - 1), 1, ft_inputstr);
@@ -43,11 +43,9 @@ int    ft_init_value(t_shell *shell, t_auto *select)
     ioctl(0, TIOCGWINSZ, &row);
     select->max_len = ft_max_len(select);                   //MAX LEN WORD WE CAN FIND
     select->row = row.ws_row - 4;                           //GET_LINE MAX DISPLAY ON SCREEN;
-    select->col = ((row.ws_col / select->max_len) - 1); //GET_NUMBER COL
+    select->col = (int)((int)(row.ws_col / (select->max_len + 2))); //GET_NUMBER COL
     if (select->col == 0)
-    {
         return(0);
-    }
     select->jump = (ft_count(select) / select->col) + 1;
     select->pages = shell->autocompl->jump / select->row;   //HOW PAGES DISPLAY
     select->more_pages = shell->autocompl->jump % select->row; //IF REST MORE PAGES

@@ -73,18 +73,22 @@ static char **ft_fill_tab(char **str_tab, int count, t_env *env, t_glob *glob)
     return (new_tab);
 }
 
-void        ft_get_glob(t_glob **glob, char **str_tab, t_env *env)
+int        ft_get_glob(t_glob **glob, char **str_tab, t_env *env)
 {
     int count;
 
     count = 0;
-    if ((count = ft_count_glob(str_tab)) < 0)
-        return ;
+    if ((count = ft_count_glob(str_tab)) == 0)
+        return (0);
     if (ft_good_syntax(str_tab))
-        (*glob)->tab_str = ft_fill_tab(str_tab, count, env, *glob);
+	{
+        if (((*glob)->tab_str = ft_fill_tab(str_tab, count, env, *glob)) != NULL)
+			return (1);
+	}
     else
     {
         ft_putchar('\n');
         ft_putendl_fd("Bad pattern", 2);
     }
+	return (0);
 }

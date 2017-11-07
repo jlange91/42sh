@@ -113,7 +113,7 @@ int	ft_match_chunk(char *chunk, char **word, int i)
 			if (!ft_suite_match_chunk_split(&chunk, match, neg, &count))
 				return (0);
 		}
-		else if (chunk[0] == '?')
+		else if (chunk[0] == '?' || (chunk[0] == '\\' && chunk[1] != '\\'))
 			ft_move_letter_and_count(&chunk, &count, NULL, 1);
 		else if (chunk[0] != tmp[0])
 			return (0);

@@ -1,7 +1,7 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-int     ft_reset_line(t_shell *shell, int ret)
+int     ft_reset_line(t_shell *shell, int ret, t_env *env)
 {
     int nbr;
 
@@ -16,8 +16,9 @@ int     ft_reset_line(t_shell *shell, int ret)
         shell->multiauto_active = 0;
     }
     shell->autocompl->finish = 1;
-    ft_display(shell, &nbr, 1);
+    ft_display(shell, &nbr, 1, env);
     while (ret--)
         tputs(shell->term->dostr, 1, ft_inputstr);
+	shell->keyflag->cl = 0;
     return (0);
 }

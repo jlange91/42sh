@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:04 by stvalett          #+#    #+#             */
-/*   Updated: 2017/10/17 17:10:11 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/10/27 15:48:13 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,14 +109,15 @@ int     ft_is_key(dlist *line, t_shell *shell, long c, t_env *env)
 	tmp = find_cursor(line->end);
 	if (c == TAB && shell->len_prompt >= (int)get_columns() - 3)
 		return (1);
-    if (c == TAB)
-    {
+    if (c == TAB && !shell->quotes)
         shell->count_tab = 1;
-    }
-    if (c == '\n')
-    {
+    if (c == '\n' && !shell->quotes)
+	{
+		shell->autocompl->can_print = 0;
         shell->count_tab = 0;
-    }
+		shell->auto_active = 0;
+		shell->multiauto_active = 0;
+	}
 	if (c == BACKSPACE)
 	{
         ft_init_simple_autocompl(shell, env);
@@ -124,13 +125,14 @@ int     ft_is_key(dlist *line, t_shell *shell, long c, t_env *env)
 		shell->auto_active = 0;
 		shell->multiauto_active = 0;
         shell->keyflag->backspace = 1;
+		shell->autocompl->can_print = 0;
 		if (!ft_del_caractere(tmp, shell, env))
 			return (0);
 	}
-    else if (c == UP)
-		ft_move_history(shell, &shell->history->current, 2);
-	else if (c == DOWN)
-		ft_move_history(shell, &shell->history->current, 1);
+    else if (c == UP && !shell->quotes)
+		ft_move_history(shell, &shell->history->current, 2, env);
+	else if (c == DOWN && !shell->quotes)
+		ft_move_history(shell, &shell->history->current, 1, env);
 	else if (!ft_other_key(tmp, shell, c, env))
 		return (0);
 	return (1);

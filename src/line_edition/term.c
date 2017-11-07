@@ -6,13 +6,14 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:08 by stvalett          #+#    #+#             */
-/*   Updated: 2017/09/14 15:49:58 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/10/27 18:36:59 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/10/18 18:46:52 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
 
-static inline int		ft_init_terminal_mode(t_shell *shell)
+int		ft_init_terminal_mode(t_shell *shell)
 {
     if (tcgetattr(0, &shell->term->old_termios) == -1)
     {
@@ -78,7 +79,7 @@ static inline void	ft_init_console_split(t_shell *shell)
     tputs(shell->term->cdstr, 1, ft_inputstr);
 }
 
-void    ft_init_console(t_shell *shell, dlist *line)
+void    ft_init_console(t_shell *shell, dlist *line, t_env *env)
 {
     shell->console->total_line = 1;
     shell->console->line_pos = 1;
@@ -91,7 +92,7 @@ void    ft_init_console(t_shell *shell, dlist *line)
     }
     if (!shell->auto_active && !shell->multiauto_active)
         ft_init_terminal_mode(shell);
-    ft_display_prompt(shell);
+    ft_display_prompt(shell, env);
 }
 
 void    ft_end_term(t_shell *shell)

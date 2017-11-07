@@ -6,7 +6,7 @@
 #    By: stvalett <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2017/10/10 12:13:21 by stvalett         ###   ########.fr        #
+#    Updated: 2017/11/02 10:27:56 by stvalett         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,13 @@ SRCS = src/line_edition/line_edition.c\
 	   src/line_edition/history.c\
 	   src/line_edition/history2.c\
 	   src/line_edition/tool.c\
+	   src/quote/check.c\
+	   src/quote/count1.c\
+	   src/quote/count2.c\
+	   src/quote/fill.c\
+	   src/quote/fill_line.c\
+	   src/quote/main_quote.c\
+	   src/quote/tools.c\
 	   src/autocompletion/init_autocompletion.c\
 	   src/autocompletion/init_autocompletion2.c\
 	   src/autocompletion/print_autocompletion.c\
@@ -60,6 +67,7 @@ SRCS = src/line_edition/line_edition.c\
 	   src/globbing/match_chunk.c\
 	   src/globbing/match.c\
 	   src/globbing/tool_match_and_chunk.c\
+	   src/globbing/replace.c\
 	   src/token/lexer.c\
 	   src/token/token.c\
 	   src/token/utils_token.c\
@@ -82,14 +90,10 @@ SRCS = src/line_edition/line_edition.c\
 	   src/built-in/ft_cmd_unsetenv.c \
 	   src/built-in/tools_built_in.c \
 	   src/built-in/ft_cmd_echo.c \
-	   src/built-in/ft_quote.c \
 	   src/built-in/cd_to.c \
 	   src/built-in/cd_to_slash.c \
 	   src/built-in/tool_for_cd.c \
-	   src/quote/fill_av.c \
-	   src/quote/count1.c \
-	   src/quote/count2.c \
-	   src/quote/tools.c \
+	   src/built-in/more_tool_for_cd.c \
 	   src/main.c
 					
 OBJ = $(SRCS:.c=.o) 

@@ -17,21 +17,19 @@ int                 curs();
 
 /**************************************************************************************/
 /*FT_PRINT_AUTO_COMPLETION*/
-void                ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total); 
+void                ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total, t_env *env); 
 int                 ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag);
 
 /**************************************************************************************/
 /*FT_AUTO_COMPLETION_KEY*/
 
-void                ft_auto_up(t_lineterm *end, t_shell *shell);
-void                ft_auto_down(t_lineterm *end, t_shell *shell);
-void                ft_autoright(t_lineterm *end, t_shell *shell);
-void                ft_autoleft(t_lineterm *end, t_shell *shell);
+void                ft_auto_down_up(t_lineterm *end, t_shell *shell, t_env *env, int direction);
 void                ft_select(t_lineterm *end, t_shell *shell);
+void                ft_autoMove(t_lineterm *end, t_shell *shell, t_env *env, int flag);
 
 /**************************************************************************************/
 /*TOOL_PRINT_AUTOCOMPLETION*/
-void                ft_display_autocompletion(t_shell *shell, int *down);
+void                ft_display_autocompletion(t_shell *shell, int *down, t_env *env);
 int                ft_init_value(t_shell *shell, t_auto *select);
 int                 ft_max_len(t_auto *select);
 int                 ft_count(t_auto *select);
@@ -45,7 +43,7 @@ int					ft_init_autocompl(t_shell *shell, char *line, t_env *env);
 
 /**************************************************************************************/
 /*FT_INIT_AUTOCOMPLETION2*/
-void                ft_init_autocompl_binary(t_shell *shell);
+void                ft_init_autocompl_binary(t_shell *shell, t_env *env);
 
 /**************************************************************************************/
 /*TOOL_AUTOCOMPLETION*/
@@ -74,5 +72,5 @@ int                 ft_current_tty(void);
 /**************************************************************************************/
 /*MULTI_PAGES_AUTOCOMPLETION*/
 
-void                ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *total);
+void                ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *total, t_env *env);
 #endif

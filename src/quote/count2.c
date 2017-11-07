@@ -1,74 +1,72 @@
-#include "../../inc/sh21.h"
+#include "../../inc/quote.h"
 
-int     ft_char_escape(char c);
+static int		backslash_word(char *line, int *count)
+{
+	if (line[0] != '\\')
+		return (0);
+	if (line[1] == '\n')
+        return (2);
+    else
+    {
+        *count += 1;
+        return (1);
+    }
+}
 
-static int		ft_backslash(char *line, int *i, int *count)
+static void    skip_word(char *line, int *i, int *count)
 {
     int ret;
 
     ret = 0;
-	if (line[*i] != '\\')
-		ret = 0;
-	else if (!ft_char_escape(line[*i + 1]))
-        ret = 1;
-    else
-        ret = 2;
-    *count += (ret == 2) ? 1 : 0;
-    *i += (ret > 0) ? ret : 0;
-    return (ret);
-}
-
-static int		ft_skip_useless(char *line)
-{
-	int i;
-
-    i = 0;
-    while (line[i])
+    while (line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\n'
+    && line[*i] != '\'' && line[*i] != '"' && line[*i])
     {
-        if (line[i] != ' ')
-            break ;
-	    while (line[i] == ' ')
-            i++;
-        if ((line[i] == '\'' || line[i] == '"') && line[i] == line[i + 1])
-            i += 2;
+        ret = backslash_word(&line[*i], count);
+        if (ret > 0)
+            *i += 1;
+        else
+            *count += 1;
+        *i += 1;
     }
-	return (i);
 }
 
-static void     ft_skip_quote(char *line, int *i, int *count)
+static int		backslash_quote(char *line, char c, int *count)
+{
+	if (line[0] != '\\' || c == '\'')
+        return (0);
+    if (line[1] == '\n')
+        return (2);
+    else if (line[1] == '$' || line[1] == '`' ||
+    line[1] == '"' || line[1] == '\\' || line[1] == '\n')
+    {
+        *count += 1;
+        return (1);
+    }
+    else
+        return (0);
+}
+
+static void     skip_quote(char *line, int *i, int *count)
 {
     int save;
     char c;
+    int ret;
     
     save = *i;
     if (line[*i] == '\'' || line[*i] == '"')
     {
         c = line[*i];
         *i += 1;
-        while (line[*i])
+        while (line[*i] && line[*i] != c)
         {
-            *count += (line[*i] == '\\' && line[*i + 1] != '\'' && line[*i + 1] == c) ? 1 : 0;            
-            *i += (line[*i] == '\\' && line[*i + 1] != '\'' && line[*i + 1] == c) ? 2 : 0;
-            if (line[*i] == c)
-            {
+            ret = backslash_quote(&line[*i], c, count);
+            if (ret > 0)
                 *i += 1;
-                return ;
-            }
-            *count += 1;
+            else
+                *count += 1;
             *i += 1;
         }
-    }
-}
-
-static void    ft_skip_word(char *line, int *i, int *count)
-{
-    while (line[*i] != ' ' && line[*i] != '\'' && line[*i] != '"' && line[*i])
-    {
-        if (ft_backslash(line, i, count) == 0)
-        {
-            *i += 1;
-            *count += 1;
-        }
+        *i += (line[*i] == c) ? 1 : 0;
     }
 }
 
@@ -85,18 +83,16 @@ int     ft_count_av2(char *line, char **av)
     space = 0;
     while (line[i])
     {
-        ft_skip_word(line, &i, &count);
-        ft_skip_quote(line, &i, &count);
+        skip_word(line, &i, &count);
+        skip_quote(line, &i, &count);
         space = ft_skip_useless(&line[i]);
         if (space > 0 || !line[i])
         {
-            i += space;
             av[j] = (char*)malloc(sizeof(char) * (count + 1));
-            ft_putnbr(count);
-            write(1, " ; ", 3);
-            j++;
+            i += space;
             count = 0;
+            j++;
         }
     }
-    return (count);
+    return (0);
 }

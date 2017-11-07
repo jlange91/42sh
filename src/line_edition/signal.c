@@ -23,13 +23,13 @@ void	ft_handle_signal(int signum)
 	{
 		int nbr = 0;
 
-		ft_display(shell_g, &nbr, 1);
+		ft_display(shell_g, &nbr, 1, g_env);
 		while (shell_g->ret_signal-- > 0)
 			tputs(shell_g->term->dostr, 1, ft_inputstr);
 		shell_g->history->active = 0;										/* FOR PRINT ALL PROMPT */
 		ft_free_dlist(&shell_g->line); 
 		ft_fill_history(shell_g);
-		ft_init_console(shell_g, shell_g->line);
+		ft_init_console(shell_g, shell_g->line, g_env);
         ft_init_simple_autocompl(shell_g, g_env);
 		ft_display_char(shell_g->line->begin, shell_g);
 		shell_g->line->lnk_before = 0;
@@ -37,7 +37,7 @@ void	ft_handle_signal(int signum)
 	else if (signum == SIGWINCH)
 	{
 		tputs(shell_g->term->clrstr, 1, ft_inputstr);
-		ft_display_prompt(shell_g);
+		ft_display_prompt(shell_g, g_env);
 		ft_display_char(shell_g->line->begin, shell_g);
 	}
     /*else if (signum == SIGTSTP)
@@ -78,8 +78,8 @@ void	ft_catch_sigwinch(int signum)
 		}
         else
             ft_putendl_fd("Autocompletion Enabled", 2);
-		ft_display_prompt(shell_g);
+		ft_display_prompt(shell_g, g_env);
 		ft_display_char(shell_g->line->begin, shell_g);
-		ft_display_autocompletion(shell_g, &nbr);
+		ft_display_autocompletion(shell_g, &nbr, g_env);
 	}
 }

@@ -11,7 +11,7 @@ int		ft_dir_or_not(char *line)
 	return (0);
 }
 
-int		ft_dir_or_not2(char *line)
+/*static int		ft_dir_or_not(char *line)
 {
 	struct stat info;
 	char		**tab_tmp;
@@ -27,12 +27,11 @@ int		ft_dir_or_not2(char *line)
 		flag = 1;
 	ft_free_tab(tab_tmp);
 	return (flag);
-}
+}*/
 
-static t_auto  *ft_sort_list(t_shell *shell, char *after, int ret, int len)
+static t_auto  *ft_sort_list(t_shell *shell, char *after, int ret)
 {
 	int         i;
-	char		*str;
 	t_auto      *tmp;
 	t_autocompl *begin;
     t_autocompl *begin_tmp;
@@ -48,24 +47,15 @@ static t_auto  *ft_sort_list(t_shell *shell, char *after, int ret, int len)
 	tmp->current = NULL;
 	begin = shell->autocompl->begin;
 	i = 0;
-	if (begin)
+	if (begin)																					//CURRENT DIRECTORY
 	{
 		while (begin)
 		{
 			if (ft_strncmp(after, begin->data, ft_strlen(after)) == 0)
-			{
-				char	*str_tmp;
-
-				str = ft_before_antislash(shell->autocompl->str, len);
-				str_tmp = ft_strjoin(str, begin->data);
-				if (ft_dir_or_not2(str_tmp) || ft_dir_or_not(begin->data))
-					ft_fill_back_autocompl(tmp, begin->data, ++i);
-				free(str);
-				free(str_tmp);
-			}
+				ft_fill_back_autocompl(tmp, begin->data, ++i);
 			begin = begin->next;
 		}
-        if (ret)
+        if (ret)																				//IF MULTIAUTO_ACTIVE :)
         {
             begin = shell->autocompl_binary->begin;
             while (begin)
@@ -95,13 +85,13 @@ static t_auto  *ft_sort_list(t_shell *shell, char *after, int ret, int len)
 	return (tmp);
 }
 
-static int  ft_try_fill(t_shell *shell, char *after, int *flag, int ret, int len)
+static int  ft_try_fill(t_shell *shell, char *after, int *flag, int ret)
 {
 	int         i;
 	t_auto      *tmp;
 
 	tmp = NULL;
-	if ((tmp = ft_sort_list(shell, after, ret, len)) != NULL)
+	if ((tmp = ft_sort_list(shell, after, ret)) != NULL)
 	{
 		ft_free_autocompletion(&shell->autocompl);
 		i = 0;
@@ -142,15 +132,15 @@ int    ft_fill_same_word(t_shell *shell, t_env *env)
 			tmp_line = ft_strdup(shell->autocompl->str);
 		if ((after = ft_after_antislash(tmp_line, &ret)) != NULL)
 		{
-			ft_try_fill(shell, after, &flag, 0, ret);
+			ft_try_fill(shell, after, &flag, 0);
 			free(after);
 		}
 		else
 		{
             if (shell->multiauto_active == 1)
-			    ft_try_fill(shell, tmp_line, &flag, 0, 0);
+			    ft_try_fill(shell, tmp_line, &flag, 0);
             else
-			    ft_try_fill(shell, tmp_line, &flag, 1, 0);
+			    ft_try_fill(shell, tmp_line, &flag, 1);
 			ft_init_autocompl(shell, tmp_line, env);
 		}
 		free(tmp_line);

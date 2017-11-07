@@ -23,7 +23,7 @@ void	ft_move_right(t_lineterm *end, t_shell *shell, t_env *env)
 	(void)env;
     if (shell->auto_active || shell->multiauto_active)
     {
-        ft_autoright(end, shell);
+        ft_autoMove(end, shell, env, 1);
         return ;
     }
     shell->history->down = 0;
@@ -49,7 +49,7 @@ void    ft_move_left(t_lineterm *end, t_shell *shell, t_env *env)
 	(void)env;
     if (shell->auto_active || shell->multiauto_active)
     {
-        ft_autoleft(end, shell);
+        ft_autoMove(end, shell, env, 0);
         return ;
     }
     shell->history->down = 0;

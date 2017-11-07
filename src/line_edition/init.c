@@ -127,6 +127,8 @@ static	inline	t_auto		*init_autocompletion(void)
     autocomp->updaterow = 0;
     autocomp->arrow = 0;
     autocomp->clr_yes = 0;
+	autocomp->can_print = 0;
+	autocomp->possiblitie = 0;
 	return (autocomp);
 }
 
@@ -173,13 +175,11 @@ t_shell						*init_shell(t_env *env)
     if ((shell->autocompl = init_autocompletion()) == NULL)
         ft_putendl_fd("Error init_autocompletion", 2);
     if ((shell->autocompl_binary = init_autocompletion()) == NULL)
-    {
         ft_putendl_fd("Error init_autocompletion_binary", 2);
-    }
 	if ((shell->keyflag = init_keyflag()) == NULL)
 		ft_putendl_fd("Error init_keyflag", 2);
     ft_init_fill_history(shell->from_hist);
-    ft_init_autocompl_binary(shell);
+    ft_init_autocompl_binary(shell, env);
     shell->nbr_hist = 0;
     shell->ret_signal = 0;
     shell->move_cursor = 0;
@@ -187,5 +187,6 @@ t_shell						*init_shell(t_env *env)
     shell->multiauto_active = 0;
     shell->count_tab = 0;
     shell->len_prompt = 0;
+	shell->quotes = 0;
 	return (shell);
 }

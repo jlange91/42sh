@@ -62,9 +62,10 @@ t_shell             *init_shell(t_env *env);
 
 /**************************************************************************************/
 /*TERM*/
-void				ft_init_console(t_shell *shell, dlist *line);
+void				ft_init_console(t_shell *shell, dlist *line, t_env *env);
 void                ft_end_term(t_shell *shell);
 int					ft_insert_lnk_void(dlist *line);
+int					ft_init_terminal_mode(t_shell *shell);
 
 /***************************************************************************************/
 /*HISTORY*/
@@ -87,7 +88,7 @@ char				*ft_line_input(t_shell *shell, t_env *env);
 
 /***************************************************************************************/
 /*UTILS_READ*/
-int                 ft_reset_line(t_shell *shell, int ret);
+int                 ft_reset_line(t_shell *shell, int ret, t_env *env);
 
 /**************************************************************************************/
 /*TOOL READLINE*/
@@ -99,11 +100,11 @@ int		            ft_count_dlnk(t_shell *shell);
 /**************************************************************************************/
 /*TOOL READLINE2*/
 int					ft_display_char(t_lineterm *begin, t_shell *shell);
-int                 ft_display(t_shell *shell, int *nbr, int close);
+int                 ft_display(t_shell *shell, int *nbr, int close, t_env *env);
 
 /***************************************************************************************/
 /*PROMPT*/
-void                ft_display_prompt(t_shell *shell);
+void                ft_display_prompt(t_shell *shell, t_env *env);
 
 /***************************************************************************************/
 /*DISPLAY*/
@@ -141,7 +142,7 @@ void				ft_cut_line(t_lineterm *end, t_shell *shell, t_env *env);
 /*MOVE_UP_DOWN*/
 void                ft_move_up_line(t_lineterm *end, t_shell *shell, t_env *env);
 void                ft_move_down_line(t_lineterm *end, t_shell *shell, t_env *env);
-void           		ft_move_history(t_shell *shell, t_history **current, int flag);
+void           		ft_move_history(t_shell *shell, t_history **current, int flag, t_env *env);
 
 /*****************************************************************************************/
 /*TOOL*/
@@ -161,8 +162,5 @@ void				ft_catch_sigwinch(int signum);
 /**************************************************************************************/
 /*FT_LINE_EDITION*/
 int                 ft_line_edition(t_env *env_c, t_shell *shelli, t_lexer *lexer);
-
-
-char **ft_fill_av(char *line);
 
 #endif

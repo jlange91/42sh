@@ -23,9 +23,33 @@ static char	*ft_antislash_here(char *str)
     return (new);
 }
 
+char	*ft_new_word_backslash(char *word)
+{
+	char	*new;
+	int		i;
+	int		j;
+
+	if ((new = (char *)malloc(sizeof(char) * (ft_strlen(word) + 2))) == NULL)
+	{
+		ft_putendl_fd("Error malloc", 2);
+		return (NULL);
+	}
+	i = -1;
+	j = -1;
+	while (word[++i])
+	{
+		if (word[i] == '\\')
+			new[++j] = '\\';
+		new[++j] = word[i];
+	}
+	new[++j] = '\0';
+	return (new);
+}
+
 void    ft_init_simple_autocompl(t_shell *shell, t_env *env)
 {
     char            *pwd;
+	char			*backslash;
     int             i;
     DIR             *path;
     struct dirent   *file;
@@ -36,8 +60,16 @@ void    ft_init_simple_autocompl(t_shell *shell, t_env *env)
     {
         ft_free_autocompletion(&shell->autocompl);
         while ((file = readdir(path)) != NULL)
-            if (file->d_name[0] != '.')
+		{
+			if (ft_strchr(file->d_name, '\\') != NULL)
+			{
+				backslash = ft_new_word_backslash(file->d_name);
+                ft_fill_back_autocompl(shell->autocompl, backslash, i++);
+				free(backslash);
+			}
+			else if (file->d_name[0] != '.')
                 ft_fill_back_autocompl(shell->autocompl, file->d_name, i++);
+		}
         shell->autocompl->current = shell->autocompl->begin;
         closedir(path);
     }

@@ -45,10 +45,12 @@ int     ft_dynamique_autocompletion(long *c, t_shell *shell, t_env *env)
     if (shell->count_tab && (shell->auto_active || shell->multiauto_active) && *c == TAB)
     {
         compt++;
-        *c = RIGHT;
+        *c = OPT_DOWN;
+		shell->autocompl->can_print++;
     }
     if (*c == '\n' && (shell->auto_active || shell->multiauto_active))
     {
+		shell->autocompl->can_print = 0;
         shell->count_tab = 0;
         if (compt < 1)
         {
@@ -77,9 +79,19 @@ int     ft_other_key(t_lineterm *end, t_shell *shell, long c, t_env *env)
     i = -1;
     if (!ft_dynamique_autocompletion(&c, shell, env))
         return (0);
+	if (shell->autocompl->can_print < 2 && c == OPT_DOWN)
+	{
+		ft_free_dlist(&shell->line);
+		ft_init_console(shell, shell->line, env);
+    	ft_cpy_autocompl_to_lineshell(shell);
+	}
     while (++i < 14)
         if (keycode[i] == c)
         {
+			if (shell->quotes && i > 1)
+				return (1);
+			else if (shell->autocompl->can_print < 2 && i == 12)
+				return (1);
             funct[i](end, shell, env);
             return (1);
         }

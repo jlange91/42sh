@@ -64,7 +64,7 @@ static void ft_clean_screen(t_auto *select, t_shell *shell, int *ecrase, int *ec
     ft_what_pages(shell, select, ecrase, ecrase_simple);
 }
 
-void    ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *total)
+void    ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *total, t_env *env)
 {
     static int ret;
     static int ecrase;
@@ -76,7 +76,7 @@ void    ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *
         tputs(tgetstr("cd", NULL), 1, ft_inputstr);
         ret = ecrase;
     }
-    ft_display_prompt(shell);
+    ft_display_prompt(shell, env);
     ft_display_char(shell->line->begin, shell);
     shell->autocompl->updaterow = 3;
     *total = ft_print_page(shell, select, begin);

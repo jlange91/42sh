@@ -71,7 +71,7 @@ static inline void    ft_del_line(t_shell *shell, int down)
         while (down2-- > 0)
             tputs(shell->term->dostr, 1, ft_inputstr);
     else if (shell->history->up == 0
-            && shell->history->down == 0)
+            && shell->history->down == 0 && shell->keyflag->cl == 0)
         while (down--) 
             tputs(shell->term->dostr, 1, ft_inputstr);
     if (shell->keyflag->backspace == 1)
@@ -92,13 +92,12 @@ static void		ft_display_char_split(t_lineterm *begin, t_shell *shell, int *ret)
     size_t  	col;
 
     col = get_columns() - 1;
-    if (begin->index == 0)
+    if (begin->index == 0 && !shell->quotes)
         ft_putstr(BLUE);
     else
         ft_putstr(RESET);
     if (shell->console->char_pos == col)
     {
-
         tputs(shell->term->dostr, 1, ft_inputstr);
         shell->console->total_line++;
         shell->console->char_pos = 0;
@@ -142,7 +141,7 @@ int    ft_display_char(t_lineterm *begin, t_shell *shell)
  *	Explication : DISPLAY LOL ;)
  * NORME OK
  * **********************************************************************************/
-int    ft_display(t_shell *shell, int *nbr, int close)
+int    ft_display(t_shell *shell, int *nbr, int close, t_env *env)
 {
     static int  down;
     static int  down2;
@@ -158,7 +157,7 @@ int    ft_display(t_shell *shell, int *nbr, int close)
     down = ft_cursor_pos(shell->line->end, shell);
     if (shell->auto_active || shell->multiauto_active)
     {
-        ft_display_autocompletion(shell, &down2);
+        ft_display_autocompletion(shell, &down2, env);
         return (down2);
     }
     tputs(shell->term->vestr, 1, ft_inputstr);

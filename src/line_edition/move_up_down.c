@@ -29,8 +29,11 @@ void    ft_move_down_line(t_lineterm *end, t_shell *shell, t_env *env)
     size_t col;
 
 	(void)env;
-    if (shell->auto_active == 1 || shell->multiauto_active == 1 )
+    if (shell->auto_active == 1 || shell->multiauto_active == 1)
+	{
+		ft_auto_down_up(end, shell, env, 1);
         return ;
+	}
     shell->history->down = 0;
     shell->history->up = 0;
     col = get_columns() - 1;
@@ -81,17 +84,15 @@ static int ft_passed_or_not(t_shell *shell)
 	return (1);
 }
 
-void	ft_move_history(t_shell *shell, t_history **current, int flag)
+void	ft_move_history(t_shell *shell, t_history **current, int flag, t_env *env)
 {
     int i;
 
     if (shell->auto_active == 1 || shell->multiauto_active == 1)
     {
-        if (flag == 1)
-            ft_auto_down(NULL, shell);
-        else
-            ft_auto_up(NULL, shell);
-        return ;
+		(flag == 1) ? ft_auto_down_up(NULL, shell, env, 1) : 
+            ft_auto_down_up(NULL, shell, env, 0);
+		return ;
     }
     shell->line->last = 1;
     if (!(*current) || !ft_passed_or_not(shell))
@@ -101,7 +102,7 @@ void	ft_move_history(t_shell *shell, t_history **current, int flag)
     if (ft_count_dlnk(shell) >= 1)
     {
         ft_free_dlist(&shell->line); 
-        ft_init_console(shell, shell->line);
+        ft_init_console(shell, shell->line, env);
     }
     i = -1;
     while ((*current)->data[++i])
