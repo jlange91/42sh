@@ -5,16 +5,16 @@
 
 /*******************************************************************/
 /*INIT_GLOB.C*/
-int    ft_parse_glob(char *line, t_glob **glob, t_env *env);
+int    ft_parse_glob(char *line, t_glob **glob, char **env);
 
 /*******************************************************************/
 /*GET_GLOB.C*/
-int    ft_get_glob(t_glob **glob, char **str_tab, t_env *env);
+int    ft_get_glob(t_glob **glob, char **str_tab, char **env);
 int     ft_glob_here(char *str);
 
 /*******************************************************************/
 /*RESULT_GLOB.C*/
-char    **ft_result(t_env *env, t_glob *glob, char **str_tab);
+char    **ft_result(char **env, t_glob *glob, char **str_tab);
 /*******************************************************************/
 
 /*******************************************************************/
@@ -36,7 +36,7 @@ void	ft_move_letter_and_count(char **chunk_orig, int *count, char **tmp_orig, in
 /*******************************************************************/
 /*REPLACE*/
 int		ft_can_replace_glob(char *line);
-void	ft_replace_glob(t_shell *shell, char *line, t_env *env);
+void	ft_replace_glob(t_termc *shell, char *line, char **env);
 /*******************************************************************/
 
 #endif

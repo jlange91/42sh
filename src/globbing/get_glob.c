@@ -1,6 +1,5 @@
 #include "../../inc/globbing.h"
 #include "../../inc/autocompletion.h"
-#include "../../inc/env_term.h"
 
 static int  ft_good_syntax(char **str_tab)
 {
@@ -63,7 +62,7 @@ int  ft_glob_here(char *str)
     return (0);
 }
 
-static char **ft_fill_tab(char **str_tab, int count, t_env *env, t_glob *glob)
+static char **ft_fill_tab(char **str_tab, int count, char **env, t_glob *glob)
 {
     char    **new_tab;
 
@@ -73,7 +72,7 @@ static char **ft_fill_tab(char **str_tab, int count, t_env *env, t_glob *glob)
     return (new_tab);
 }
 
-int        ft_get_glob(t_glob **glob, char **str_tab, t_env *env)
+int        ft_get_glob(t_glob **glob, char **str_tab, char **env)
 {
     int count;
 

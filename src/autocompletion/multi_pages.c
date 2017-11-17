@@ -1,6 +1,6 @@
 #include "../../inc/autocompletion.h"
 
-static int    ft_print_page(t_shell *shell, t_auto *select, t_autocompl *begin)
+static int    ft_print_page(t_termc *shell, t_auto *select, t_autocompl *begin)
 {
     int         i;
     int         total;
@@ -28,7 +28,7 @@ static int    ft_print_page(t_shell *shell, t_auto *select, t_autocompl *begin)
     return (total);
 }
 
-static void    ft_what_pages(t_shell *shell, t_auto *select, int *ecrase, int *ecrase_simple)
+static void    ft_what_pages(t_termc *shell, t_auto *select, int *ecrase, int *ecrase_simple)
 {
     int         i;
 
@@ -53,7 +53,7 @@ static void    ft_what_pages(t_shell *shell, t_auto *select, int *ecrase, int *e
 }
 
 
-static void ft_clean_screen(t_auto *select, t_shell *shell, int *ecrase, int *ecrase_simple)
+static void ft_clean_screen(t_auto *select, t_termc *shell, int *ecrase, int *ecrase_simple)
 {
     int         row;
 
@@ -64,7 +64,7 @@ static void ft_clean_screen(t_auto *select, t_shell *shell, int *ecrase, int *ec
     ft_what_pages(shell, select, ecrase, ecrase_simple);
 }
 
-void    ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *total, t_env *env)
+void    ft_multi_pages(t_auto *select, t_termc *shell, t_autocompl *begin, int *total)
 {
     static int ret;
     static int ecrase;
@@ -76,7 +76,7 @@ void    ft_multi_pages(t_auto *select, t_shell *shell, t_autocompl *begin, int *
         tputs(tgetstr("cd", NULL), 1, ft_inputstr);
         ret = ecrase;
     }
-    ft_display_prompt(shell, env);
+    ft_display_prompt(shell);
     ft_display_char(shell->line->begin, shell);
     shell->autocompl->updaterow = 3;
     *total = ft_print_page(shell, select, begin);

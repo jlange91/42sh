@@ -50,7 +50,7 @@
 # define PURPLE_BACK "\033[48;5;9m"
 # define GREEN_FRONT "\033[38;5;33m"
 
-typedef void(*t_k) (t_lineterm *end, t_shell *shell, t_env *env);
+typedef void(*t_k) (t_lineterm *end, t_termc *shell, char **env);
 
 /**************************************/
 /*DEBUG*/
@@ -58,96 +58,96 @@ typedef void(*t_k) (t_lineterm *end, t_shell *shell, t_env *env);
 
 /**************************************************************************************/
 
-t_shell             *init_shell(t_env *env);
+t_termc             *init_termc(char **env);
 
 /**************************************************************************************/
 /*TERM*/
-void				ft_init_console(t_shell *shell, dlist *line, t_env *env);
-void                ft_end_term(t_shell *shell);
+void				ft_init_console(t_termc *shell, dlist *line);
+void                ft_end_term(t_termc *shell);
 int					ft_insert_lnk_void(dlist *line);
-int					ft_init_terminal_mode(t_shell *shell);
+int					ft_init_terminal_mode(t_termc *shell);
 
 /***************************************************************************************/
 /*HISTORY*/
-void				ft_history(t_shell *shell, int c);
+void				ft_history(t_termc *shell, int c);
 int                 ft_count_history(void);
-int                 ft_fill_history(t_shell *shell);
+int                 ft_fill_history(t_termc *shell);
 int                 ft_init_fill_history(hlist *from_hist);
-int                 ft_find_history(t_shell *shell);
+int                 ft_find_history(t_termc *shell);
 
 /***************************************************************************************/
 /*HISTORY2*/
-void				ft_add_tmp_history(t_shell *shell, const char *str);
+void				ft_add_tmp_history(t_termc *shell, const char *str);
 void                ft_free_history(hlist *history);
-int                 ft_add_file_history(t_shell *shell);
-int                 ft_add_file_history_no_flag(t_shell *shell);
+int                 ft_add_file_history(t_termc *shell);
+int                 ft_add_file_history_no_flag(t_termc *shell);
 
 /***************************************************************************************/
 /*READLINE*/
-char				*ft_line_input(t_shell *shell, t_env *env);
+char				*ft_line_input(t_termc *shell, char **env);
 
 /***************************************************************************************/
 /*UTILS_READ*/
-int                 ft_reset_line(t_shell *shell, int ret, t_env *env);
+int                 ft_reset_line(t_termc *shell, int ret);
 
 /**************************************************************************************/
 /*TOOL READLINE*/
 void                ft_fill_back_dlst(dlist *line, int c, int i);
 void				ft_fill_back_hlst(hlist *line, const char *str);
-void                ft_insert_dlnk(t_lineterm *end, t_shell *shell, int c, int i);
-int		            ft_count_dlnk(t_shell *shell);
+void                ft_insert_dlnk(t_lineterm *end, t_termc *shell, int c, int i);
+int		            ft_count_dlnk(t_termc *shell);
 
 /**************************************************************************************/
 /*TOOL READLINE2*/
-int					ft_display_char(t_lineterm *begin, t_shell *shell);
-int                 ft_display(t_shell *shell, int *nbr, int close, t_env *env);
+int					ft_display_char(t_lineterm *begin, t_termc *shell);
+int                 ft_display(t_termc *shell, int *nbr, int close);
 
 /***************************************************************************************/
 /*PROMPT*/
-void                ft_display_prompt(t_shell *shell, t_env *env);
+void                ft_display_prompt(t_termc *shell);
 
 /***************************************************************************************/
 /*DISPLAY*/
-void				ft_display_dlnk(dlist *line, t_lineterm *current, t_shell *shell);
+void				ft_display_dlnk(dlist *line, t_lineterm *current, t_termc *shell);
 
 /***************************************************************************************/
 /*KEY*/
-int					ft_is_key(dlist *line, t_shell *sehll, long c, t_env *env);
+int					ft_is_key(dlist *line, t_termc *sehll, long c, char **env);
 
 /**************************************************************************************/
 /*FT_KEY2*/
-int                 ft_other_key(t_lineterm *end, t_shell *shell, long c, t_env *env);
+int                 ft_other_key(t_lineterm *end, t_termc *shell, long c, char **env);
 
 /*****************************************************************************************/
 /*MOVE_SELECTION*/
-void                ft_move_right(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_left(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_mright(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_mleft(t_lineterm *end, t_shell *shell, t_env *env);
+void                ft_move_right(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_left(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_mright(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_mleft(t_lineterm *end, t_termc *shell, char **env);
 
 /*****************************************************************************************/
 /*MOVE_WORD*/
-void                ft_move_begin(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_end(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_word_forward(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_word_back(t_lineterm *end, t_shell *shell, t_env *env);
+void                ft_move_begin(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_end(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_word_forward(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_word_back(t_lineterm *end, t_termc *shell, char **env);
 
 /*****************************************************************************************/
 /*CPY_CUT_DUP*/
-void				ft_dup_line(t_lineterm *end, t_shell *shell, t_env *env);
-void				ft_past_line(t_lineterm *end, t_shell *shell, t_env *env);
-void				ft_cut_line(t_lineterm *end, t_shell *shell, t_env *env);
+void				ft_dup_line(t_lineterm *end, t_termc *shell, char **env);
+void				ft_past_line(t_lineterm *end, t_termc *shell, char **env);
+void				ft_cut_line(t_lineterm *end, t_termc *shell, char **env);
 
 /*****************************************************************************************/
 /*MOVE_UP_DOWN*/
-void                ft_move_up_line(t_lineterm *end, t_shell *shell, t_env *env);
-void                ft_move_down_line(t_lineterm *end, t_shell *shell, t_env *env);
-void           		ft_move_history(t_shell *shell, t_history **current, int flag, t_env *env);
+void                ft_move_up_line(t_lineterm *end, t_termc *shell, char **env);
+void                ft_move_down_line(t_lineterm *end, t_termc *shell, char **env);
+void           		ft_move_history(t_termc *shell, t_history **current, int flag, char **env);
 
 /*****************************************************************************************/
 /*TOOL*/
 void                ft_free_autocompletion(t_auto **autocompl);
-void                ft_free_all(t_shell *all);
+void                ft_free_all(t_termc *all);
 void				ft_free_dlist(dlist **line);
 t_lineterm			*ft_dont_get_prompt(t_lineterm *tmp);
 int                 ft_inputstr(int c);
@@ -161,6 +161,6 @@ void				ft_catch_sigwinch(int signum);
 
 /**************************************************************************************/
 /*FT_LINE_EDITION*/
-int                 ft_line_edition(t_env *env_c, t_shell *shelli, t_lexer *lexer);
+int                 ft_line_edition(t_termc *shell, t_shell sh);
 
 #endif

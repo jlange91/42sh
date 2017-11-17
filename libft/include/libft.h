@@ -60,7 +60,7 @@ int					ft_atoi(const char *str);
 int					ft_strequ(char const *s1, char const *s2);
 int					ft_strnequ(char const *s1, char const *s2, size_t n);
 int					ft_count_dtab(char **av);
-size_t				ft_strlen(const char *s);
+int					ft_strlen(const char *s);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
 void				ft_putstr(char *str);
 void				ft_putstr_fd(char const *s, int fd);
@@ -100,5 +100,6 @@ char				*ft_escapequote(char const *s);
 void				ft_tabtospace(char *str);
 char				*ft_strtrim_c(char const *s, char c);
 char				*ft_free_join(char const *s1, char const *s2, char c);
+char				*ft_strndup(const char *s1, int n);
 
 #endif

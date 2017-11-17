@@ -18,7 +18,7 @@
  * NO NORME
  * *********************************************************************************/
 
-void	ft_move_right(t_lineterm *end, t_shell *shell, t_env *env)
+void	ft_move_right(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)env;
     if (shell->auto_active || shell->multiauto_active)
@@ -44,7 +44,7 @@ void	ft_move_right(t_lineterm *end, t_shell *shell, t_env *env)
     }
 }
 
-void    ft_move_left(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_left(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)env;
     if (shell->auto_active || shell->multiauto_active)
@@ -81,7 +81,7 @@ void    ft_move_left(t_lineterm *end, t_shell *shell, t_env *env)
  * NO NORME
  * *********************************************************************************/
 
-void    ft_move_mleft(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_mleft(t_lineterm *end, t_termc *shell, char **env)
 {
     if (shell->auto_active || shell->multiauto_active)
         return ;
@@ -91,7 +91,7 @@ void    ft_move_mleft(t_lineterm *end, t_shell *shell, t_env *env)
     ft_move_left(end, shell, env);
 }
 
-void    ft_move_mright(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_mright(t_lineterm *end, t_termc *shell, char **env)
 {
     if (shell->auto_active || shell->multiauto_active)
         return ;

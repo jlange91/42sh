@@ -3,6 +3,7 @@
 static char		*ft_get_next_pattern(char **pattern, int *star, int *bracket)
 {
 	int		i;
+	int		leave;
 	char	*chunk;
 
 	if (ft_strlen(*pattern) > 0)
@@ -17,19 +18,30 @@ static char		*ft_get_next_pattern(char **pattern, int *star, int *bracket)
 		*star = 1;
 	}
 	i = -1;
+	leave = 0;
 	while (ft_strlen(*pattern) > 0)
 	{
 		if (**pattern == '[')
 			*bracket = 1;
 		if (**pattern == ']')
 			*bracket = 0;
+		if (**pattern == '-')
+			leave = 1;
 		if (**pattern == '*')
+		{
+			leave = 0;
 			if (!(*bracket))
 				break;
+		}
 		chunk[++i] = **pattern;
 		(*pattern)++;
 	}
 	chunk[++i] = '\0';
+	if (leave != 0)
+	{
+		free(chunk);
+		chunk = NULL;
+	}
 	return (chunk);
 }
 
@@ -63,7 +75,8 @@ int	ft_match(char *pattern, char *word)
 	inbracket = 0;
 	while (ft_strlen(pattern) > 0)
 	{
-		chunk = ft_get_next_pattern(&pattern, &star, &inbracket);
+		if ((chunk = ft_get_next_pattern(&pattern, &star, &inbracket)) == NULL)
+			return (0);
 		if (star && *chunk == '\0')
 		{
 			free(chunk);

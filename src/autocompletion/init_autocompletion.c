@@ -46,7 +46,7 @@ char	*ft_new_word_backslash(char *word)
 	return (new);
 }
 
-void    ft_init_simple_autocompl(t_shell *shell, t_env *env)
+void    ft_init_simple_autocompl(t_termc *tsh, char **env)
 {
     char            *pwd;
 	char			*backslash;
@@ -56,27 +56,26 @@ void    ft_init_simple_autocompl(t_shell *shell, t_env *env)
 
     i = 1;
     pwd = ft_getenv("PWD", env);
-    if ((path = opendir(pwd)) != NULL)
+    if (pwd[4] && (path = opendir(&pwd[4])) != NULL)
     {
-        ft_free_autocompletion(&shell->autocompl);
+        ft_free_autocompletion(&tsh->autocompl);
         while ((file = readdir(path)) != NULL)
 		{
 			if (ft_strchr(file->d_name, '\\') != NULL)
 			{
 				backslash = ft_new_word_backslash(file->d_name);
-                ft_fill_back_autocompl(shell->autocompl, backslash, i++);
+                ft_fill_back_autocompl(tsh->autocompl, backslash, i++);
 				free(backslash);
 			}
 			else if (file->d_name[0] != '.')
-                ft_fill_back_autocompl(shell->autocompl, file->d_name, i++);
+                ft_fill_back_autocompl(tsh->autocompl, file->d_name, i++);
 		}
-        shell->autocompl->current = shell->autocompl->begin;
+        tsh->autocompl->current = tsh->autocompl->begin;
         closedir(path);
     }
-    free(pwd);
 }
 
-int    ft_open_and_fill(t_shell *shell, DIR *path, int nbr)
+int    ft_open_and_fill(t_termc *shell, DIR *path, int nbr)
 {
     int             i;
     struct dirent   *file;
@@ -104,7 +103,7 @@ int    ft_open_and_fill(t_shell *shell, DIR *path, int nbr)
     return (1);
 }
 
-void     ft_init_autocompl_bis(t_shell *shell, char *line_tmp, int *flag, t_env *env)
+void     ft_init_autocompl_bis(t_termc *shell, char *line_tmp, int *flag, char **env)
 {
     int     i;
     char    *tmp;
@@ -133,7 +132,7 @@ void     ft_init_autocompl_bis(t_shell *shell, char *line_tmp, int *flag, t_env 
         ft_init_simple_autocompl(shell, env);
 }
 
-int    	ft_init_autocompl(t_shell *shell, char *line, t_env *env)
+int    	ft_init_autocompl(t_termc *shell, char *line, char **env)
 {
     char			*line_tmp;
     int             flag;

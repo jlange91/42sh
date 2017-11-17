@@ -23,7 +23,7 @@ void    ft_fill_back_autocompl(t_auto *autocompl, char *file, int index)
     autocompl->end = new;
 }
 
-char	*ft_to_str(t_shell *shell)
+char	*ft_to_str(t_termc *shell)
 {
     char	*str;
     int		i;

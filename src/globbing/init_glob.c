@@ -1,6 +1,5 @@
 #include "../../inc/globbing.h"
 #include "../../inc/autocompletion.h"
-#include "../../inc/env_term.h"
 
 void			ft_print_glob(char **tmp)
 {
@@ -54,7 +53,7 @@ static t_glob  *ft_init_glob(char *line)
     return (new);
 }
 
-int    ft_parse_glob(char *line, t_glob **glob, t_env *env)
+int    ft_parse_glob(char *line, t_glob **glob, char **env)
 {
     char    **str_tab;
 	int		flag;

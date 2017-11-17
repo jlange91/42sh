@@ -1,49 +1,33 @@
 # include "../inc/sh21.h"
-# include "../inc/env_term.h"
 # include "../inc/line_edition.h"
-# include "../inc/token.h"
 
-void    freeViteFait(t_env **env)
+void			free_shell(t_shell *sh, t_termc *tsh)
 {
-    t_env   *tmp;
-    t_env   *del;
-
-    del = NULL;
-    tmp = NULL;
-    tmp = *env;
-    while (tmp)
-    {
-        del = tmp;
-        tmp = tmp->next;
-        free(del->line_env);
-        free(del);
-    }
-    free(tmp);
-    tmp = NULL;
+	free_tab_2d(sh->env);
+	free(sh->pwd);
+	ft_free_all(tsh);
 }
 
-void    ft_free_a(t_env *env, t_shell *shell, t_lexer *lexer)
+int		ft_singleton(int nb, int opt)
 {
-    ft_free_dlist_token(&(lexer)->token);
-    free(lexer->token);
-    free(lexer);
-    freeViteFait(&env);
-	ft_free_all(shell);
+	static int ret = 0;
+
+	if (opt == 1)
+		ret = nb;
+	return (ret);
 }
 
 int     main(int ac, char **av, char **env)
 {
-    t_env   *env_c;
-	t_shell *shell;
-    t_lexer *lexer;
+	t_termc *tsh;
+	t_shell sh;
 
     (void)ac;
     (void)av;
-	shell = NULL;
-    env_c = ft_init_env(env);
-	shell = init_shell(env_c);
-    lexer = init_lexer();
-    ft_line_edition(env_c, shell, lexer);
-    ft_free_a(env_c, shell, lexer);
+	tsh = NULL;
+	ft_fill_env(&sh, env);
+	tsh = init_termc(sh.env);
+    ft_line_edition(tsh, sh);
+	free_shell(&sh, tsh);
     return (0);
 }

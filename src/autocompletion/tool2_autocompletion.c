@@ -6,7 +6,7 @@
  *
  * We split the line for get last word and check if is dir;
  */
-void    ft_check_is_dir(t_shell *shell)
+void    ft_check_is_dir(t_termc *shell)
 {
     int         i;
     char        **tab_word;
@@ -25,7 +25,7 @@ void    ft_check_is_dir(t_shell *shell)
     ft_free_tab(tab_word);
 }
 
-void    ft_cpy_autocompl_to_lineshell(t_shell *shell)
+void    ft_cpy_autocompl_to_lineshell(t_termc *shell)
 {
     int i;
     int j;
@@ -75,7 +75,7 @@ char    *ft_antislash_here_bis(int limit, int len, char *str)
     return (new);
 }
 
-int    ft_reset(t_shell *shell, t_env *env)
+int    ft_reset(t_termc *shell, char **env)
 {
     tputs(shell->term->cdstr, 1, ft_inputstr);
     if (shell->autocompl->str != NULL)
@@ -96,7 +96,7 @@ int    ft_reset(t_shell *shell, t_env *env)
     return (0);
 }
 
-void    ft_put_antislash_one_word(t_shell *shell)
+void    ft_put_antislash_one_word(t_termc *shell)
 {
     char        *tmp;
     struct stat info;

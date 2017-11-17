@@ -166,7 +166,7 @@ int    ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag)
         return (ft_print_simple_auto(select, begin));
 }
 
-void ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total, t_env *env)
+void ft_menu_autocompletion(t_auto *select, t_termc *shell, int *total)
 {
     t_autocompl *begin;
     static int count;
@@ -176,7 +176,7 @@ void ft_menu_autocompletion(t_auto *select, t_shell *shell, int *total, t_env *e
     {
         ft_init_value(shell, select);
         if (shell->autocompl->jump > select->row)
-            ft_multi_pages(select, shell, begin, total, env);
+            ft_multi_pages(select, shell, begin, total);
         else
         {
             if (!shell->autocompl->arrow && count++ < 1)

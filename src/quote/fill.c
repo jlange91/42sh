@@ -81,6 +81,7 @@ void     ft_fill(char *line, char **av)
     space = 0;
     while (line[i])
     {
+		i += ft_skip_useless(&line[i]);
         skip_word(line, &i, av[j]);
         skip_quote(line, &i, av[j]);
         space = ft_skip_useless(&line[i]);

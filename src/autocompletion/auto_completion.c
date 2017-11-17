@@ -6,20 +6,20 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/02 10:23:22 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/02 17:49:13 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/16 13:10:16 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/autocompletion.h"
 #include "../../inc/globbing.h"
 
-void    ft_ajuste_and_fill_line(t_shell *shell, char *data, char *before, t_env *env)
+void    ft_ajuste_and_fill_line(t_termc *shell, char *data, char *before)
 {
 	int         i;
 
 	free(shell->autocompl->str);
 	ft_free_dlist(&shell->line); 
-	ft_init_console(shell, shell->line, env);
+	ft_init_console(shell, shell->line);
 	if (!shell->history->active)
 	{
 		tputs(shell->term->upstr, 1, ft_inputstr);
@@ -35,13 +35,13 @@ void    ft_ajuste_and_fill_line(t_shell *shell, char *data, char *before, t_env 
 	ft_check_is_dir(shell);
 }
 
-int		ft_autocompl_complex(t_shell *shell, char *data, char *before, char *after, t_env *env)
+int		ft_autocompl_complex(t_termc *shell, char *data, char *before, char *after)
 {
 	if (ft_count(shell->autocompl) == 1)
 	{
 		if (ft_strncmp(after, data, ft_strlen(after)) == 0)
 		{
-			ft_ajuste_and_fill_line(shell, data, before, env);
+			ft_ajuste_and_fill_line(shell, data, before);
 			return (1);
 		}
 	}
@@ -49,14 +49,14 @@ int		ft_autocompl_complex(t_shell *shell, char *data, char *before, char *after,
 	{
 		if (ft_strcmp(after, data) == 0)
 		{
-			ft_ajuste_and_fill_line(shell, data, before, env);
+			ft_ajuste_and_fill_line(shell, data, before);
 			return (1);
 		}
 	}
 	return (0);
 }
 
-int		ft_autocompl_simple(t_shell *shell, char *data, t_env *env)
+int		ft_autocompl_simple(t_termc *shell, char *data)
 {
 	int         i;
 	struct stat info_data;
@@ -67,7 +67,7 @@ int		ft_autocompl_simple(t_shell *shell, char *data, t_env *env)
 		{
 			free(shell->autocompl->str);
 			ft_free_dlist(&shell->line); 
-			ft_init_console(shell, shell->line, env);
+			ft_init_console(shell, shell->line);
 			if (!shell->history->active)
 			{
 				tputs(shell->term->upstr, 1, ft_inputstr);
@@ -89,7 +89,7 @@ int		ft_autocompl_simple(t_shell *shell, char *data, t_env *env)
 		{
 			free(shell->autocompl->str);
 			ft_free_dlist(&shell->line); 
-			ft_init_console(shell, shell->line, env);
+			ft_init_console(shell, shell->line);
 			if (!shell->history->active)
 			{
 				tputs(shell->term->upstr, 1, ft_inputstr);
@@ -108,7 +108,7 @@ int		ft_autocompl_simple(t_shell *shell, char *data, t_env *env)
 	return (0);
 }
 
-void    ft_put_antislash(t_shell *shell, char **after, char *result)
+void    ft_put_antislash(t_termc *shell, char **after, char *result)
 {
 	char        *tmp;
 	char        **tab_word;
@@ -133,7 +133,7 @@ void    ft_put_antislash(t_shell *shell, char **after, char *result)
 	}
 }
 
-void	ft_autocompletion_bis(t_shell *shell, t_env *env)
+void	ft_autocompletion_bis(t_termc *shell)
 {
 	char        *before;
 	char        *after;
@@ -149,8 +149,8 @@ void	ft_autocompletion_bis(t_shell *shell, t_env *env)
 	begin = shell->autocompl->current;
 	while (begin)
 	{
-		if (ft_autocompl_simple(shell, begin->data, env) ||
-				(after != NULL && ft_autocompl_complex(shell, begin->data, before, after, env)))
+		if (ft_autocompl_simple(shell, begin->data) ||
+				(after != NULL && ft_autocompl_complex(shell, begin->data, before, after)))
 		{
 			shell->auto_active = 0;
 			tputs(shell->term->cdstr, 1, ft_inputstr);
@@ -175,7 +175,7 @@ void	ft_autocompletion_bis(t_shell *shell, t_env *env)
  *  ft_fill_same_word.
  */
 
-void    ft_autocompletion(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_autocompletion(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)end;
 	shell->autocompl->arrow = 0;
@@ -188,7 +188,7 @@ void    ft_autocompletion(t_lineterm *end, t_shell *shell, t_env *env)
 		shell->auto_active = ft_init_autocompl(shell, shell->autocompl->str, env);
 		shell->multiauto_active = ft_fill_same_word(shell, env);
 		if (shell->autocompl->current && shell->autocompl->str)
-			ft_autocompletion_bis(shell, env);
+			ft_autocompletion_bis(shell);
 		else
 			shell->auto_active = 0;
 		if (ft_count(shell->autocompl) == 1)

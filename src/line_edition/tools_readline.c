@@ -60,7 +60,7 @@ static inline t_lineterm *get_cursor_current(t_lineterm *end)
 	return (end);
 }
 
-int		ft_count_dlnk(t_shell *shell)
+int		ft_count_dlnk(t_termc *shell)
 {
 	t_lineterm *tmp;
 	int			i;
@@ -77,7 +77,7 @@ int		ft_count_dlnk(t_shell *shell)
 	return (i);
 }
 
-void  ft_insert_dlnk(t_lineterm *end, t_shell *shell, int c, int i)
+void  ft_insert_dlnk(t_lineterm *end, t_termc *shell, int c, int i)
 {
 	t_lineterm  *new;
 

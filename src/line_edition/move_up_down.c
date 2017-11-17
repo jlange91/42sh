@@ -1,7 +1,7 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-void    ft_move_up_line(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_up_line(t_lineterm *end, t_termc *shell, char **env)
 {
     size_t col;
 
@@ -24,7 +24,7 @@ void    ft_move_up_line(t_lineterm *end, t_shell *shell, t_env *env)
     }
 }
 
-void    ft_move_down_line(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_down_line(t_lineterm *end, t_termc *shell, char **env)
 {
     size_t col;
 
@@ -51,7 +51,7 @@ void    ft_move_down_line(t_lineterm *end, t_shell *shell, t_env *env)
         shell->line->last = 1;
 }
 
-static void	ft_move_history_split(t_shell *shell, t_history **current, int flag)
+static void	ft_move_history_split(t_termc *shell, t_history **current, int flag)
 {
     shell->history->down = 0;
     shell->history->up = 0;
@@ -67,7 +67,7 @@ static void	ft_move_history_split(t_shell *shell, t_history **current, int flag)
     }
 }
 
-static int ft_passed_or_not(t_shell *shell)
+static int ft_passed_or_not(t_termc *shell)
 {
 	t_lineterm *begin;
 
@@ -84,7 +84,7 @@ static int ft_passed_or_not(t_shell *shell)
 	return (1);
 }
 
-void	ft_move_history(t_shell *shell, t_history **current, int flag, t_env *env)
+void	ft_move_history(t_termc *shell, t_history **current, int flag, char **env)
 {
     int i;
 
@@ -102,7 +102,7 @@ void	ft_move_history(t_shell *shell, t_history **current, int flag, t_env *env)
     if (ft_count_dlnk(shell) >= 1)
     {
         ft_free_dlist(&shell->line); 
-        ft_init_console(shell, shell->line, env);
+        ft_init_console(shell, shell->line);
     }
     i = -1;
     while ((*current)->data[++i])

@@ -21,7 +21,7 @@ void	ft_free_history(hlist *history)
 	}
 }
 
-int    ft_add_file_history_no_flag(t_shell *shell)
+int    ft_add_file_history_no_flag(t_termc *shell)
 {
     int fd;
     t_history *begin;
@@ -72,7 +72,7 @@ static inline void     ft_add_file_history_split(t_history *begin, int fd, int r
     }
 }
 
-int     ft_add_file_history(t_shell *shell)
+int     ft_add_file_history(t_termc *shell)
 {
     int         fd;
     int         res;
@@ -91,20 +91,20 @@ int     ft_add_file_history(t_shell *shell)
     return (1);
 }
 
-void	ft_add_tmp_history(t_shell *shell, const char *str)
+void	ft_add_tmp_history(t_termc *shell, const char *str)
 {
-    int			flag;
-    t_history	*tmp;
+    int flag;
+    int i;
 
     flag = 0;
-    tmp = shell->history->end;
-    while (tmp)
+    i = -1;
+    while (str[++i])
     {
-        if (ft_strcmp(tmp->data, str) == 0)
+        if (str[i] >= 33 && str[i] <= 126)
             flag = 1;
-        tmp = tmp->prev;
     }
-    if (!flag)
+    if (flag && (!shell->from_hist->end || 
+        ft_strcmp(shell->from_hist->end->data, str) != 0))
     {
         ft_fill_back_hlst(shell->from_hist, str);
         shell->nbr_hist++;

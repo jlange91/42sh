@@ -18,7 +18,6 @@ int     	ft_char_escape(char c);
 int			ft_check_quote(char *line);
 int			ft_return(char c);
 int			ft_skip_useless(char *line);
-void    	ft_charcat(char *str, char c);
-void		ft_fill_line(t_shell *shell, t_env *env);
+void		ft_fill_line(t_termc *shell, char **env);
 
 #endif

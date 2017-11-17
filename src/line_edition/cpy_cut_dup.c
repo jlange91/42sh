@@ -1,6 +1,6 @@
 #include "../../inc/line_edition.h"
 
-static void	ft_reset_under(t_shell *shell)
+static void	ft_reset_under(t_termc *shell)
 {
 	t_lineterm	*end;
 
@@ -16,7 +16,7 @@ static void	ft_reset_under(t_shell *shell)
 	}
 }
 
-void    ft_cut_line(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_cut_line(t_lineterm *end, t_termc *shell, char **env)
 {
 	t_lineterm  *tmp;
 	t_lineterm  *del;
@@ -71,7 +71,7 @@ void    ft_cut_line(t_lineterm *end, t_shell *shell, t_env *env)
 		shell->line->last = 0;
 }
 
-void	ft_dup_line(t_lineterm *end, t_shell *shell, t_env *env)
+void	ft_dup_line(t_lineterm *end, t_termc *shell, char **env)
 {
 	int			i;
 	t_lineterm	*begin;
@@ -93,7 +93,7 @@ void	ft_dup_line(t_lineterm *end, t_shell *shell, t_env *env)
 	ft_reset_under(shell);
 }
 
-void	ft_past_line(t_lineterm *end, t_shell *shell, t_env *env)
+void	ft_past_line(t_lineterm *end, t_termc *shell, char **env)
 {
 	int			i;
 	t_lineterm 	*begin;

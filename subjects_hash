@@ -1,0 +1,20 @@
+t_shell *sh;
+
+dans la structure t_shell il y aura une table de hash a remplir
+
+t_hash hash[1000];
+
+typedef struct		s_hash
+{
+	char			*cmd;
+	char			*path;
+	struct s_hash	*next;
+}					t_hash;
+
+!!!    regarder openclassroom table de hash;    !!!
+
+faire une fonction qui prend en parametre une commande char *cmd et qui place
+dans la table de hash "de 0 a 999" le path de cette commande pour l enregistree.
+Si collision il y a a l emplacement hash[nb] creer un nouveau maillon a cet emplacement.
+
+FAIRE LA FONCTION APARS NE PAS L IMPLEMENTER TOUS DE SUITE DANS 42SH !!!!

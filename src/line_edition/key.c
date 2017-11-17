@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:04 by stvalett          #+#    #+#             */
-/*   Updated: 2017/10/27 15:48:13 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/16 13:01:18 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static inline t_lineterm *find_cursor(t_lineterm *end)
  *
  * NO NORME
  * *********************************************************************************/
-static inline int  ft_del_split(dlist **line, t_shell *shell)
+static inline int  ft_del_split(dlist **line, t_termc *shell)
 {
     t_lineterm  *tmp;
 
@@ -57,7 +57,7 @@ static inline int  ft_del_split(dlist **line, t_shell *shell)
 	return (1);
 }
 
-static inline int	ft_del_caractere(t_lineterm *end, t_shell *shell, t_env *env)
+static inline int	ft_del_caractere(t_lineterm *end, t_termc *shell, char **env)
 {
 	t_lineterm *tmp;
 
@@ -101,7 +101,7 @@ static inline int	ft_del_caractere(t_lineterm *end, t_shell *shell, t_env *env)
  *
  * NO NORME
  ************************************************************************************/
-int     ft_is_key(dlist *line, t_shell *shell, long c, t_env *env)
+int     ft_is_key(dlist *line, t_termc *shell, long c, char **env)
 {
     t_lineterm  *tmp;
 

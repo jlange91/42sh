@@ -33,7 +33,7 @@ static char	*ft_new_line(char *str)
 	return (ret);
 }
 
-static inline char  *ft_getstr2(t_shell *shell, t_lineterm *begin)
+static inline char  *ft_getstr2(t_termc *shell, t_lineterm *begin)
 {
 	t_lineterm *tmp;
 	char        *str;
@@ -83,7 +83,7 @@ int		ft_fill_prompt_quotes(dlist *line, int ret)
     return (0);
 }
 
-char	*ft_line_input_quotes(t_shell *sh, t_env *env, int ret)
+char	*ft_line_input_quotes(t_termc *sh, char **env, int ret)
 {
 	long	c;
 	int		i;
@@ -110,12 +110,22 @@ char	*ft_line_input_quotes(t_shell *sh, t_env *env, int ret)
 		if (sh->line->last)
 			sh->line->lnk_before = 0;
 		c = 0;
-		ft_display(sh, &nbr, 0, env);
+		ft_display(sh, &nbr, 0);
 	}
 	return (ft_getstr2(sh, sh->line->begin));
 }
 
-void	ft_fill_line(t_shell *sh, t_env *env)
+void	ft_remove_space(char *str)
+{
+	char	*tmp;
+
+	tmp = ft_strtrim(str);
+	free(str);
+	str = ft_strdup(tmp);
+	free(tmp);
+}
+
+void	ft_fill_line(t_termc *sh, char **env)
 {
 	int 	ret;
 	char 	*tmp;
@@ -137,6 +147,7 @@ void	ft_fill_line(t_shell *sh, t_env *env)
 		while (1)
 		{
 			line = ft_line_input_quotes(sh, env, ret);
+			ft_remove_space(line);
 			if (opt == 1)
 			{
 				sh->line_shell = ft_strjoin(tmp, line);
@@ -148,11 +159,7 @@ void	ft_fill_line(t_shell *sh, t_env *env)
 			}
 			ret = ft_check_quote(line);
 			if (ret == 0)
-			{
-				env->line_str = ft_strdup(line);
-				free(line);
-				return ;
-			}
+				break;
 			else
 			{
 				tmp = ft_new_line(line);
@@ -162,9 +169,6 @@ void	ft_fill_line(t_shell *sh, t_env *env)
 			}
 		}
 	}
-	else
-	{
-		env->line_str = ft_strdup(line);
-		free(line);
-	}
+	sh->line_shell = ft_strdup(line);
+	free(line);
 }

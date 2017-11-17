@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: stvalett <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2017/11/02 10:27:56 by stvalett         ###   ########.fr        #
+#    Updated: 2017/11/17 03:11:18 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,9 +38,9 @@ SRCS = src/line_edition/line_edition.c\
 	   src/line_edition/move_word.c\
 	   src/line_edition/move_up_down.c\
 	   src/line_edition/cpy_cut_dup.c\
-	   src/line_edition/prompt.c\
 	   src/line_edition/display.c\
 	   src/line_edition/history.c\
+	   src/line_edition/prompt.c\
 	   src/line_edition/history2.c\
 	   src/line_edition/tool.c\
 	   src/quote/check.c\
@@ -68,33 +68,36 @@ SRCS = src/line_edition/line_edition.c\
 	   src/globbing/match.c\
 	   src/globbing/tool_match_and_chunk.c\
 	   src/globbing/replace.c\
-	   src/token/lexer.c\
-	   src/token/token.c\
-	   src/token/utils_token.c\
-	   src/tree/tree.c\
-	   src/tree/job.c\
-	   src/tree/utils_tree.c\
-	   src/exec/exec.c\
-	   src/exec/cmd.c\
-	   src/exec/util_cmd.c\
-	   src/env_term/env.c\
-	   src/env_term/env_tools.c\
-	   src/env_term/init_env.c\
-	   src/env_term/getenv.c\
-	   src/env_term/free.c\
-	   src/built-in/cd.c\
-	   src/built-in/env.c\
-	   src/built-in/built.c\
-	   src/built-in/built_utils.c\
-	   src/built-in/ft_cmd_setenv.c\
-	   src/built-in/ft_cmd_unsetenv.c \
-	   src/built-in/tools_built_in.c \
-	   src/built-in/ft_cmd_echo.c \
-	   src/built-in/cd_to.c \
-	   src/built-in/cd_to_slash.c \
-	   src/built-in/tool_for_cd.c \
-	   src/built-in/more_tool_for_cd.c \
-	   src/main.c
+		src/main.c \
+	   	src/perror/ft_perror.c				\
+		src/perror/error.c					\
+		src/perror/ft_useless_norme.c		\
+	   	src/builtins/cd.c					\
+		src/builtins/cd2.c					\
+		src/builtins/echo.c					\
+		src/builtins/echo2.c				\
+		src/builtins/env.c					\
+		src/builtins/env2.c					\
+		src/builtins/setenv.c				\
+		src/builtins/unsetenv.c				\
+		src/builtins/pwd.c					\
+		src/replace/ft_replace.c			\
+		src/replace/ft_replace_dollar.c		\
+		src/replace/ft_replace_tilde.c		\
+		src/replace/ft_replace_line.c		\
+		src/replace/ft_add_escape.c			\
+		src/exec/ft_exec.c					\
+		src/other/charcat.c					\
+		src/other/free_tab_2d.c				\
+		src/other/tab_2d_len.c				\
+		src/other/ft_cp_env.c				\
+		src/other/ft_fill_env.c				\
+		src/other/ft_display_env.c			\
+		src/other/ft_getenv.c				\
+		src/other/ft_replace_env.c			\
+		src/other/ft_remove_useless_path.c	\
+		src/other/ft_replace_str.c			\
+		src/other/ft_chdir_error.c			\
 					
 OBJ = $(SRCS:.c=.o) 
 

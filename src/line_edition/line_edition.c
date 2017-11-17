@@ -6,51 +6,86 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/02 18:35:20 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/16 19:37:53 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
-#include "../../inc/token.h"
-#include "../../inc/env_term.h"
-#include "../../inc/tree.h"
-#include "../../inc/exec.h"
+#include "../../inc/built_in.h"
 #include "../../inc/globbing.h"
 #include "../../inc/quote.h"
 
-static void  ft_free_free(t_shell *shell, t_env *env_c)
+static void  ft_free_free(t_termc *sh)
 {
-	ft_free_dlist(&shell->line);
-	free(env_c->line_str);
-	ft_free_history(shell->history);
+	//free(sh->pwd);
+	free(sh->line_shell);
+	ft_free_dlist(&sh->line);
+	ft_free_history(sh->history);
 }
 
-static int	ft_start_preparsing(t_shell *shell, t_env *env_c, t_lexer *lexer)
+void			ft_cmd(t_shell *sh)
 {
-	(void)lexer;
+	ft_singleton(0, 1);
+	if (!ft_strcmp(sh->av[0], "exit"))
+	{
+		ft_putstr("exit\n");
+		exit(0);
+	}
+	else if (!ft_strcmp(sh->av[0], "echo"))
+		ft_echo(sh->av);
+	else if (!ft_strcmp(sh->av[0], "pwd"))
+		ft_pwd(sh);
+	else if (!ft_strcmp(sh->av[0], "setenv"))
+		ft_prepare_setenv(sh);
+	else if (!ft_strcmp(sh->av[0], "unsetenv"))
+		ft_prepare_unsetenv(sh);
+	else if (!ft_strcmp(sh->av[0], "env"))
+		ft_env(sh);
+	else if (!ft_strcmp(sh->av[0], "cd"))
+		ft_cd(sh);
+	else if (sh->av[0])
+		ft_exec(sh->av, sh->env);
+	//printf("{%d}\n", ft_singleton(0,0));
+}
+
+static void	ft_update_pwd_to_tsh(t_shell sh, t_termc *tsh)
+{
+	if (sh.pwd)
+	{
+		if (tsh->pwd)
+			free(tsh->pwd);
+		tsh->pwd = ft_strdup(sh.pwd);
+	}
+}
+
+static int	ft_start_preparsing(t_termc *tsh, t_shell sh)
+{
 	while (42)
 	{
 		signal(SIGINT, ft_handle_signal);
-		signal(SIGWINCH, ft_handle_signal);  //toudoux because is not fucking finish0
-		ft_fill_history(shell);
-		ft_fill_line(shell, env_c);
-		// a inserer ft_replace()
-		// a inserer fill_av()
-		// a inserer ft_exec()
-		if (ft_strcmp(env_c->line_str, "exit") == 0)
-		{
-			ft_free_free(shell, env_c);
-			return (0);
-		}
-		ft_end_term(shell);
-		ft_free_free(shell, env_c);
+		signal(SIGWINCH, ft_handle_signal);		// NO FINISH
+		ft_fill_history(tsh);
+		ft_update_pwd_to_tsh(sh, tsh);
+		ft_fill_line(tsh, sh.env);				// replace glob is in fct ft_line_input
+		sh.line = ft_strdup(tsh->line_shell);
+		ft_free_free(tsh);		
+		ft_replace(&sh);
+		sh.av = ft_fill_av(sh.line);
+		sh.ac = tab_2d_len(sh.av);
+		ft_add_file_history(tsh);
+		write(1, "\n", 1);
+		if (sh.av[0] && sh.av[0][0])
+			ft_cmd(&sh);
+		ft_end_term(tsh);
+		free_tab_2d(sh.av);
+		free(sh.line);
 	}
 	return (1);
 }
 
-int	ft_line_edition(t_env *env_c, t_shell *shell, t_lexer *lexer)
+int	ft_line_edition(t_termc *shell, t_shell sh)
 {
-	if (ft_start_preparsing(shell, env_c, lexer) == 0)
+	if (ft_start_preparsing(shell, sh) == 0)
 	{
 		if (shell->from_hist->ecrase_hist == 1)
 			ft_add_file_history_no_flag(shell);

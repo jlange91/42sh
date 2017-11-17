@@ -29,7 +29,7 @@ int		ft_dir_or_not(char *line)
 	return (flag);
 }*/
 
-static t_auto  *ft_sort_list(t_shell *shell, char *after, int ret)
+static t_auto  *ft_sort_list(t_termc *shell, char *after, int ret)
 {
 	int         i;
 	t_auto      *tmp;
@@ -85,7 +85,7 @@ static t_auto  *ft_sort_list(t_shell *shell, char *after, int ret)
 	return (tmp);
 }
 
-static int  ft_try_fill(t_shell *shell, char *after, int *flag, int ret)
+static int  ft_try_fill(t_termc *shell, char *after, int *flag, int ret)
 {
 	int         i;
 	t_auto      *tmp;
@@ -108,7 +108,7 @@ static int  ft_try_fill(t_shell *shell, char *after, int *flag, int ret)
 	return (0);
 }
 
-int    ft_fill_same_word(t_shell *shell, t_env *env)
+int    ft_fill_same_word(t_termc *shell, char **env)
 {
 	char        *after;
 	char		*tmp;

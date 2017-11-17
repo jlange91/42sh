@@ -1,0 +1,4 @@
+char    *ft_glob(char *word, char **env);
+
+if le mot est un globing return resultat du globing
+else return le mot tel qu il est sans le toucher

@@ -12,7 +12,7 @@
  *
  * NO NORME
  * **********************************************************************************/
-static inline int    ft_cursor_pos(t_lineterm *end, t_shell *shell)
+static inline int    ft_cursor_pos(t_lineterm *end, t_termc *shell)
 {
     size_t  last;
     int     up;
@@ -52,7 +52,7 @@ static inline int    ft_cursor_pos(t_lineterm *end, t_shell *shell)
  *
  * NO NORME
  * **********************************************************************************/
-static inline void    ft_del_line(t_shell *shell, int down)
+static inline void    ft_del_line(t_termc *shell, int down)
 {
     size_t  len;
     int     down2;
@@ -87,7 +87,7 @@ static inline void    ft_del_line(t_shell *shell, int down)
  *
  * NO NORME
  * *********************************************************************************/
-static void		ft_display_char_split(t_lineterm *begin, t_shell *shell, int *ret)
+static void		ft_display_char_split(t_lineterm *begin, t_termc *shell, int *ret)
 {
     size_t  	col;
 
@@ -111,7 +111,7 @@ static void		ft_display_char_split(t_lineterm *begin, t_shell *shell, int *ret)
     ft_putstr(RESET);
 }
 
-int    ft_display_char(t_lineterm *begin, t_shell *shell)
+int    ft_display_char(t_lineterm *begin, t_termc *shell)
 {
     int     	ret;
 
@@ -141,7 +141,7 @@ int    ft_display_char(t_lineterm *begin, t_shell *shell)
  *	Explication : DISPLAY LOL ;)
  * NORME OK
  * **********************************************************************************/
-int    ft_display(t_shell *shell, int *nbr, int close, t_env *env)
+int    ft_display(t_termc *shell, int *nbr, int close)
 {
     static int  down;
     static int  down2;
@@ -157,7 +157,7 @@ int    ft_display(t_shell *shell, int *nbr, int close, t_env *env)
     down = ft_cursor_pos(shell->line->end, shell);
     if (shell->auto_active || shell->multiauto_active)
     {
-        ft_display_autocompletion(shell, &down2, env);
+        ft_display_autocompletion(shell, &down2);
         return (down2);
     }
     tputs(shell->term->vestr, 1, ft_inputstr);

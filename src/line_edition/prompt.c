@@ -30,20 +30,15 @@ static	void	ft_print_hour(void)
 	ft_putstr("] ");
 }
 
-static	int	ft_print_current_work(t_env *env)
+static	int	ft_print_current_work(t_termc *tsh)
 {
-	char	dir[256];
-
-	ft_memset(dir, 0, sizeof(dir));
-	ft_putstr(find_var("PWD", env));
-//	getcwd(dir, sizeof(dir));
     ft_putstr(GREEN_FRONT);
-	ft_putendl(dir);
+	ft_putendl(tsh->pwd);
 	ft_putstr(RESET);
-	return (ft_strlen(dir));
+	return (ft_strlen(tsh->pwd));
 }
 
-void			ft_display_prompt(t_shell *shell, t_env *env)
+void			ft_display_prompt(t_termc *tsh)
 {
 	int			len;
 	char		host[256];
@@ -53,16 +48,16 @@ void			ft_display_prompt(t_shell *shell, t_env *env)
 	len += ft_strlen(host);
 	ft_putendl("");
 	ft_putstr(YELLOW);
-	//if (flag)
+	if (ft_singleton(0,0))
+		ft_putstr("😡");
+	else
 		ft_putstr("😃");
-	/*else
-		ft_putstr("😡");*/
 	ft_print_hour();
 	ft_putstr(RESET);
 	ft_putstr(PINK);
 	ft_putstr(host);
 	ft_putstr(RESET);
 	ft_putchar(' ');
-	len += ft_print_current_work(env);
-	shell->len_prompt = len + 3;
+	len += ft_print_current_work(tsh);
+	tsh->len_prompt = len + 3;
 }

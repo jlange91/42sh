@@ -1,6 +1,5 @@
 #include "../../inc/globbing.h"
 #include "../../inc/autocompletion.h"
-#include "../../inc/env_term.h"
 #include "../../inc/built_in.h"
 
 static inline int  ft_count_file(char *str)
@@ -19,7 +18,7 @@ static inline int  ft_count_file(char *str)
 	return (count);
 }
 
-static char    **ft_opendir_current(t_env *env)
+static char    **ft_opendir_current(char **env)
 {
 	int             i;
 	char            **tmp_tab;
@@ -29,11 +28,11 @@ static char    **ft_opendir_current(t_env *env)
 
 	i = -1;
 	tmp_tab = NULL;
-	pwd = find_var("PWD", env);
-	if ((path = opendir(pwd)) != NULL)
+	pwd = ft_getenv("PWD", env);
+	if (pwd[4] && (path = opendir(&pwd[4])) != NULL)
 	{
 		if ((tmp_tab = (char **)malloc(sizeof(char *) *
-						(ft_count_file(pwd) + 1))) == NULL)
+						(ft_count_file(&pwd[4]) + 1))) == NULL)
 		{
 			ft_putendl_fd("Error malloc", 2);
 			return (NULL);
@@ -88,9 +87,9 @@ static char        *ft_result_final(char *pattern, char *tmp_tab, char *before)
 	return (NULL);
 }
 
-char        **ft_result(t_env *env, t_glob *g, char **str_tab)
+char        **ft_result(char **env, t_glob *g, char **str_tab)
 {
-	if ((g->new_tab = (char **)malloc(sizeof(char *) * (ft_count_dtab(str_tab) + 1 * 50))) == NULL)				// not good malloc, too big
+	if ((g->new_tab = (char **)malloc(sizeof(char *) * (ft_count_dtab(str_tab) + 1 * 1000))) == NULL)				// not good malloc, I must find good size for malloc
 		return (NULL);
 	g->i = -1;
 	g->j = -1;

@@ -13,7 +13,7 @@ int ft_cursor_update(void)
     return (row);
 }
 
-void    ft_display_autocompletion(t_shell *shell, int *down, t_env *env)
+void    ft_display_autocompletion(t_termc *shell, int *down)
 {
     int         total;
     int         i;
@@ -24,7 +24,7 @@ void    ft_display_autocompletion(t_shell *shell, int *down, t_env *env)
     total = 0;
     shell->line->last = 1;
     shell->autocompl->jump = 0;
-    ft_menu_autocompletion(shell->autocompl, shell, &total, env);
+    ft_menu_autocompletion(shell->autocompl, shell, &total);
     *down = shell->autocompl->jump;
     if (shell->autocompl->clr_yes)
         tputs(tgoto(tgetstr("cm", NULL), 0, shell->autocompl->updaterow - 1), 1, ft_inputstr);
@@ -36,7 +36,7 @@ void    ft_display_autocompletion(t_shell *shell, int *down, t_env *env)
     tputs(shell->term->vestr, 1, ft_inputstr);
 }
 
-int    ft_init_value(t_shell *shell, t_auto *select)
+int    ft_init_value(t_termc *shell, t_auto *select)
 {
     struct winsize  row;
 
@@ -62,7 +62,7 @@ int     ft_max_len(t_auto *select)
     begin = select->begin->next;
     while (begin)
     {
-        if (ft_strlen(begin->data) > (size_t)count)
+        if (ft_strlen(begin->data) > count)
             count = ft_strlen(begin->data);
         begin = begin->next;
     }

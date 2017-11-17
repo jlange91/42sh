@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:14 by stvalett          #+#    #+#             */
-/*   Updated: 2017/09/06 13:38:20 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/16 12:24:01 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void    ft_free_autocompletion(t_auto **autocompl)
     }
 }
 
-void    ft_free_all(t_shell *shell)
+void    ft_free_all(t_termc *shell)
 {
     ft_free_dlist(&shell->line);
 	free(shell->line);
@@ -85,8 +85,6 @@ void    ft_free_all(t_shell *shell)
     free(shell->autocompl_binary);
     free(shell->keyflag);
     free(shell->term);
-    /*if (shell->line_shell)
-        free(shell->line_shell);*/
     free(shell);
     shell = NULL;
 }

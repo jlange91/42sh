@@ -1,6 +1,6 @@
 #include "../../inc/autocompletion.h"
 
-void    ft_init_autocompl_binary(t_shell *shell, t_env *env)
+void    ft_init_autocompl_binary(t_termc *shell, char **env)
 {
 	int             i;
 	char			**dtab;
@@ -23,7 +23,6 @@ void    ft_init_autocompl_binary(t_shell *shell, t_env *env)
 				closedir(dir);
 			}
 		}
-		free(path);
 		ft_free_tab(dtab);
 	}
 }

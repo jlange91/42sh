@@ -26,14 +26,3 @@ int    ft_return(char c)
     else
         return (0);
 }
-
-void    ft_charcat(char *str, char c)
-{
-	int i;
-
-    i = 0;
-	while (str[i])
-        i++;
-    str[i] = c;
-    str[i + 1] = '\0';
-}

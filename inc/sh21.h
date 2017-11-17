@@ -8,8 +8,11 @@
 # include <termios.h>
 # include <dirent.h>
 # include "../libft/include/libft.h"
+# include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
+
+#define PATH_MAX 2048
 
 /*****************************************************************************/
 /*FROM DIRECTORY LINE_EDITION*/
@@ -133,9 +136,10 @@ typedef struct          s_senti_auto
     t_autocompl         *end;
 }                       t_auto;
 
-typedef struct          s_shell
+typedef struct          s_termc
 {
     char                *line_shell;
+	char				*pwd;
     int                 nbr_hist;
     int                 ret_signal;
     int                 move_cursor;
@@ -153,7 +157,7 @@ typedef struct          s_shell
     t_term              *term;
     t_console           *console;
     t_keyflag           *keyflag;
-}                       t_shell;
+}                       t_termc;
 
 /*****************************************************************************/
 /*FROM DIRECTORY GLOBBING*/
@@ -172,65 +176,6 @@ typedef struct          s_glob
 	char				**tmp_tab;
 }                       t_glob;
 
-/*****************************************************************************/
-/*FROM DIRECTORY ENV_TERM*/
-
-typedef struct      s_env
-{
-    char            *line_str;
-    char            *line_env;
-    char            *getenv_path;
-    int             index;
-    struct s_env    *next;
-
-}                   t_env;
-
-/*******************************************************************************/
-/*FROM DIRECTORY TOKEN*/
-
-typedef enum            s_tk
-{
-    TOKEN_DR_R,
-    TOKEN_R_R,
-    TOKEN_DR_L,
-    TOKEN_R_L,
-    TOKEN_BACK_R_R,
-    TOKEN_QUOTE,
-    TOKEN_R_R_BACK,
-    TOKEN_MULTI_SEM,
-    TOKEN_OR,
-    TOKEN_PIPE,
-    TOKEN_AND,
-    TOKEN_BACKGROUND,
-    TOKEN_CMD,
-    TOKEN_EOL
-}                       e_token;
-
-typedef struct          s_token
-{
-    char                *cmd;
-    int                 type;
-    int                 cmd_len;
-    int                 pos;
-    struct s_token      *next;
-    struct s_token      *prev;
-}                       t_token;
-
-typedef struct          t_token
-{
-    const char          *tab_token[14];
-    const char          *basic_token[6];
-    int                 type;
-    t_token             *begin;
-    t_token             *end;
-}                       dtoken;
-
-typedef struct          s_lexer
-{
-    char                *str;
-    dtoken              *token;
-}                       t_lexer;
-
 /********************************************************************************/
 /*FROM TREE DIRECTORY*/
 
@@ -242,12 +187,59 @@ typedef struct          s_cmd
     int                 type;
 }                       t_cmd;
 
-typedef struct          s_tree
+/*******************************************/
+/*              test de fusion              */
+
+typedef struct		s_shell
 {
-    int                 type;
-    char                *str;
-    struct s_tree       *left;
-    struct s_tree       *right;
-}                       t_tree;
+	char	*line;
+	char	**av;
+	int		ac;
+	char	**env;
+	char	*pwd;
+}					t_shell;
+
+void		ft_perror(char *str, int error, char *str2);
+
+/********************************/
+/*            replace           */
+/********************************/
+
+void		ft_replace(t_shell *sh);
+void		ft_replace_dollar(t_shell *sh, int save);
+void		ft_replace_tilde(t_shell *sh, int save);
+char		*ft_replace_line(char *str1, char *value, char *str2);
+char        *ft_add_escape(char *str);
+
+/********************************/
+/*            exec              */
+/********************************/
+
+void		ft_exec(char **av, char **env);
+
+/********************************/
+/*            other             */
+/********************************/
+
+void		signal_sigint();
+void		ft_display_env(char **env);
+void		ft_chdir_error(char *path);
+char		*ft_getenv(const char *name, char **env);
+void		ft_fill_env(t_shell *sh, char **env);
+char		**ft_replace_env(char **new_env, char **old_env);
+char		*ft_remove_useless_path(char *str);
+char		*ft_replace_str(char *new, char *old);
+char		**ft_cp_env(char **env);
+void		ft_charcat(char *str, char c);
+void		free_tab_2d(char **tab);
+int			tab_2d_len(char **tab);
+
+
+
+
+
+
+void			ft_cmd(t_shell *sh);
+int		    ft_singleton(int nb, int opt);
 
 #endif

@@ -12,7 +12,7 @@
 
 #include "../../inc/line_edition.h"
 
-char	*ft_lnk_to_str(t_lineterm *begin, t_shell *shell)
+char	*ft_lnk_to_str(t_lineterm *begin, t_termc *shell)
 {
 	char		*str;
 	t_lineterm	*tmp;
@@ -59,7 +59,7 @@ int     ft_count_history(void)
     return (count);
 }
 
-int		ft_find_history(t_shell *shell)
+int		ft_find_history(t_termc *shell)
 {
     t_history   *begin;
     char        *str;
@@ -87,7 +87,7 @@ int		ft_find_history(t_shell *shell)
 	return (1);
 }
 
-int		ft_fill_history(t_shell *shell)
+int		ft_fill_history(t_termc *shell)
 {
     t_history   *begin;
 

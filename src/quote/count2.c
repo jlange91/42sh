@@ -83,6 +83,7 @@ int     ft_count_av2(char *line, char **av)
     space = 0;
     while (line[i])
     {
+		i += ft_skip_useless(&line[i]);
         skip_word(line, &i, &count);
         skip_quote(line, &i, &count);
         space = ft_skip_useless(&line[i]);

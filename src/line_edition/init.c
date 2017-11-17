@@ -6,12 +6,11 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:20 by stvalett          #+#    #+#             */
-/*   Updated: 2017/10/10 15:26:51 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/16 19:33:43 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
-#include "../../inc/env_term.h"
 #include "../../inc/autocompletion.h"
 
 static	inline	t_console	*init_console(void)
@@ -29,24 +28,27 @@ static	inline	t_console	*init_console(void)
 	return (console);
 }
 
-static	inline	t_term		*init_term(t_env *env)
+static	inline	t_term		*init_term(char **env)
 {
 	t_term	*term;
     char    *str;
+	int		ret;
 
 	term = NULL;
     str = NULL;
+	ret = 0;
 	if ((term = (t_term *)malloc(sizeof(t_term))) == NULL)
 		return (NULL);
 	ft_memset(term->bp, '\0', 2048);
 	ft_memset(term->area, '\0', 2048);
     str = ft_getenv("TERM", env);
-	if (tgetent(term->bp, str) < 0)
-    {
-		ft_putendl_fd("Error , tgetent ", 2);
-		return (NULL);
-    }
-    free(str);
+	if (ft_strcmp(&str[5], "xterm-256color") != 0)
+	{
+		str = ft_strdup("TERM=xterm-256color");
+		ret = 1;
+	}
+	if (tgetent(term->bp, &str[5]) < 0)
+		ft_putendl_fd("Error Tgetent", 2);
 	term->lestr = tgetstr("le", (char **)term->area);
 	term->dcstr = tgetstr("dc", (char **)term->area);
 	term->ndstr = tgetstr("nd", (char **)term->area);
@@ -61,6 +63,8 @@ static	inline	t_term		*init_term(t_env *env)
 	term->vestr = tgetstr("ve", (char **)term->area);
 	term->usstr = tgetstr("us", (char **)term->area);
 	term->uestr = tgetstr("ue", (char **)term->area);
+	if (ret)
+		free(str);
 	return (term);
 }
 
@@ -150,12 +154,12 @@ static	inline	dlist		*init_lineterm(void)
 	return (line);
 }
 
-t_shell						*init_shell(t_env *env)
+t_termc						*init_termc(char **env)
 {
-	t_shell	*shell;
+	t_termc	*shell;
 
 	shell = NULL;
-	if ((shell = (t_shell *)malloc(sizeof(t_shell))) == NULL)
+	if ((shell = (t_termc *)malloc(sizeof(t_termc))) == NULL)
 	{
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
@@ -180,6 +184,7 @@ t_shell						*init_shell(t_env *env)
 		ft_putendl_fd("Error init_keyflag", 2);
     ft_init_fill_history(shell->from_hist);
     ft_init_autocompl_binary(shell, env);
+	shell->pwd = NULL;
     shell->nbr_hist = 0;
     shell->ret_signal = 0;
     shell->move_cursor = 0;

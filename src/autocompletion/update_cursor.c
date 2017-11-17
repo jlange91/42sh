@@ -25,7 +25,7 @@ static inline int ft_write_to(const int fd, const char *const data, const size_t
 
     while (head < tail) 
     {
-        n = write(fd, head, (size_t)(tail - head));
+        n = write(fd, head, (tail - head));
         if (n > (ssize_t)0)
             head += n;
         else if (n != (ssize_t)-1)

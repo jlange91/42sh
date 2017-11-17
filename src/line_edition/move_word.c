@@ -1,6 +1,6 @@
 #include "../../inc/line_edition.h"
 
-void    ft_move_begin(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_begin(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)env;
     if (shell->auto_active)
@@ -21,7 +21,7 @@ void    ft_move_begin(t_lineterm *end, t_shell *shell, t_env *env)
     }
 }
 
-void    ft_move_end(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_end(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)env;
     if (shell->auto_active)
@@ -41,7 +41,7 @@ void    ft_move_end(t_lineterm *end, t_shell *shell, t_env *env)
     }
 }
 
-void    ft_move_word_forward(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_word_forward(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)env;
     if (shell->auto_active)
@@ -70,7 +70,7 @@ void    ft_move_word_forward(t_lineterm *end, t_shell *shell, t_env *env)
     shell->line->last = 0;
 }
 
-void    ft_move_word_back(t_lineterm *end, t_shell *shell, t_env *env)
+void    ft_move_word_back(t_lineterm *end, t_termc *shell, char **env)
 {
 	(void)env;
     if (shell->auto_active)

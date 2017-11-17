@@ -6,16 +6,17 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:56 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/02 18:35:21 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/16 13:02:21 by stvalett         ###   ########.fr       */
 /*   Updated: 2017/10/18 19:54:05 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
+#include "../../inc/globbing.h"
 
-t_shell *shell_g = NULL;
-t_env *g_env = NULL;
+t_termc *shell_g = NULL;
+char **g_env = NULL;
 
 /************************************************************************************
  * FUNCTION GETSTR 
@@ -26,7 +27,7 @@ t_env *g_env = NULL;
  * NO NORME
  ***********************************************************************************/ 
 
-static inline char  *ft_getstr(t_shell *shell, t_lineterm *begin, int nbr)
+static inline char  *ft_getstr(t_termc *shell, t_lineterm *begin, int nbr)
 {
 	t_lineterm *tmp;
 	char        *str;
@@ -55,14 +56,14 @@ static inline char  *ft_getstr(t_shell *shell, t_lineterm *begin, int nbr)
 	return (str);
 }
 
-static int    ft_key_and_char(t_shell *shell, long c, t_env *env)
+static int    ft_key_and_char(t_termc *shell, long c, char **env)
 {
 	if (c == CL && !shell->auto_active && !shell->multiauto_active)
 	{
 		t_lineterm *tmp;
 
 		tputs(shell->term->clrstr, 1, ft_inputstr);
-		ft_display(shell, 0, 1, env);
+		ft_display(shell, 0, 1);
 		shell->keyflag->cl = 1;
 		tmp = shell->line->begin;
 		tmp = ft_dont_get_prompt(tmp);
@@ -103,10 +104,10 @@ static int    ft_key_and_char(t_shell *shell, long c, t_env *env)
  *                          THIRD CONDITION : CHECK IS ARROWS OR ADD CARACTERE PRINTABLE
  * NO NORME
  * **********************************************************************************/
-static int  ft_key_or_escape(long c, t_shell *shell, int ret, t_env *env)
+static int  ft_key_or_escape(long c, t_termc *shell, int ret, char **env)
 { 
 	if ((char)c == '\n' && !shell->count_tab)
-		return (ft_reset_line(shell, ret, env));
+		return (ft_reset_line(shell, ret));
 	if ((shell->auto_active == 1 || shell->multiauto_active == 1)
 			&& (c == LEFT || c == RIGHT ||
 				c == DOWN || c == UP || c == TAB))
@@ -119,17 +120,17 @@ static int  ft_key_or_escape(long c, t_shell *shell, int ret, t_env *env)
 	return (1);
 }
 
-static void	ft_line_input_split(t_shell *shell, int *nbr, int *ret, t_env *env)
+static void	ft_line_input_split(t_termc *tsh, int *nbr, int *ret, char **env)
 {
 	*nbr = 0;
 	*ret = 0;
-	shell->history->active = 0;
-	shell->line->lnk_before = 0;
-	shell->autocompl->jump = 0;
-	shell->quotes = 0;
-	ft_init_console(shell, shell->line, env);
-	ft_init_simple_autocompl(shell, env);
-	ft_display_char(shell->line->begin, shell);
+	tsh->history->active = 0;
+	tsh->line->lnk_before = 0;
+	tsh->autocompl->jump = 0;
+	tsh->quotes = 0;
+	ft_init_console(tsh, tsh->line);
+	ft_init_simple_autocompl(tsh, env);
+	ft_display_char(tsh->line->begin, tsh);
 }
 
 /************************************************************************************
@@ -142,11 +143,12 @@ static void	ft_line_input_split(t_shell *shell, int *nbr, int *ret, t_env *env)
  *
  * 	NO NORME
  * 	*********************************************************************************/
-char    *ft_line_input(t_shell *shell, t_env *env)
+char    *ft_line_input(t_termc *shell, char **env)
 {
-	long c;
-	int nbr;
-	int ret;
+	long 	c;
+	int 	nbr;
+	int 	ret;
+	char	*tmp;
 
 	if (isatty(0))
 	{
@@ -164,19 +166,23 @@ char    *ft_line_input(t_shell *shell, t_env *env)
 				ft_fill_back_dlst(shell->line, tmp->c, 1);
 				tmp = tmp->next;
 			}
-			ft_display(shell, &nbr, 0, env);
+			ft_display(shell, &nbr, 0);
 		}
 		while (read(0, &c, sizeof(c)))
 		{
 			if (!ft_key_or_escape(c, shell, ret, env))
 				break;
-			ret = ft_display(shell, &nbr, 0, env);
+			ret = ft_display(shell, &nbr, 0);
 			shell_g->ret_signal = ret;
 			c = 0;
 			shell->keyflag->backspace = 0;
 			shell->keyflag->underline = 0;
 			shell->keyflag->mleft = 0;
 		}
+		tmp = ft_to_str(shell);
+		if (ft_can_replace_glob(tmp) == 1)
+			ft_replace_glob(shell, tmp, env);			//MUST CHANGE ENV
+		free(tmp);
 		return (ft_getstr(shell, shell->line->begin, nbr));
 	}
 	return (NULL);

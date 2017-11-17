@@ -37,10 +37,9 @@ static void    ft_init_tab_funct(t_k funct[15])
     funct[13] = ft_autocompletion;
 }
 
-int     ft_dynamique_autocompletion(long *c, t_shell *shell, t_env *env)
+int     ft_dynamique_autocompletion(long *c, t_termc *shell)
 {
     static int compt;
-    (void)env;
 
     if (shell->count_tab && (shell->auto_active || shell->multiauto_active) && *c == TAB)
     {
@@ -64,7 +63,7 @@ int     ft_dynamique_autocompletion(long *c, t_shell *shell, t_env *env)
     return (1);
 }
 
-int     ft_other_key(t_lineterm *end, t_shell *shell, long c, t_env *env)
+int     ft_other_key(t_lineterm *end, t_termc *shell, long c, char **env)
 {
     int     i;
     static long    keycode[15];
@@ -77,12 +76,12 @@ int     ft_other_key(t_lineterm *end, t_shell *shell, long c, t_env *env)
         ft_init_tab_funct(funct);
     }
     i = -1;
-    if (!ft_dynamique_autocompletion(&c, shell, env))
+    if (!ft_dynamique_autocompletion(&c, shell))
         return (0);
 	if (shell->autocompl->can_print < 2 && c == OPT_DOWN)
 	{
 		ft_free_dlist(&shell->line);
-		ft_init_console(shell, shell->line, env);
+		ft_init_console(shell, shell->line);
     	ft_cpy_autocompl_to_lineshell(shell);
 	}
     while (++i < 14)

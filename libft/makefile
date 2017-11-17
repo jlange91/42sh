@@ -57,6 +57,7 @@ SRCS = src/ft_memset.c\
 	   src/ft_strcat.c\
 	   src/ft_strncat.c\
 	   src/ft_strlcat.c\
+	   src/ft_strndup.c\
 	   src/ft_strdel.c\
 	   src/ft_strclr.c\
 	   src/ft_strchr.c\
