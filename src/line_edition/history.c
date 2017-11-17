@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:12 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/02 18:35:22 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/17 10:01:34 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,12 @@ char	*ft_lnk_to_str(t_lineterm *begin, t_termc *shell)
 						ft_count_dlnk(shell) + 1)) == NULL)
 			return (NULL);
 		if (tmp->next)
-			tmp = ft_dont_get_prompt(tmp);
+            tmp = ft_dont_get_prompt(tmp);
 		i = 0;
 		while (tmp)
 		{
+            if (i == 0 && tmp->c == ' ')
+			    tmp = tmp->next;
 			str[i++] = tmp->c;
 			tmp = tmp->next;
 		}

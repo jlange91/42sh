@@ -10,7 +10,7 @@ static void	display_missing_quote(int opt)
 	else if (opt == -3)
 		ft_putstr("\nbquote > ");
 	else if (opt == -4)
-		ft_putstr(">");
+		ft_putstr("\n> ");
 }
 
 static char	*ft_new_line(char *str)
@@ -51,8 +51,9 @@ static inline char  *ft_getstr2(t_termc *shell, t_lineterm *begin)
 		return (NULL);
 	while (tmp)
 	{
-		str[i++] = tmp->c;
+		str[i] = tmp->c;
 		tmp = tmp->next;
+		i++;
 	}
 	str[i] = '\0';
 	return (str);
@@ -139,7 +140,7 @@ void	ft_fill_line(t_termc *sh, char **env)
 	if ((ret = ft_check_quote(line)) != 0)
 	{
 		sh->quotes = 1;
-		tmp = ft_new_line(line);
+		tmp = ft_strjoin(line, "\n");
 		display_missing_quote(ret);
 		ft_init_terminal_mode(sh);
 		free(line);

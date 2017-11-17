@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:56 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/16 13:02:21 by stvalett         ###   ########.fr       */
-/*   Updated: 2017/10/18 19:54:05 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/17 10:02:15 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
@@ -47,6 +47,8 @@ static inline char  *ft_getstr(t_termc *shell, t_lineterm *begin, int nbr)
 		return (NULL);
 	while (tmp)
 	{
+		if (i == 0 && tmp->c == ' ')
+			tmp = tmp->next;		
 		str[i++] = tmp->c;
 		tmp = tmp->next;
 	}
@@ -148,7 +150,7 @@ char    *ft_line_input(t_termc *shell, char **env)
 	long 	c;
 	int 	nbr;
 	int 	ret;
-	char	*tmp;
+	//char	*tmp;
 
 	if (isatty(0))
 	{
@@ -179,10 +181,10 @@ char    *ft_line_input(t_termc *shell, char **env)
 			shell->keyflag->underline = 0;
 			shell->keyflag->mleft = 0;
 		}
-		tmp = ft_to_str(shell);
+		/*tmp = ft_to_str(shell);
 		if (ft_can_replace_glob(tmp) == 1)
 			ft_replace_glob(shell, tmp, env);			//MUST CHANGE ENV
-		free(tmp);
+		free(tmp);*/
 		return (ft_getstr(shell, shell->line->begin, nbr));
 	}
 	return (NULL);

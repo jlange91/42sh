@@ -80,7 +80,7 @@ int			ft_check_quote(char *line)
     ret = 0;
     while (line[i])
     {
-		i += ft_skip_useless(&line[i]);
+        i += ft_skip_useless(&line[i]);
         if (skip_word(line, &i) < 0)
             return (-4);
         ret = skip_quote(line, &i);

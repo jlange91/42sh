@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tool.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:14 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/16 12:24:01 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/17 08:56:39 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,12 @@ void    ft_free_all(t_termc *shell)
 
 t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
 {
-	int i;
-
-	i = 0;
 	while (tmp)
 	{
-		if (i > 7)
-			break;
+        if (tmp->c == '>')
+            break;
 		tmp = tmp->next;
-		i++;
-	}
+    }
+	tmp = tmp->next;        
 	return (tmp);
 }

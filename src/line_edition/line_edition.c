@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   line_edition.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/16 19:37:53 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/11/17 10:07:17 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static void  ft_free_free(t_termc *sh)
 
 void			ft_cmd(t_shell *sh)
 {
-	ft_singleton(0, 1);
 	if (!ft_strcmp(sh->av[0], "exit"))
 	{
 		ft_putstr("exit\n");
@@ -62,6 +61,7 @@ static int	ft_start_preparsing(t_termc *tsh, t_shell sh)
 {
 	while (42)
 	{
+		ft_singleton(0, 1);	
 		signal(SIGINT, ft_handle_signal);
 		signal(SIGWINCH, ft_handle_signal);		// NO FINISH
 		ft_fill_history(tsh);
@@ -80,7 +80,7 @@ static int	ft_start_preparsing(t_termc *tsh, t_shell sh)
 		free_tab_2d(sh.av);
 		free(sh.line);
 	}
-	return (1);
+	return (ft_singleton(0, 0));
 }
 
 int	ft_line_edition(t_termc *shell, t_shell sh)
