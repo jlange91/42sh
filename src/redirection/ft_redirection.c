@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:22:31 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/17 11:10:38 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/27 17:25:53 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ int				ft_skip_dquote(char *str)
 	int i;
 
 	i = 1;
-	if (str[0] == '\'')
+	if (str[0] == '"')
 	{
-		while (str[i] != '\'')
+		while (str[i] != '"')
 			i++;
 		return (i);
 	}
@@ -59,24 +59,31 @@ int             type_redir(char *str, int index)
     ret = 0;
     if (index > 0 && str[-1] == '\\')
         return (0);
-    ret =  (str[0] == '>') ? 1 : ret;
-    ret =  (str[0] == '>' && str[1] == '>') ? 2 : ret;
-    ret =  (str[0] == '>' && str[1] == '&') ? 3 : ret;
-    ret =  (str[0] == '<') ? 4 : ret;
+    ret = (str[0] == '>') ? 1 : ret;
+    ret = (str[0] == '>' && str[1] == '>') ? 2 : ret;
+    ret = (str[0] == '>' && str[1] == '&') ? 3 : ret;
+	ret = (str[0] == '<') ? 4 : ret;
+	ret = (str[0] == '<' && str[1] == '<') ? 5 : ret;
     return (ret);
 }
+
+int				output_redirection
 
 void			ft_redirection(t_shell *sh)
 {
 	int i;
+	int type;
 
 	i = 0;
+	type = 0;
 	while (sh->line[i])
 	{
         i += ft_skip_quote(&sh->line[i]);
         i += ft_skip_dquote(&sh->line[i]);
-        if (type_redir(&sh->line[i], i) > 0)
-            
+        if ((type = type_redir(&sh->line[i], i)) > 0)
+        {
+			
+		}
 		if (backslash_word(&sh->line[i]) > 0)
 			i++;
 		i++;
