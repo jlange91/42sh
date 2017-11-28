@@ -6,7 +6,7 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2017/11/17 03:11:18 by jlange           ###   ########.fr        #
+#    Updated: 2017/11/28 17:02:23 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -98,6 +98,12 @@ SRCS = src/line_edition/line_edition.c\
 		src/other/ft_remove_useless_path.c	\
 		src/other/ft_replace_str.c			\
 		src/other/ft_chdir_error.c			\
+		src/other/ft_skip_quote.c			\
+		src/other/ft_skip_dquote.c			\
+		src/ret_word/count.c\
+		src/ret_word/fill_word.c\
+		src/ret_word/ft_ret_word.c\
+		src/redirection/ft_redirection.c
 					
 OBJ = $(SRCS:.c=.o) 
 

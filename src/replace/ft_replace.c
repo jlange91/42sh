@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_replace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:22:31 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/03 18:23:13 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/28 17:03:00 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,6 @@ static int		backslash_word(char *line)
 		return (2);
 	else
 		return (1);
-}
-
-int				ft_skip_quote(char *str)
-{
-	int i;
-
-	i = 1;
-	if (str[0] == '\'')
-	{
-		while (str[i] != '\'')
-			i++;
-		return (i);
-	}
-	else
-		return (0);
 }
 
 void			ft_replace(t_shell *sh)

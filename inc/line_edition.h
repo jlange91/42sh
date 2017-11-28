@@ -7,7 +7,6 @@
 # include <term.h>
 # include <time.h>
 # include <signal.h>
-# include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 

@@ -11,6 +11,8 @@
 # include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
+# include <fcntl.h>
+
 
 #define PATH_MAX 2048
 
@@ -190,13 +192,24 @@ typedef struct          s_cmd
 /*******************************************/
 /*              test de fusion              */
 
+typedef struct      s_redir
+{
+    int             fd;
+    int             close;
+    struct s_redir  *next;
+}                   t_redir;
+
 typedef struct		s_shell
 {
 	char	*line;
 	char	**av;
 	int		ac;
 	char	**env;
-	char	*pwd;
+    char	*pwd;
+    t_redir     *output;
+    t_redir     *input;
+    int         output_save;
+    int         input_save;
 }					t_shell;
 
 void		ft_perror(char *str, int error, char *str2);
@@ -233,10 +246,29 @@ char		**ft_cp_env(char **env);
 void		ft_charcat(char *str, char c);
 void		free_tab_2d(char **tab);
 int			tab_2d_len(char **tab);
+int         ft_skip_quote(char *str);
+int         ft_skip_dquote(char *str);
 
 
 
 
+
+int			ft_skip_useless(char *line);
+void		ft_redirection(t_shell *sh);
+void		ft_remove_redirection(t_shell *sh);
+
+
+
+
+
+/********************************/
+/*            ret_word          */
+/********************************/
+
+char    *ft_ret_word(char *line, int *size);
+void     ft_fill_word(char *line, char *word);
+
+int     ft_count_char_word(char *line, int *nb);
 
 
 void			ft_cmd(t_shell *sh);
