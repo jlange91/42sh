@@ -254,7 +254,7 @@ int         ft_skip_dquote(char *str);
 
 
 int			ft_skip_useless(char *line);
-void		ft_redirection(t_shell *sh);
+int 		ft_redirection(t_shell *sh);
 void		ft_remove_redirection(t_shell *sh);
 
 

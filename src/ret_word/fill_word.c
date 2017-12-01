@@ -19,7 +19,8 @@ static void    skip_word(char *line, int *i, char *word)
 
     ret = 0;
     while (line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\n'
-    && line[*i] != '\'' && line[*i] != '"' && line[*i])
+    && line[*i] != '\'' && line[*i] != '"' && line[*i] != '>' &&
+    line[*i] != '<' && line[*i])
     {
         ret = backslash_word(&line[*i], word);
         if (ret > 0)
@@ -83,7 +84,7 @@ void     ft_fill_word(char *line, char *word)
         skip_word(line, &i, word);
         skip_quote(line, &i, word);
         space = ft_skip_useless(&line[i]);
-        if (space > 0 || !line[i])
+        if (space > 0 || !line[i] || line[i] == '>' || line[i] == '<')
             return ;
     }
 }

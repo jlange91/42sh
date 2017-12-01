@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:22:31 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/28 20:17:45 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/01 15:19:12 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,13 @@ t_redir		*ft_create_redir(int fd, int close)
 	return (r);
 }
 
-void		ft_add_redir(t_redir **r, int fd, int close)
+int			ft_add_redir(t_redir **r, int fd, int close)
 {
 	t_redir *begin;
 	t_redir *new;
 
+	if (fd < 0)
+		return (-1);
 	begin = *r;
 	new = ft_create_redir(fd, close);
 	if (!begin)
@@ -68,6 +70,7 @@ void		ft_add_redir(t_redir **r, int fd, int close)
 		new->next = *r;
 		*r = new;
 	}
+	return (0);
 }
 
 int				output_redirection(char *line, int type)
@@ -86,7 +89,8 @@ int				output_redirection(char *line, int type)
 		fd = open(word, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else
 		fd = open(word, O_WRONLY | O_CREAT, 0644);
-	lseek(fd, 0, SEEK_END);
+	if (fd != -1)
+		lseek(fd, 0, SEEK_END);
 	while (i < nb)
 	{
 		line[i] = ' ';
@@ -95,7 +99,7 @@ int				output_redirection(char *line, int type)
 	return (fd);
 }
 
-void			ft_redirection(t_shell *sh)
+int			ft_redirection(t_shell *sh)
 {
 	int i;
 	int type;
@@ -108,9 +112,8 @@ void			ft_redirection(t_shell *sh)
 		i += ft_skip_dquote(&sh->line[i]);
 		type = type_redir(&sh->line[i], i);
 		if (type == 1 || type == 2)
-		{
-			ft_add_redir(&sh->output, output_redirection(&sh->line[i], type), 1);
-		}
+			if (ft_add_redir(&sh->output, output_redirection(&sh->line[i], type), 1) < 0)
+				return (-1);
 		if (backslash_word(&sh->line[i]) > 0)
 			i++;
 		i++;
@@ -118,8 +121,11 @@ void			ft_redirection(t_shell *sh)
 	if (sh->output)
 	{
 		sh->output_save = dup(1);
-		dup2(sh->output->fd, 1);
+		type = sh->output->fd;
+		sh->output->fd = dup2(sh->output->fd, 1);
+		close(type);
 	}
+	return (0);
 }
 
 void test_fd()
@@ -136,19 +142,21 @@ void test_fd()
 
 void		ft_remove_redirection(t_shell *sh)
 {
-	int save;
 	t_redir *tmp;
 
 	if (sh->output)
 	{
-		save = dup(sh->output->fd);
-		dup2(sh->output_save, 1);
+		dup2(sh->output_save, sh->output->fd);
+		close(sh->output_save);
 	}
-	test_fd();
 	while (sh->output)
 	{
 		tmp = sh->output;
 		sh->output = sh->output->next;
+		if (sh->output)
+			close(sh->output->fd);		
 		free(tmp);
 	}
+	test_fd();
+	
 }
