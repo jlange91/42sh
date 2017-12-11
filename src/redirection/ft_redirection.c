@@ -22,23 +22,113 @@ static int		backslash_word(char *line)
 		return (1);
 }
 
-int             type_redir(char *str, int index)
+int				ft_check_fd_in(char *str, int index)
 {
-    int ret;
+	int ret;
+	int save;
 
-    ret = 0;
-    if (index > 0 && str[-1] == '\\')
-        return (0);
-    ret = (str[0] == '>') ? 1 : ret;
-    ret = (str[0] == '>' && str[1] == '>') ? 2 : ret;
-    ret = (str[0] == '>' && str[1] == '&') ? 3 : ret;
-	ret = (str[0] == '<') ? 4 : ret;
-	ret = (str[0] == '<' && str[1] == '<') ? 5 : ret;
-	if (ret > 0)
-		str[0] = ' ';
-	if (ret == 2 || ret == 3 || ret == 5)
+	ret = -1;
+	save = index;
+	while (index >= 0 && ft_isdigit(str[index]))
+		index--;
+	if (index >= 0 && str[index] != ' ' && str[index] != '\t' && str[index] != '\n')
+		return (ret);
+	ret = (save != index) ? ft_atoi(&str[index + 1]) : ret;
+	while (index != save)
+	{
+		++index;
+		str[index] = ' ';
+	}
+	return (ret);
+}
+
+int				ft_check_type_redir(char *str)
+{
+	int ret;
+
+	ret = 0;
+	ret = (str[0] == '>') ? 1 : ret;
+	ret = (str[0] == '<') ? 2 : ret;
+	ret = (str[0] == '>' && str[1] == '&') ? 3 : ret;
+    ret = (str[0] == '>' && str[1] == '>') ? 4 : ret;
+	ret = (str[0] == '<' && str[1] == '&') ? 5 : ret;
+	ret = (str[0] == '<' && str[1] == '<') ? 6 : ret;
+	ret = (str[0] == '<' && str[1] == '>') ? 7 : ret;
+	ret = (str[0] == '>' && str[1] == '&' && str[2] == '-') ? 8 : ret;
+	str[0] = ' ';
+	if (ret > 2)
 		str[1] = ' ';
-    return (ret);
+	if (ret == 8)
+		str[2] = ' ';
+	return (ret);
+}
+
+int		ft_intlen(int	nb)
+{
+	int ret;
+
+	ret = 1;
+	while (nb / 10)
+	{
+		nb = nb / 10;
+		ret++;
+	}
+	return (ret);
+}
+
+int				directory_redirection(char *line, int index, int type)
+{
+	char *word;
+	int fd;
+	int nb;
+	int i;
+	
+	fd = 0;
+	nb = 0;
+	i = 0;
+	line = (type > 2) ? &line[index + 2] : &line[index + 1];
+	line += ft_skip_useless(line);
+	word = ft_ret_word(line, &nb);
+	if (type == 1)
+		fd = open(word, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else
+		fd = open(word, O_WRONLY | O_CREAT, 0644);
+	if (fd != -1)
+		lseek(fd, 0, SEEK_END);
+	while (i < nb)
+	{
+		line[i] = ' ';
+		++i;
+	}
+	return (fd);
+}
+
+t_redi             *type_redir(char *str, int index)
+{
+	t_redi	*red;
+	int		len;
+	int		i;
+
+	len = 0;
+	i = 0;
+	if (!(red = (t_redi*)malloc(sizeof(t_redi) * 1)))
+		return (NULL);
+	red->in = ft_check_fd_in(&str[-index], index - 1);
+	red->out = (str[1] == '&' && ft_isdigit(str[2])) ? ft_atoi(&str[2]) : -1;
+	red->close = (red->out == -1) ? 1 : 0;
+	if (red->out >= 0)
+	{
+		len = ft_intlen(red->out);
+		while (i < len)
+		{
+			str[i + 2] = ' ';
+			i++;
+		}
+	}
+	red->type = ft_check_type_redir(str);
+	//red->out = (red->out == -1) ? directory_redirection(str, index, red->type) : red->out;
+	printf("in : {%d} out {%d} type: {%d}\nstr : {%s}\n", red->in, red->out, red->type, &str[-index]);
+	return (red);
 }
 
 t_redir		*ft_create_redir(int fd, int close)
@@ -73,57 +163,63 @@ int			ft_add_redir(t_redir **r, int fd, int close)
 	return (0);
 }
 
-int				output_redirection(char *line, int type)
+int			ft_backup_stdin(int nb)
 {
-	char *word;
-	int fd;
-	int nb;
-	int i;
-	
-	fd = 0;
-	nb = 0;
-	i = 0;
-	line += ft_skip_useless(line);
-	word = ft_ret_word(line, &nb);
-	if (type == 1)
-		fd = open(word, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else
-		fd = open(word, O_WRONLY | O_CREAT, 0644);
-	if (fd != -1)
-		lseek(fd, 0, SEEK_END);
-	while (i < nb)
-	{
-		line[i] = ' ';
-		++i;
-	}
-	return (fd);
+	static int stdout = 0;
+
+	if (nb == 1)
+		stdout = dup(0);
+	return (stdout);
+}
+
+int			ft_backup_stdout(int nb)
+{
+	static int stdout = 0;
+
+	if (nb == 1)
+		stdout = dup(1);
+	return (stdout);
+}
+
+int			ft_backup_stderr(int nb)
+{
+	static int stdout = 0;
+
+	if (nb == 1)
+		stdout = dup(2);
+	return (stdout);
 }
 
 int			ft_redirection(t_shell *sh)
 {
 	int i;
-	int type;
+	t_redi *type;
 
 	i = 0;
-	type = 0;
+	ft_backup_stdin(1);
+	ft_backup_stdout(1);
+	ft_backup_stderr(1);
 	while (sh->line[i])
 	{
         i += ft_skip_quote(&sh->line[i]);
 		i += ft_skip_dquote(&sh->line[i]);
-		type = type_redir(&sh->line[i], i);
-		if (type == 1 || type == 2)
-			if (ft_add_redir(&sh->output, output_redirection(&sh->line[i], type), 1) < 0)
-				return (-1);
+		if ((sh->line[i] == '>' || sh->line[i] == '<') && !(i > 0 && sh->line[i - 1] == '\\'))
+		{
+			type = type_redir(&sh->line[i], i);
+			if (type->type == 8)
+			{
+				if (type->in == -1)
+					close(1);
+				else if (type->in != ft_backup_stdin(0) &&
+					type->in != ft_backup_stdout(0) &&
+					type->in != ft_backup_stderr(0))
+					close(type->in);
+			}
+			free(type);
+		}
 		if (backslash_word(&sh->line[i]) > 0)
 			i++;
 		i++;
-	}
-	if (sh->output)
-	{
-		sh->output_save = dup(1);
-		type = sh->output->fd;
-		sh->output->fd = dup2(sh->output->fd, 1);
-		close(type);
 	}
 	return (0);
 }
@@ -142,21 +238,12 @@ void test_fd()
 
 void		ft_remove_redirection(t_shell *sh)
 {
-	t_redir *tmp;
-
-	if (sh->output)
-	{
-		dup2(sh->output_save, sh->output->fd);
-		close(sh->output_save);
-	}
-	while (sh->output)
-	{
-		tmp = sh->output;
-		sh->output = sh->output->next;
-		if (sh->output)
-			close(sh->output->fd);		
-		free(tmp);
-	}
+	sh = (void*)sh;
+	dup2(ft_backup_stdin(0), 0);
+	close(ft_backup_stdin(0));
+	dup2(ft_backup_stdout(0), 1);
+	close(ft_backup_stdout(0));
+	dup2(ft_backup_stderr(0), 2);
+	close(ft_backup_stderr(0));
 	test_fd();
-	
 }

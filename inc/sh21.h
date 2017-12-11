@@ -199,6 +199,14 @@ typedef struct      s_redir
     struct s_redir  *next;
 }                   t_redir;
 
+typedef struct      s_redi
+{
+    int             in;
+    int             out;
+    int             type;
+    int             close;
+}                   t_redi;
+
 typedef struct		s_shell
 {
 	char	*line;
