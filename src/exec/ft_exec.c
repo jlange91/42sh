@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/07 15:48:14 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/12 15:31:52 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ static inline int		exec_path(char **av, char **env)
 		l_path = ft_replace_line(path[i], "/", av[0]);
 		if (execve(l_path, av, env) != -1)
 		{
-			ft_putstr("SKKLGSKNGSNGLSNKNGLNLNSNGNLSNGN");
 			ret = 0;
 			break ;
 		}
