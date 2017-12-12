@@ -14,7 +14,6 @@
 #include "../../inc/autocompletion.h"
 
 extern t_termc *shell_g;
-extern char **g_env;
 
 void	ft_handle_signal(int signum)
 {
@@ -27,10 +26,10 @@ void	ft_handle_signal(int signum)
 		while (shell_g->ret_signal-- > 0)
 			tputs(shell_g->term->dostr, 1, ft_inputstr);
 		shell_g->history->active = 0;										/* FOR PRINT ALL PROMPT */
-		ft_free_dlist(&shell_g->line); 
+		ft_free_dlist(&shell_g->line);
 		ft_fill_history(shell_g);
 		ft_init_console(shell_g, shell_g->line);
-        ft_init_simple_autocompl(shell_g, g_env);
+        ft_init_simple_autocompl(shell_g);
 		ft_display_char(shell_g->line->begin, shell_g);
 		shell_g->line->lnk_before = 0;
 	}
@@ -46,7 +45,7 @@ void	ft_handle_signal(int signum)
     }
     else if (signum == SIGCONT)
     {
-        ft_free_dlist(&shell_g->line); 
+        ft_free_dlist(&shell_g->line);
 		ft_fill_history(shell_g);
 		ft_init_console(shell_g, shell_g->line);
         ft_init_simple_autocompl(shell_g, g_env);

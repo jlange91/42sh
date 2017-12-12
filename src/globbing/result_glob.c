@@ -1,120 +1,107 @@
 #include "../../inc/globbing.h"
-#include "../../inc/autocompletion.h"
-#include "../../inc/built_in.h"
 
-static inline int  ft_count_file(char *str)
+static char	*ft_goodPath(char **s_tab, int *ret)
 {
-	int             count;
-	DIR             *path;
-	struct dirent   *file;
+	char	*new;
+	int		i;
 
-	count = 0;
-	if ((path = opendir(str)) != NULL)
+	i = 0;
+	new = NULL;
+	if (s_tab)
 	{
-		while ((file = readdir(path)) != NULL)
-			count++;
-		closedir(path);
+		while (s_tab[i])
+			if (!ft_glob_here(s_tab[i]))
+				i++;
+			else
+				break;
+		new = ft_strdup(s_tab[0]);
+		*ret = i;
+		i = 1;
+		while (s_tab[i] && i != *ret)
+		{
+			new = ft_free_join(new, s_tab[i], 'L');
+			i++;
+		}
 	}
-	return (count);
+	return (new);
 }
 
-static char    **ft_opendir_current(char **env)
+static t_glob	ft_fillGlob2(char *file, int ret, char **s_tab)
 {
-	int             i;
-	char            **tmp_tab;
-	char            *pwd;
-	DIR             *path;
-	struct dirent   *file;
+	t_glob	glob;
+	int		k;
+	struct stat info;
 
+	glob.path = NULL;
+	ft_memset(&info, 0, sizeof(info));
+	stat(file, &info);
+	if (S_ISDIR(info.st_mode))
+		glob.path = ft_strjoin(file, "/");
+	else
+		glob.path = ft_strdup(file);
+	if (ret == 99)
+		return (glob);
+	k = ret;
+	while (s_tab[k])
+	{
+		glob.path = ft_free_join(glob.path, s_tab[k], 'L');
+		k++;
+	}
+	return (glob);
+}
+
+static t_glob  *ft_addOpenGlobSplit(char **res, char **s_tab, int ret)
+{
+	t_glob	*new;
+	int 	i;
+
+	if ((new = (t_glob *)malloc(sizeof(t_glob) * ft_count_dtab(res))) == NULL)
+		exit(0);
+	if (s_tab[++ret] == NULL)
+		ret = 99;
 	i = -1;
-	tmp_tab = NULL;
-	pwd = ft_getenv("PWD", env);
-	if (pwd[4] && (path = opendir(&pwd[4])) != NULL)
-	{
-		if ((tmp_tab = (char **)malloc(sizeof(char *) *
-						(ft_count_file(&pwd[4]) + 1))) == NULL)
-		{
-			ft_putendl_fd("Error malloc", 2);
-			return (NULL);
-		}
-		while ((file = readdir(path)) != NULL)
-			if (file->d_name[0] != '.')
-				tmp_tab[++i] = ft_strdup(file->d_name);
-		tmp_tab[++i] = NULL;
-		closedir(path);
-	}
-	return (tmp_tab);
+	while (res[++i])
+		new[i] = ft_fillGlob2(res[i], ret, s_tab);
+	new->len = ft_count_dtab(res);
+	return (new);
 }
 
-static char    **ft_opendir_choice(char *pwd)
+static void	ft_addOpenGlob(t_glob *glob, int star, char **str)
 {
-	int             i;
-	char            **tmp_tab;
-	DIR             *path;
-	struct dirent   *file;
+	t_glob	*new;
+	char	**s_tab;
+	char	**res;
+	char	*path;
+	int		ret;
 
-	i = -1;
-	tmp_tab = NULL;
-	if ((path = opendir(pwd)) != NULL)
+	if (!glob->path)
+		return ;
+	ret = 0;
+	s_tab = ft_add_slash(glob->path, glob->path[ft_strlen(glob->path) - 1]);
+	path = ft_goodPath(s_tab, &ret);
+	if ((res = ft_open(path, s_tab[ret], star, 0)) != NULL
+		&& ft_count_dtab(res) > 0)
 	{
-		if ((tmp_tab = (char **)malloc(sizeof(char *) *
-						(ft_count_file(pwd) + 1))) == NULL)
-		{
-			ft_putendl_fd("Error malloc", 2);
-			return (NULL);
-		}
-		while ((file = readdir(path)) != NULL)
-			if (file->d_name[0] != '.')
-				tmp_tab[++i] = ft_strdup(file->d_name);
-		tmp_tab[++i] = NULL;
-		closedir(path);
+		new = ft_addOpenGlobSplit(res, s_tab, ret);
+		ret = -1;
+		while (++ret < new->len)
+			ft_addOpenGlob(&new[ret], star, str);
+		ft_save_word(&new[0], str, new->len);
+		ft_freeall_glob(path, res, s_tab, new);
+		return ;
 	}
-	return (tmp_tab);
+	ft_freeall_glob(path, res, s_tab, NULL);
 }
 
-static char        *ft_result_final(char *pattern, char *tmp_tab, char *before)
+char 	*ft_resGlob(t_glob *glob, int star, char **str)
 {
-	int		index;
+    int i;
 
-	index = 0;
-	index = ft_strlen(before) - 1;
-	if (index == -1)
-		index = 0;
-	if (pattern[index] == '/')
-		index++;
-	if (ft_match(&pattern[index], tmp_tab))
-		return (tmp_tab);
-	return (NULL);
-}
-
-char        **ft_result(char **env, t_glob *g, char **str_tab)
-{
-	if ((g->new_tab = (char **)malloc(sizeof(char *) * (ft_count_dtab(str_tab) + 1 * 1000))) == NULL)				// not good malloc, I must find good size for malloc
-		return (NULL);
-	g->i = -1;
-	g->j = -1;
-	g->ret = 0;
-	while (str_tab[++(g->i)])
-		if (ft_glob_here(str_tab[g->i]))
-		{
-			g->after = ft_after_antislash(str_tab[g->i], &g->ret);
-			g->before = ft_before_antislash(str_tab[g->i], g->ret);
-			g->tmp_tab = (g->after == NULL && g->before) ?
-				ft_opendir_current(env) : ft_opendir_choice(g->before);
-			g->k = -1;
-			while (g->tmp_tab[++(g->k)])
-				if ((g->tmp = ft_result_final(str_tab[g->i],
-								g->tmp_tab[g->k], g->before)) != NULL)
-					g->new_tab[++(g->j)] = ft_strdup(g->tmp);
-			free(g->before);
-			free(g->after);
-			ft_free_tab(g->tmp_tab);
-		}
-	g->new_tab[++(g->j)] = NULL;
-	if (g->j == 0)
-	{
-		ft_free_tab(g->new_tab);
-		g->new_tab = NULL;
-	}
-	return (g->new_tab);
+    i = 0;
+    while (i < glob->len)
+    {
+		ft_addOpenGlob(&glob[i], star, str);
+        i++;
+    }
+	return (*str);
 }

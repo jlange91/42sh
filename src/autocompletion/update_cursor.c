@@ -5,7 +5,7 @@ static inline int ft_gnl(const int fd)
     unsigned char   buffer[4];
     ssize_t         n;
 
-    while (1) 
+    while (1)
     {
         n = read(fd, buffer, 1);
         if (n > (ssize_t)0)
@@ -17,13 +17,13 @@ static inline int ft_gnl(const int fd)
     }
 }
 
-static inline int ft_write_to(const int fd, const char *const data, const size_t bytes)
+static int ft_write_to(const int fd, const char *const data, const size_t bytes)
 {
     const char       *head = data;
     const char *const tail = data + bytes;
     ssize_t           n;
 
-    while (head < tail) 
+    while (head < tail)
     {
         n = write(fd, head, (tail - head));
         if (n > (ssize_t)0)
@@ -83,10 +83,10 @@ int ft_current_tty(void)
 
 int ft_cursor_position(const int tty, int *const rowptr)
 {
-    struct termios  saved; 
+    struct termios  saved;
     struct termios  temporary;
-    int             val; 
-    int             result; 
+    int             val;
+    int             result;
 
     if ((result = tcgetattr(tty, &saved)) == -1)
         return (-1);

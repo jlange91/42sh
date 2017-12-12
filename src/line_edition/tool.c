@@ -12,18 +12,35 @@
 
 #include "../../inc/line_edition.h"
 
-int         ft_inputstr(int c)
+void 	ft_clean_line(t_termc *tsh)
 {
-    write(0, &c, 1);
-    return (0);
-}
+	t_lineterm *end;
+	t_lineterm *del;
 
-size_t	get_columns(void)
-{
-    struct winsize	w;
-
-    ioctl(0, TIOCGWINSZ, &w);
-    return (w.ws_col);
+	end = tsh->line->end;
+	while (end)
+	{
+		if (end->index == 0)
+			break ;
+		del = end;
+		if (end->next == NULL)
+		{
+			tsh->line->end = end->prev;
+			tsh->line->end->next = NULL;
+		}
+		else if (end->prev == NULL)
+		{
+			tsh->line->begin = end->next;
+			tsh->line->begin->prev = NULL;
+		}
+		else
+		{
+			end->prev->next = end->next;
+			end->next->prev = end->prev;
+		}
+		end = end->prev;
+		free(del);
+	}
 }
 
 void    ft_free_dlist(dlist **line)
@@ -46,12 +63,12 @@ void    ft_free_dlist(dlist **line)
     }
 }
 
-void    ft_free_autocompletion(t_auto **autocompl)
+void    ft_free_autocompletion(t_auto **autoc)
 {
     t_autocompl  *del;
     t_autocompl  *elem;
 
-    elem = (*autocompl)->end;
+    elem = (*autoc)->end;
     if (elem != NULL)
     {
         while (elem)
@@ -61,42 +78,46 @@ void    ft_free_autocompletion(t_auto **autocompl)
             free(del->data);
             free(del);
         }
-        (*autocompl)->begin = NULL;
-        (*autocompl)->end = NULL;
+        (*autoc)->begin = NULL;
+        (*autoc)->end = NULL;
         return ;
     }
 }
 
-void    ft_free_all(t_termc *shell)
+void    ft_free_all(t_termc *tsh)
 {
-    ft_free_dlist(&shell->line);
-	free(shell->line);
-	ft_free_dlist(&shell->line_dup);
-	free(shell->line_dup);
-    free(shell->console);
-	free(shell->history);
-    ft_free_history(shell->from_hist);
-    free(shell->from_hist);
-    ft_free_autocompletion(&shell->autocompl);
-    if (shell->autocompl->str)
-        free(shell->autocompl->str);
-    ft_free_autocompletion(&shell->autocompl_binary);
-    free(shell->autocompl);
-    free(shell->autocompl_binary);
-    free(shell->keyflag);
-    free(shell->term);
-    free(shell);
-    shell = NULL;
+    ft_free_dlist(&tsh->line);
+	free(tsh->line);
+	ft_free_dlist(&tsh->line_dup);
+	free(tsh->line_dup);
+    free(tsh->console);
+	free(tsh->history);
+    ft_free_history(tsh->from_hist);
+    free(tsh->from_hist->pwd);
+    free(tsh->from_hist);
+    if (tsh->autoc->str)
+        free(tsh->autoc->str);
+    ft_free_autocompletion(&tsh->autoc);
+    ft_free_autocompletion(&tsh->auto_binary);
+    free(tsh->autoc);
+    free(tsh->auto_binary);
+    free(tsh->keyflag);
+    free(tsh->term);
+    free(tsh);
+    tsh = NULL;
 }
 
-t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
+t_lineterm *ft_dontGetPrompt2(t_lineterm *tmp)
 {
+	int	i;
+
+	i = 0;
 	while (tmp)
 	{
-        if (tmp->c == '>')
+        if (i > 7)
             break;
+		i++;
 		tmp = tmp->next;
     }
-	tmp = tmp->next;        
 	return (tmp);
 }

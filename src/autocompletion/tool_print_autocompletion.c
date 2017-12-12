@@ -13,30 +13,31 @@ int ft_cursor_update(void)
     return (row);
 }
 
-void    ft_display_autocompletion(t_termc *shell, int *down)
+void    ft_display_autocompletion(t_termc *tsh, int *down)
 {
     int         total;
     int         i;
 
-	if (shell->len_prompt >= (int)get_columns())
+	if (tsh->len_prompt >= (int)get_columns())
 		return ;
     i = -1;
     total = 0;
-    shell->line->last = 1;
-    shell->autocompl->jump = 0;
-    ft_menu_autocompletion(shell->autocompl, shell, &total);
-    *down = shell->autocompl->jump;
-    if (shell->autocompl->clr_yes)
-        tputs(tgoto(tgetstr("cm", NULL), 0, shell->autocompl->updaterow - 1), 1, ft_inputstr);
+    tsh->line->last = 1;
+    tsh->autoc->jump = 0;
+    ft_menu_autocompletion(tsh->autoc, tsh, &total);
+    *down = tsh->autoc->jump;
+    if (tsh->autoc->clr_yes)
+        tputs(tgoto(tgetstr("cm", NULL), 0, tsh->autoc->updaterow - 1),
+        1, ft_inputstr);
     while (total--)
-        tputs(shell->term->lestr, 1, ft_inputstr);
-    while (++i < ft_count_dlnk(shell) + 8)
-        tputs(shell->term->ndstr, 1, ft_inputstr);
-    shell->autocompl->clr_yes = 0;
-    tputs(shell->term->vestr, 1, ft_inputstr);
+        tputs(tsh->term->lestr, 1, ft_inputstr);
+    while (++i < ft_count_dlnk(tsh) + 8)
+        tputs(tsh->term->ndstr, 1, ft_inputstr);
+    tsh->autoc->clr_yes = 0;
+    tputs(tsh->term->vestr, 1, ft_inputstr);
 }
 
-int    ft_init_value(t_termc *shell, t_auto *select)
+int    ft_init_value(t_termc *tsh, t_auto *select)
 {
     struct winsize  row;
 
@@ -47,8 +48,8 @@ int    ft_init_value(t_termc *shell, t_auto *select)
     if (select->col == 0)
         return(0);
     select->jump = (ft_count(select) / select->col) + 1;
-    select->pages = shell->autocompl->jump / select->row;   //HOW PAGES DISPLAY
-    select->more_pages = shell->autocompl->jump % select->row; //IF REST MORE PAGES
+    select->pages = tsh->autoc->jump / select->row;   //HOW PAGES DISPLAY
+    select->more_pages = tsh->autoc->jump % select->row; //IF REST MORE PAGES
     select->nbr_word = (select->row * select->col); //MAX WORD ON SCREEN
     return (1);
 }

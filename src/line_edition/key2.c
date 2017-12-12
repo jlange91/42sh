@@ -37,24 +37,24 @@ static void    ft_init_tab_funct(t_k funct[15])
     funct[13] = ft_autocompletion;
 }
 
-int     ft_dynamique_autocompletion(long *c, t_termc *shell)
+int     ft_dynamique_autocompletion(long *c, t_termc *tsh)
 {
     static int compt;
 
-    if (shell->count_tab && (shell->auto_active || shell->multiauto_active) && *c == TAB)
+    if (tsh->count_tab && (tsh->auto_active || tsh->multiauto_active) && *c == TAB)
     {
         compt++;
         *c = OPT_DOWN;
-		shell->autocompl->can_print++;
+		tsh->autoc->can_print++;
     }
-    if (*c == '\n' && (shell->auto_active || shell->multiauto_active))
+    if (*c == '\n' && (tsh->auto_active || tsh->multiauto_active))
     {
-		shell->autocompl->can_print = 0;
-        shell->count_tab = 0;
+		tsh->autoc->can_print = 0;
+        tsh->count_tab = 0;
         if (compt < 1)
         {
-            shell->auto_active = 0;
-            shell->multiauto_active = 0;
+            tsh->auto_active = 0;
+            tsh->multiauto_active = 0;
             return (0);
         }
         *c = TAB;
@@ -63,12 +63,12 @@ int     ft_dynamique_autocompletion(long *c, t_termc *shell)
     return (1);
 }
 
-int     ft_other_key(t_lineterm *end, t_termc *shell, long c, char **env)
+static int  ft_exec_key(t_termc *tsh, long c, t_lineterm *end)
 {
     int     i;
+    static int count;
     static long    keycode[15];
     static t_k		funct[15];
-    static int count;
 
     if (count++ < 1)
     {
@@ -76,23 +76,27 @@ int     ft_other_key(t_lineterm *end, t_termc *shell, long c, char **env)
         ft_init_tab_funct(funct);
     }
     i = -1;
-    if (!ft_dynamique_autocompletion(&c, shell))
-        return (0);
-	if (shell->autocompl->can_print < 2 && c == OPT_DOWN)
-	{
-		ft_free_dlist(&shell->line);
-		ft_init_console(shell, shell->line);
-    	ft_cpy_autocompl_to_lineshell(shell);
-	}
     while (++i < 14)
         if (keycode[i] == c)
         {
-			if (shell->quotes && i > 1)
+			if (tsh->quotes && i > 1)
 				return (1);
-			else if (shell->autocompl->can_print < 2 && i == 12)
+			else if (tsh->autoc->can_print < 2 && i == 12)
 				return (1);
-            funct[i](end, shell, env);
+            funct[i](end, tsh);
             return (1);
         }
     return (0);
+}
+
+int     ft_other_key(t_lineterm *end, t_termc *tsh, long c)
+{
+    if (!ft_dynamique_autocompletion(&c, tsh))
+        return (0);
+	if (tsh->autoc->can_print < 2 && c == OPT_DOWN)
+	{
+        ft_clean_line(tsh);
+    	ft_cpy_autocompl_to_lineshell(tsh);
+	}
+    return (ft_exec_key(tsh, c, end));
 }

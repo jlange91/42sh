@@ -21,14 +21,14 @@ void	ft_free_history(hlist *history)
 	}
 }
 
-int    ft_add_file_history_no_flag(t_termc *shell)
+int    ft_add_file_history_no_flag(t_termc *tsh)
 {
     int fd;
     t_history *begin;
 
-    if ((fd = open("./.21sh_history", (O_WRONLY | O_CREAT | O_APPEND), 0777)) < 0)
+    if ((fd = open("~/.21sh_history", (O_WRONLY | O_CREAT | O_APPEND), 0777)) < 0)
         return (0);
-    begin = shell->from_hist->begin;
+    begin = tsh->from_hist->begin;
     if (begin)
     {
         while (begin)
@@ -72,26 +72,26 @@ static inline void     ft_add_file_history_split(t_history *begin, int fd, int r
     }
 }
 
-int     ft_add_file_history(t_termc *shell)
+int     ft_add_file_history(t_termc *tsh)
 {
     int         fd;
     int         res;
     t_history   *begin;
 
-    if ((fd = open("./.21sh_history", (O_WRONLY | O_CREAT), 0777)) < 0)
+    if ((fd = open(tsh->from_hist->pwd, (O_WRONLY | O_CREAT), 0777)) < 0)
         return (0);
     begin = NULL;
-    begin = shell->from_hist->begin;
+    begin = tsh->from_hist->begin;
     if (begin)
     {
-        res = ft_count_history();
+        res = ft_count_history(tsh->from_hist->pwd);
         ft_add_file_history_split(begin, fd, res);
     }
     close(fd);
     return (1);
 }
 
-void	ft_add_tmp_history(t_termc *shell, const char *str)
+void	ft_add_tmp_history(t_termc *tsh, const char *str)
 {
     int flag;
     int i;
@@ -103,10 +103,10 @@ void	ft_add_tmp_history(t_termc *shell, const char *str)
         if (str[i] >= 33 && str[i] <= 126)
             flag = 1;
     }
-    if (flag && (!shell->from_hist->end || 
-        ft_strcmp(shell->from_hist->end->data, str) != 0))
+    if (flag && (!tsh->from_hist->end ||
+        ft_strcmp(tsh->from_hist->end->data, str) != 0))
     {
-        ft_fill_back_hlst(shell->from_hist, str);
-        shell->nbr_hist++;
+        ft_fill_back_hlst(tsh->from_hist, str);
+        tsh->nbr_hist++;
     }
 }

@@ -9,10 +9,9 @@
 # include <dirent.h>
 # include "../libft/include/libft.h"
 # include <errno.h>
+# include <fcntl.h>
 #include <dirent.h>
 #include <sys/stat.h>
-# include <fcntl.h>
-
 
 #define PATH_MAX 2048
 
@@ -59,6 +58,7 @@ typedef struct			hlist
 	int					down;
     int                 ecrase_hist;
     int                 line_history;
+    char                *pwd;
 	t_history			*begin;
     t_history           *current;
 	t_history			*end;
@@ -150,8 +150,8 @@ typedef struct          s_termc
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
 	int					len_prompt;
-    t_auto              *autocompl;
-    t_auto              *autocompl_binary;
+    t_auto              *autoc;
+    t_auto              *auto_binary;
     dlist         		*line;
 	dlist				*line_dup;
 	hlist				*history;
@@ -163,20 +163,13 @@ typedef struct          s_termc
 
 /*****************************************************************************/
 /*FROM DIRECTORY GLOBBING*/
-typedef struct          s_glob
+typedef struct		s_glob
 {
-    char                **tab_str;
-    char                *line;
-    char                *tmp;
-	char				*before;
-	char				*after;
-	int					i;
-	int					j;
-	int					k;
-	int					ret;
-	char				**new_tab;
-	char				**tmp_tab;
-}                       t_glob;
+	char			**s_tab;
+	char			**res;
+	char			*path;
+	int				len;
+}					t_glob;
 
 /********************************************************************************/
 /*FROM TREE DIRECTORY*/
@@ -192,33 +185,24 @@ typedef struct          s_cmd
 /*******************************************/
 /*              test de fusion              */
 
-typedef struct      s_redir
-{
-    int             fd;
-    int             close;
-    struct s_redir  *next;
-}                   t_redir;
-
-typedef struct      s_redi
-{
-    int             in;
-    int             out;
-    int             type;
-    int             close;
-}                   t_redi;
-
 typedef struct		s_shell
 {
 	char	*line;
 	char	**av;
 	int		ac;
+	int		load;
+	char	**var;
 	char	**env;
-    char	*pwd;
-    t_redir     *output;
-    t_redir     *input;
-    int         output_save;
-    int         input_save;
+	char	*pwd;
 }					t_shell;
+
+typedef struct      s_redir
+{
+    int             in;
+    int             out;
+    int             type;
+    int             close;
+}                   t_redir;
 
 void		ft_perror(char *str, int error, char *str2);
 
@@ -254,32 +238,29 @@ char		**ft_cp_env(char **env);
 void		ft_charcat(char *str, char c);
 void		free_tab_2d(char **tab);
 int			tab_2d_len(char **tab);
-int         ft_skip_quote(char *str);
-int         ft_skip_dquote(char *str);
+void		ft_help(t_shell *sh);
+char		**rapid_set(char *input, char **env, int j);
+void		export_no_eq(t_shell *sh, int i);
+void		export_with_eq(t_shell *sh, int i);
+char		**load_env(char **env);
+void		export_flagb(t_shell *sh);
+void		replace_elem(char *compare, char *input, char **env, t_shell *sh);
+int			check_correct_arg(t_shell *sh, int i);
+void		export_flag_b(t_shell *sh, int i);
+int		    ft_skip_useless(char *line);
+void		ft_cmd(t_shell *sh);
+int		    ft_singleton(int nb, int opt);
+int			ft_skip_quote(char *str);
+int			ft_skip_dquote(char *str);
 
+/********************************/
+/*         redirection          */
+/********************************/
 
-
-
-
-int			ft_skip_useless(char *line);
+char        *ft_ret_word(char *line);
+void        ft_fill_word(char *line, char *word);
 int 		ft_redirection(t_shell *sh);
 void		ft_remove_redirection(t_shell *sh);
-
-
-
-
-
-/********************************/
-/*            ret_word          */
-/********************************/
-
-char    *ft_ret_word(char *line);
-void     ft_fill_word(char *line, char *word);
-
-int     ft_count_char_word(char *line);
-
-
-void			ft_cmd(t_shell *sh);
-int		    ft_singleton(int nb, int opt);
+int         ft_count_char_word(char *line);
 
 #endif

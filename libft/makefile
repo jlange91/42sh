@@ -6,7 +6,7 @@
 #    By: stvalett <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 15:47:13 by stvalett          #+#    #+#              #
-#    Updated: 2017/09/28 13:57:31 by adebrito         ###   ########.fr        #
+#    Updated: 2017/11/22 12:28:26 by adebrito         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -93,6 +93,11 @@ SRCS = src/ft_memset.c\
 	   src/ft_tabtospace.c \
 	   src/ft_strtrim_c.c \
 	   src/ft_free_join.c \
+	   src/ft_tablen.c \
+	   src/ft_tabdup.c \
+	   src/free_tab.c \
+	   src/ft_countword.c \
+	   src/ft_return.c \
 
 OBJ = $(SRCS:.c=.o)
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_redirection.c                                   :+:      :+:    :+:   */
+/*   ft_redirrection.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -102,15 +102,15 @@ int				directory_fd(char *line, int type)
 	return (fd);
 }
 
-t_redi             *type_redir(char *str, int index)
+t_redir             *type_redir(char *str, int index)
 {
-	t_redi	*red;
+	t_redir	*red;
 	int		len;
 	int		i;
 
 	len = 0;
 	i = 0;
-	if (!(red = (t_redi*)malloc(sizeof(t_redi) * 1)))
+	if (!(red = (t_redir*)malloc(sizeof(t_redir) * 1)))
 	{
 		ft_perror("malloc", errno, NULL);
 		exit(0);
@@ -161,7 +161,7 @@ int			ft_backup_stderr(int nb)
 	return (stdout);
 }
 
-void		ft_redir_type8(t_redi *red)
+void		ft_redirr_type8(t_redir *red)
 {
 	if (red->in == -1)
 		close(1);
@@ -171,12 +171,12 @@ void		ft_redir_type8(t_redi *red)
 		close(red->in);
 }
 
-void		ft_redir_type1(t_redi *red)
+void		ft_redirr_type1(t_redir *red)
 {
 	dup2(red->out , (red->in == -1) ? 1 : red->in);
 }
 
-void		ft_redir_type2(t_redi *red)
+void		ft_redirr_type2(t_redir *red)
 {
 	dup2(red->out , (red->in == -1) ? 0 : red->in);
 }
@@ -184,7 +184,7 @@ void		ft_redir_type2(t_redi *red)
 int			ft_redirection(t_shell *sh)
 {
 	int i;
-	t_redi *red;
+	t_redir *red;
 
 	i = 0;
 	ft_backup_stdin(1);
@@ -200,11 +200,11 @@ int			ft_redirection(t_shell *sh)
 			if (red->out == -1)
 				return (-1);
 			if (red->type == 8)
-				ft_redir_type8(red);
+				ft_redirr_type8(red);
 			else if (red->type == 1 || red->type == 4 || red->type == 3 || red->type == 7)
-				ft_redir_type1(red);
+				ft_redirr_type1(red);
 			else if (red->type == 2 || red->type == 5)
-				ft_redir_type2(red);
+				ft_redirr_type2(red);
 			if (red->close)
 				close(red->out);
 			free(red);

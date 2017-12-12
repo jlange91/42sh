@@ -1,80 +1,6 @@
 #include "../../inc/autocompletion.h"
 #include "../../inc/line_edition.h"
 
-static void    ft_display_autocompl(t_autocompl *begin, t_auto *select)
-{
-    struct stat info_data;
-    struct stat info_str;
-    char        *tmp;
-
-    ft_memset(&info_data, 0, sizeof(info_data));
-    stat(begin->data, &info_data);
-    ft_memset(&info_str, 0, sizeof(info_str));
-    tmp = ft_strjoin(select->str, begin->data);
-    stat(tmp, &info_str);
-    if (begin == select->current && select->can_print >= 1)
-    {
-        ft_putstr(ORANGE_FRONT);
-        ft_putstr(PURPLE_BACK);
-        //tputs(shell->term->usstr, 1, ft_inputstr);
-        ft_putstr(begin->data);
-        //tputs(shell->term->uestr, 1, ft_inputstr);
-        ft_putstr(RESET);
-        if (S_ISDIR(info_data.st_mode))
-            ft_putchar('/');
-        else if (S_ISDIR(info_str.st_mode))
-            ft_putchar('/');
-    }
-    else
-    {
-        if (S_ISDIR(info_data.st_mode))
-        {
-            ft_putstr(BLUE);
-            ft_putstr(begin->data);
-            ft_putchar('/');
-        }
-        else if (S_ISDIR(info_str.st_mode))
-        {
-            ft_putstr(BLUE);
-            ft_putstr(begin->data);
-            ft_putchar('/');
-        }
-        else if ((S_ISREG(info_data.st_mode)) && (info_data.st_mode & 0001))
-        {
-            ft_putstr(RED);
-            ft_putstr(begin->data);
-            ft_putchar('*');
-        }
-        else if ((S_ISREG(info_str.st_mode)) && (info_str.st_mode & 0001))
-        {
-            ft_putstr(RED);
-            ft_putstr(begin->data);
-            ft_putchar('*');
-        }
-        else
-            ft_putstr(begin->data);
-        ft_putstr(RESET);
-    }
-    free(tmp);
-}
-
-static t_var_auto      *ft_init_var(t_auto *select)
-{
-    t_var_auto  *var;
-
-    var = NULL;
-    if ((var = (t_var_auto *)malloc(sizeof(*var))) == NULL)
-    {
-        ft_putendl_fd("Error malloc", 2);
-        return (NULL);
-    }
-    var->len = 0;
-    var->down = 0;
-    var->row = select->updaterow - 1;
-    var->ttl_jump = select->jump + 1;
-    return (var);
-}
-
 static void     ft_check_line_simple(t_auto *select, t_var_auto *var)
 {
     if (var->ttl_jump > 0)
@@ -107,7 +33,7 @@ static int      ft_print_simple_auto(t_auto *select, t_autocompl *begin)
     t_var_auto  *var;
     int total;
 
-    var = ft_init_var(select);
+    var = ft_init_var_auto(select);
     while (begin)
     {
         ft_check_line_simple(select, var);
@@ -122,9 +48,9 @@ static int      ft_print_simple_auto(t_auto *select, t_autocompl *begin)
     return (total);
 }
 
-static int ft_print_full_screen(t_auto *select, t_var_auto *var, t_autocompl *begin, int limit_word)
+static int ft_pfsc(t_auto *select, t_var_auto *var, t_autocompl *begin, int l_w)
 {
-    while (begin && begin->index <= limit_word)
+    while (begin && begin->index <= l_w)
     {
         if (var->ttl_jump > 0)
         {
@@ -155,9 +81,9 @@ int    ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag)
 
     if (flag == 2)
     {
-        var = ft_init_var(select);
+        var = ft_init_var_auto(select);
         limit_word = select->jump * select->col * nbr;
-        total = ft_print_full_screen(select, var, begin, limit_word);
+        total = ft_pfsc(select, var, begin, limit_word);
         free(var);
         select->clr_yes = 1;
         return (total);
@@ -166,7 +92,7 @@ int    ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag)
         return (ft_print_simple_auto(select, begin));
 }
 
-void ft_menu_autocompletion(t_auto *select, t_termc *shell, int *total)
+void ft_menu_autocompletion(t_auto *select, t_termc *tsh, int *total)
 {
     t_autocompl *begin;
     static int count;
@@ -174,14 +100,14 @@ void ft_menu_autocompletion(t_auto *select, t_termc *shell, int *total)
     begin = select->begin;
     if (begin)
     {
-        ft_init_value(shell, select);
-        if (shell->autocompl->jump > select->row)
-            ft_multi_pages(select, shell, begin, total);
+        ft_init_value(tsh, select);
+        if (tsh->autoc->jump > select->row)
+            ft_mpages(select, tsh, begin, total);
         else
         {
-            if (!shell->autocompl->arrow && count++ < 1)
+            if (!tsh->autoc->arrow && count++ < 1)
             {
-                shell->autocompl->updaterow = ft_cursor_update();
+                tsh->autoc->updaterow = ft_cursor_update();
                 count = 0;
             }
             *total = ft_diff_print(select, begin, 0, 1);

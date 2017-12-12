@@ -1,48 +1,64 @@
 #include "../../inc/globbing.h"
 
-static char		*ft_get_next_pattern(char **pattern, int *star, int *bracket)
+static	int 	ft_token_glob(char **pat, int escape, int *ret, int *brac)
+{
+	if (**pat == '[' && !escape)
+		*brac = 1;
+	if (**pat == ']' && !escape)
+		*brac = 0;
+	if (**pat == '-' && !escape)
+		*ret = 1;
+	if (**pat == '*' && !escape)
+	{
+		*ret = 0;
+		if (!(*brac))
+			return (1);
+	}
+	return (0);
+}
+
+static	char	*ft_split_pattern(char **chunk, char **pattern, int *bracket)
 {
 	int		i;
+	int 	escape;
 	int		leave;
-	char	*chunk;
 
-	if (ft_strlen(*pattern) > 0)
-	{
-		chunk = NULL;
-		if ((chunk = (char *)malloc(sizeof(char) * (ft_strlen(*pattern) + 1))) == NULL)
-			return (NULL);
-	}
-	if  (ft_strlen(*pattern) > 0 && *(pattern[0]) == '*')
-	{
-		(*pattern)++;
-		*star = 1;
-	}
 	i = -1;
 	leave = 0;
 	while (ft_strlen(*pattern) > 0)
 	{
-		if (**pattern == '[')
-			*bracket = 1;
-		if (**pattern == ']')
-			*bracket = 0;
-		if (**pattern == '-')
-			leave = 1;
-		if (**pattern == '*')
+		if (**pattern == '\\')
 		{
-			leave = 0;
-			if (!(*bracket))
-				break;
+			escape = 1;
+			(*chunk)[++i] = *(*pattern)++;
 		}
-		chunk[++i] = **pattern;
-		(*pattern)++;
+		if (ft_token_glob(pattern, escape, &leave, bracket))
+			break;
+		(*chunk)[++i] = *(*pattern)++;
+		escape = 0;
 	}
-	chunk[++i] = '\0';
+	(*chunk)[++i] = '\0';
 	if (leave != 0)
+		ft_strdel(&(*chunk));
+	return (*chunk);
+}
+
+static	char	*ft_get_next_pattern(char **pattern, int *star, int *bracket)
+{
+	char	*chunk;
+
+	if (!(ft_strlen(*pattern) > 0))
+		return (NULL);
+	chunk = NULL;
+	if ((chunk = (char *)malloc(sizeof(char) *
+			(ft_strlen(*pattern) + 1))) == NULL)
+		return (NULL);
+	if  (*(pattern[0]) == '*')
 	{
-		free(chunk);
-		chunk = NULL;
+		(*pattern)++;
+		*star = 1;
 	}
-	return (chunk);
+	return (ft_split_pattern(&chunk, pattern, bracket));
 }
 
 static int ft_match_split(char *pattern, char *word, char *chunk)
@@ -56,13 +72,11 @@ static int ft_match_split(char *pattern, char *word, char *chunk)
 		{
 			if (ft_strlen(pattern) == 0 && ft_strlen(word) > 0)
 				continue;
-			free(chunk);
-			return (ft_match(pattern, word));
+			return (ft_returnfree(chunk, ft_match(pattern,word), 'f'));
 		}
 		i++;
 	}
-	free(chunk);
-	return (0);
+	return (ft_returnfree(chunk, 0, 'f'));
 }
 
 int	ft_match(char *pattern, char *word)
@@ -77,11 +91,8 @@ int	ft_match(char *pattern, char *word)
 	{
 		if ((chunk = ft_get_next_pattern(&pattern, &star, &inbracket)) == NULL)
 			return (0);
-		if (star && *chunk == '\0')
-		{
-			free(chunk);
-			return (1);
-		}
+		if (star && *chunk == '\0' && *pattern != '*')
+			return (ft_returnfree(chunk, 1, 'f'));
 		if (star)
 			return (ft_match_split(pattern, word, chunk));
 		if (ft_match_chunk(chunk, &word, 0))
@@ -89,8 +100,7 @@ int	ft_match(char *pattern, char *word)
 			free(chunk);
 			continue;
 		}
-		free(chunk);
-		return (0);
+		return (ft_returnfree(chunk, 0, 'f'));
 	}
 	return (ft_strlen(word) == 0);
 }

@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/04 12:14:09 by stvalett          #+#    #+#             */
-/*   Updated: 2017/09/28 13:58:56 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/11/22 13:17:46 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,9 @@ int					ft_atoi(const char *str);
 int					ft_strequ(char const *s1, char const *s2);
 int					ft_strnequ(char const *s1, char const *s2, size_t n);
 int					ft_count_dtab(char **av);
+int					ft_count_word(char *str, char c);
 int					ft_strlen(const char *s);
+int					ft_returnfree(char *str, int ret, char c);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
 void				ft_putstr(char *str);
 void				ft_putstr_fd(char const *s, int fd);
@@ -101,5 +103,7 @@ void				ft_tabtospace(char *str);
 char				*ft_strtrim_c(char const *s, char c);
 char				*ft_free_join(char const *s1, char const *s2, char c);
 char				*ft_strndup(const char *s1, int n);
-
+size_t				ft_tablen(char **n_tab);
+char				**ft_tabdup(char **n_tab);
+void				free_tab(void **tab, int len);
 #endif

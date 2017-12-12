@@ -12,36 +12,33 @@
 
 #include "../../inc/autocompletion.h"
 #include "../../inc/globbing.h"
+#include "../../inc/line_edition.h"
 
-void    ft_ajuste_and_fill_line(t_termc *shell, char *data, char *before)
+void    ft_ajuste_and_fill_line(t_termc *tsh, char *data, char *before, int ret)
 {
 	int         i;
 
-	free(shell->autocompl->str);
-	ft_free_dlist(&shell->line); 
-	ft_init_console(shell, shell->line);
-	if (!shell->history->active)
-	{
-		tputs(shell->term->upstr, 1, ft_inputstr);
-		tputs(shell->term->upstr, 1, ft_inputstr);
-	}
-	shell->autocompl->str = ft_strdup(data);
+	free(tsh->autoc->str);
+	ft_clean_line(tsh);
+	tsh->autoc->str = ft_strdup(data);
 	i = -1;
-	while (before[++i])
-		ft_fill_back_dlst(shell->line, before[i], i + 2);
+	if (ret)
+		while (before[++i])
+			ft_fill_back_dlst(tsh->line, before[i], i + 2);
 	i = -1;
 	while (data[++i])
-		ft_fill_back_dlst(shell->line, data[i], i + 2);
-	ft_check_is_dir(shell);
+		ft_fill_back_dlst(tsh->line, data[i], i + 2);
+	ft_check_is_dir(tsh);
 }
 
-int		ft_autocompl_complex(t_termc *shell, char *data, char *before, char *after)
+int		ft_findword(t_termc *tsh, char *data, char *before, char *after)
 {
-	if (ft_count(shell->autocompl) == 1)
+	if (ft_count(tsh->autoc) == 1)
 	{
 		if (ft_strncmp(after, data, ft_strlen(after)) == 0)
 		{
-			ft_ajuste_and_fill_line(shell, data, before);
+			(before == 0) ? ft_ajuste_and_fill_line(tsh, data, NULL, 0) :
+			ft_ajuste_and_fill_line(tsh, data, before, 1);
 			return (1);
 		}
 	}
@@ -49,156 +46,95 @@ int		ft_autocompl_complex(t_termc *shell, char *data, char *before, char *after)
 	{
 		if (ft_strcmp(after, data) == 0)
 		{
-			ft_ajuste_and_fill_line(shell, data, before);
+			(before == 0) ? ft_ajuste_and_fill_line(tsh, data, NULL, 0) :
+			ft_ajuste_and_fill_line(tsh, data, before, 1);
 			return (1);
 		}
 	}
 	return (0);
 }
 
-int		ft_autocompl_simple(t_termc *shell, char *data)
+void    ft_addslash(t_termc *tsh, char **after, char *before)
 {
-	int         i;
-	struct stat info_data;
-
-	if (ft_count(shell->autocompl) == 1)
-	{
-		if (ft_strncmp(shell->autocompl->str, data, ft_strlen(shell->autocompl->str)) == 0)
-		{
-			free(shell->autocompl->str);
-			ft_free_dlist(&shell->line); 
-			ft_init_console(shell, shell->line);
-			if (!shell->history->active)
-			{
-				tputs(shell->term->upstr, 1, ft_inputstr);
-				tputs(shell->term->upstr, 1, ft_inputstr);
-			}
-			shell->autocompl->str = ft_strdup(data);
-			i = -1;
-			stat(data, &info_data);
-			while (shell->autocompl->str[++i])
-				ft_fill_back_dlst(shell->line, shell->autocompl->str[i], i + 2);
-			if (S_ISDIR(info_data.st_mode))
-				ft_fill_back_dlst(shell->line, '/', i + 2);
-			return (1);
-		}
-	}
-	else
-	{
-		if (ft_strcmp(shell->autocompl->str, data) == 0)
-		{
-			free(shell->autocompl->str);
-			ft_free_dlist(&shell->line); 
-			ft_init_console(shell, shell->line);
-			if (!shell->history->active)
-			{
-				tputs(shell->term->upstr, 1, ft_inputstr);
-				tputs(shell->term->upstr, 1, ft_inputstr);
-			}
-			shell->autocompl->str = ft_strdup(data);
-			i = -1;
-			stat(data, &info_data);
-			while (shell->autocompl->str[++i])
-				ft_fill_back_dlst(shell->line, shell->autocompl->str[i], i + 2);
-			if (S_ISDIR(info_data.st_mode))
-				ft_fill_back_dlst(shell->line, '/', i + 2);
-			return (1);
-		}
-	}
-	return (0);
-}
-
-void    ft_put_antislash(t_termc *shell, char **after, char *result)
-{
-	char        *tmp;
+	char		*res;
 	char        **tab_word;
 	int         i;
-	struct stat info;
 
-	ft_put_antislash_one_word(shell);
-	if (result)
+	if (ft_dir_or_not(tsh->autoc->str)
+			&& tsh->autoc->str[ft_strlen(tsh->autoc->str) - 1] != '/')
+		tsh->autoc->str = ft_free_join(tsh->autoc->str, "/", 'L');
+	res = ft_strjoin(before, *after);
+	if (res)
 	{
-		tab_word = ft_strsplit2(result);
+		tab_word = ft_strsplit2(res);
 		i = ft_count_dtab(tab_word) - 1;
-		ft_memset(&info, 0, sizeof(struct stat));
-		lstat(tab_word[i], &info);
-		if (S_ISDIR(info.st_mode))
-		{
-			tmp = ft_strjoin(*after, "/");
-			free(*after);
-			*after = ft_strdup(tmp);
-			free(tmp);
-		}
+		if (ft_dir_or_not(tab_word[i]))
+			*after = ft_free_join(*after, "/", 'L');
 		ft_free_tab(tab_word);
+		free(res);
 	}
 }
 
-void	ft_autocompletion_bis(t_termc *shell)
+void	ft_autocompletion_bis(t_termc *tsh)
 {
 	char        *before;
 	char        *after;
-	char        *result;
 	int         limit;
 	t_autocompl *begin;
 
 	limit = 0;
-	after = ft_after_antislash(shell->autocompl->str, &limit);
-	before = ft_before_antislash(shell->autocompl->str, limit);
-	result = ft_strjoin(before, after);
-	ft_put_antislash(shell, &after, result);
-	begin = shell->autocompl->current;
+	after = ft_after_antislash(tsh->autoc->str, &limit);
+	before = ft_before_antislash(tsh->autoc->str, limit);
+	ft_addslash(tsh, &after, before);
+	begin = tsh->autoc->current;
 	while (begin)
 	{
-		if (ft_autocompl_simple(shell, begin->data) ||
-				(after != NULL && ft_autocompl_complex(shell, begin->data, before, after)))
+		if (ft_findword(tsh, begin->data, NULL, tsh->autoc->str) ||
+				(after != NULL && ft_findword(tsh, begin->data, before, after)))
 		{
-			shell->auto_active = 0;
-			tputs(shell->term->cdstr, 1, ft_inputstr);
-			if (ft_count(shell->autocompl) == 1)							// If One word in list , don't display
-				shell->multiauto_active = 0;
+			tsh->auto_active = 0;
+			tputs(tsh->term->cdstr, 1, ft_inputstr);
+			if (ft_count(tsh->autoc) == 1)// If One word in list , don't display
+				tsh->multiauto_active = 0;
 			break;
 		}
 		begin = begin->next;
 	}
 	free(before);
 	free(after);
-	free(result);
 }
 
 /*
  * * HEART FUNCTION AUTOCOMPLETION
- * *VARIABLE : shell->auto_active or multiauto_atcive if is active display word
- * 
- *  We reset all variable we need, transform list to str, add / in shell line if is shell 
+ * *VARIABLE : tsh->auto_active or multiauto_atcive if is active display word
+ *
+ *  We reset all variable we need, transform list to str, add / in shell line if is shell
  *  line is dir,fill list autocompletion initial current directory or open directory with shell line,
- *  if shell line look like same word in list autocompletion, we fill in new list from 
+ *  if shell line look like same word in list autocompletion, we fill in new list from
  *  ft_fill_same_word.
  */
 
-void    ft_autocompletion(t_lineterm *end, t_termc *shell, char **env)
+void    ft_autocompletion(t_lineterm *end, t_termc *tsh)
 {
 	(void)end;
-	shell->autocompl->arrow = 0;
-	if (ft_reset(shell, env))
+	tsh->autoc->arrow = 0;
+	if (ft_reset(tsh))
 		return ;
 	else
 	{
-		shell->autocompl->str = ft_to_str(shell);
-		ft_check_is_dir(shell);
-		shell->auto_active = ft_init_autocompl(shell, shell->autocompl->str, env);
-		shell->multiauto_active = ft_fill_same_word(shell, env);
-		if (shell->autocompl->current && shell->autocompl->str)
-			ft_autocompletion_bis(shell);
+		tsh->autoc->str = ft_to_str(tsh);
+		ft_check_is_dir(tsh);
+		tsh->auto_active = ft_init_autocompl(tsh, tsh->autoc->str);
+		tsh->multiauto_active = ft_fill_same_word(tsh);
+		if (tsh->autoc->current && tsh->autoc->str)
+			ft_autocompletion_bis(tsh);
 		else
-			shell->auto_active = 0;
-		if (ft_count(shell->autocompl) == 1)
+			tsh->auto_active = 0;
+		if (ft_count(tsh->autoc) == 1)
 		{
-			shell->auto_active = 0;
-			shell->multiauto_active = 0;
+			tsh->auto_active = 0;
+			tsh->multiauto_active = 0;
 		}
-		/*else if (ft_count(shell->autocompl) >= 50)
-			shell->autocompl->possiblitie = 1;*/
 	}
-	if (ft_can_replace_glob(shell->autocompl->str) == 1)
-		ft_replace_glob(shell, shell->autocompl->str, env);
+	ft_replace_all(tsh->autoc->str, tsh);
 }

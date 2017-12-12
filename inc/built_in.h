@@ -20,6 +20,6 @@ char		**ft_unsetenv(char *name, char **env);
 void		ft_pwd(t_shell *sh);
 int			display_octal(char *str);
 int			display_hexa(char *str);
-
+void		prepare_export(t_shell *sh);
 
 #endif

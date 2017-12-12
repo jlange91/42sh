@@ -1,12 +1,11 @@
 #include "../../inc/line_edition.h"
 
-void    ft_move_begin(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_begin(t_lineterm *end, t_termc *tsh)
 {
-	(void)env;
-    if (shell->auto_active)
+    if (tsh->auto_active)
         return ;
-    shell->history->down = 0;
-    shell->history->up = 0;
+    tsh->history->down = 0;
+    tsh->history->up = 0;
     if (end->prev)
     {
         while (end && end->index != 0)
@@ -16,18 +15,17 @@ void    ft_move_begin(t_lineterm *end, t_termc *shell, char **env)
                 end->next->s_pos = 0;
             end = end->prev;
         }
-        shell->line->last = 0;
+        tsh->line->last = 0;
         end = end->next;
     }
 }
 
-void    ft_move_end(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_end(t_lineterm *end, t_termc *tsh)
 {
-	(void)env;
-    if (shell->auto_active)
+    if (tsh->auto_active)
         return ;
-    shell->history->down = 0;
-    shell->history->up = 0;
+    tsh->history->down = 0;
+    tsh->history->up = 0;
     if (end->next)
     {
         while (end)
@@ -37,17 +35,16 @@ void    ft_move_end(t_lineterm *end, t_termc *shell, char **env)
                 end->prev->s_pos = 0;
             end = end->next;
         }
-        shell->line->last = 1;
+        tsh->line->last = 1;
     }
 }
 
-void    ft_move_word_forward(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_word_forward(t_lineterm *end, t_termc *tsh)
 {
-	(void)env;
-    if (shell->auto_active)
+    if (tsh->auto_active)
         return ;
-    shell->history->down = 0;
-    shell->history->up = 0;
+    tsh->history->down = 0;
+    tsh->history->up = 0;
     while ((end->c == ' ' || end->c == '\t') && end && end->index != 0)
     {
         end->s_pos = 0;
@@ -67,16 +64,15 @@ void    ft_move_word_forward(t_lineterm *end, t_termc *shell, char **env)
         end->s_pos = 1;
         end = end->prev;
     }
-    shell->line->last = 0;
+    tsh->line->last = 0;
 }
 
-void    ft_move_word_back(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_word_back(t_lineterm *end, t_termc *tsh)
 {
-	(void)env;
-    if (shell->auto_active)
+    if (tsh->auto_active)
         return ;
-    shell->history->down = 0;
-    shell->history->up = 0;
+    tsh->history->down = 0;
+    tsh->history->up = 0;
     while (end && ((char)end->c == ' ' || (char)end->c == '\n'))
     {
         end->s_pos = 1;

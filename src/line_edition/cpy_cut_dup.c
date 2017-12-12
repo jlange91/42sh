@@ -1,10 +1,10 @@
 #include "../../inc/line_edition.h"
 
-static void	ft_reset_under(t_termc *shell)
+static void	ft_reset_under(t_termc *tsh)
 {
 	t_lineterm	*end;
 
-	end = shell->line->end;
+	end = tsh->line->end;
 	if (end)
 	{
 		while (end)
@@ -16,103 +16,101 @@ static void	ft_reset_under(t_termc *shell)
 	}
 }
 
-void    ft_cut_line(t_lineterm *end, t_termc *shell, char **env)
+t_lineterm	*ft_cut_split(t_lineterm *tmp, t_termc *tsh)
+{
+	t_lineterm *del;
+
+	ft_fill_back_dlst(tsh->line_dup, tmp->c, 2);
+	del = tmp;
+	tsh->keyflag->backspace = 1;
+	if (tmp->next == NULL)
+	{
+		tsh->line->end = tmp->prev;
+		tsh->line->end->next = NULL;
+	}
+	else if (tmp->prev == NULL)
+	{
+		tsh->line->begin = tmp->next;
+		tsh->line->begin->prev = NULL;
+	}
+	else
+	{
+		tmp->prev->next = tmp->next;
+		tmp->next->prev = tmp->prev;
+	}
+	tmp = tmp->next;
+	free(del);
+	return (tmp);
+}
+
+void    ft_cut_line(t_lineterm *end, t_termc *tsh)
 {
 	t_lineterm  *tmp;
-	t_lineterm  *del;
 	int			ret;
-	int			i;
 
 	(void)end;
-	(void)env;
 	ret = 1;
-	i = 1;
-	tmp = NULL;
-	del = NULL;
-	tmp = shell->line->begin;
+	tmp = tsh->line->begin;
 	if (tmp != NULL)
 	{
-		if (shell->line_dup->begin)
-			ft_free_dlist(&shell->line_dup);
+		if (tsh->line_dup->begin)
+			ft_free_dlist(&tsh->line_dup);
 		while (ret)
 		{
 			while (tmp && tmp->under == 0)
 				tmp = tmp->next;
 			while (tmp && tmp->under)
-			{
-				ft_fill_back_dlst(shell->line_dup, tmp->c, i++);
-				del = tmp;
-				shell->keyflag->backspace = 1;
-				if (tmp->next == NULL)
-				{
-					shell->line->end = tmp->prev;
-					shell->line->end->next = NULL;
-				}
-				else if (tmp->prev == NULL)
-				{
-					shell->line->begin = tmp->next;
-					shell->line->begin->prev = NULL;
-				}
-				else
-				{
-					tmp->prev->next = tmp->next;
-					tmp->next->prev = tmp->prev;
-				}
-				tmp = tmp->next;
-				free(del);
-			}
+				tmp = ft_cut_split(tmp, tsh);
 			if (!tmp)
 				ret = 0;
 		}
 	}
 	if (end->next == NULL)
-		shell->line->last = 1;
+		tsh->line->last = 1;
 	else
-		shell->line->last = 0;
+		tsh->line->last = 0;
 }
 
-void	ft_dup_line(t_lineterm *end, t_termc *shell, char **env)
+void	ft_dup_line(t_lineterm *end, t_termc *tsh)
 {
 	int			i;
 	t_lineterm	*begin;
 
 	(void)end;
-	(void)env;
 	i = 1;
-	if (shell->line_dup->begin)
-		ft_free_dlist(&shell->line_dup);
-	begin = shell->line->begin;
+	if (tsh->line_dup->begin)
+		ft_free_dlist(&tsh->line_dup);
+	begin = tsh->line->begin;
 	if (begin)
 		while (begin)
 		{
 			if (begin->under == 1)
-				ft_fill_back_dlst(shell->line_dup, begin->c, i++);
+				ft_fill_back_dlst(tsh->line_dup, begin->c, i++);
 			i++;
 			begin = begin->next;
 		}
-	ft_reset_under(shell);
+	ft_reset_under(tsh);
 }
 
-void	ft_past_line(t_lineterm *end, t_termc *shell, char **env)
+void	ft_past_line(t_lineterm *end, t_termc *tsh)
 {
 	int			i;
 	t_lineterm 	*begin;
 
-	(void)env;
-	begin = shell->line_dup->begin;
+	begin = tsh->line_dup->begin;
 	if (begin)
 	{
 		i = 1;
 		if (!end->next)
 			while (begin)
 			{
-				ft_fill_back_dlst(shell->line, begin->c, i++);
+				ft_fill_back_dlst(tsh->line, begin->c, i++);
 				begin = begin->next;
 			}
 		else
 			while (begin)
 			{
-				ft_insert_dlnk(shell->line->end, shell, begin->c, i++);
+				ft_insert_dlnk(tsh->line->end, tsh, begin->c, i++);
 				begin = begin->next;
 			}
 	}

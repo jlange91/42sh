@@ -1,6 +1,6 @@
 #include "../../inc/autocompletion.h"
 
-void    ft_fill_back_autocompl(t_auto *autocompl, char *file, int index)
+void    ft_fill_back_autocompl(t_auto *autoc, char *file, int index)
 {
     t_autocompl *new;
 
@@ -15,30 +15,30 @@ void    ft_fill_back_autocompl(t_auto *autocompl, char *file, int index)
     new->last = 0;
     new->index = index;
     new->next = NULL;
-    new->prev = autocompl->end;
-    if (autocompl->end)
-        autocompl->end->next = new;
+    new->prev = autoc->end;
+    if (autoc->end)
+        autoc->end->next = new;
     else
-        autocompl->begin = new;
-    autocompl->end = new;
+        autoc->begin = new;
+    autoc->end = new;
 }
 
-char	*ft_to_str(t_termc *shell)
+char	*ft_to_str(t_termc *tsh)
 {
     char	*str;
     int		i;
     t_lineterm  *tmp;
 
-    if ((str = (char *)malloc(sizeof(*str) * (ft_count_dlnk(shell) + 1)))
+    if ((str = (char *)malloc(sizeof(*str) * (ft_count_dlnk(tsh) + 1)))
             == NULL)
     {
         ft_putendl_fd("Error malloc", 2);
         return (NULL);
     }
-    tmp = shell->line->begin;
+    tmp = tsh->line->begin;
     i = 0;
     if (tmp->next)
-        tmp = ft_dont_get_prompt(tmp);
+        tmp = ft_dontGetPrompt2(tmp);
     while (tmp)
     {
         str[i] = tmp->c;

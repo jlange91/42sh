@@ -1,84 +1,82 @@
 #include "../../inc/autocompletion.h"
 
-void    ft_autoMove(t_lineterm *end, t_termc *shell, char **env, int direction) //0left 1right
+static int  ft_reset_key(t_termc *tsh)
+{
+    if (!tsh->autoc->current || tsh->len_prompt >= (int)get_columns())
+        return (0);
+    tsh->autoc->arrow = 1;
+    ft_clean_line(tsh);
+	if (tsh->autoc->can_print < 1)
+	{
+    	ft_cpy_autocompl_to_lineshell(tsh);
+		tsh->autoc->can_print++;
+		return (0);
+	}
+    return (1);
+}
+
+static void     ft_auto_movesplit(t_termc *tsh, int dire, int jump)
+{
+    int last_word;
+    int index;
+    t_autocompl *tmp;
+
+    last_word = 0;
+    index = 0;
+    last_word = (int)(((int)(tsh->autoc->end->index / jump)) * jump);
+    tmp = tsh->autoc->current;
+    if (!dire)
+        index = (tmp->index == 1) ?
+        (tmp->index + (jump * (tsh->autoc->col - 2))) :
+        (tmp->index - 1 + jump * (tsh->autoc->col - 2));
+    else
+        index = (tmp->index == last_word) ? jump :
+        (tmp->index - (jump * ((int)(tmp->index / jump))) + 1);
+    while (tmp &&  tmp->index != index)
+        tmp = !dire ? tmp->next : tmp->prev;
+    if (tmp)
+        tsh->autoc->current = tmp;
+}
+
+void    ft_autoMove(t_lineterm *end, t_termc *tsh, int direction) //0left 1right
 {
     int         i;
     int         jump;
-	int			last_word;
-	int			index;
     t_autocompl *tmp;
     (void)end;
-    (void)env;
 
-    if (!shell->autocompl->current ||
-			shell->len_prompt >= (int)get_columns())
+    if (!(ft_reset_key(tsh)))
         return ;
-    shell->autocompl->arrow = 1;
-    ft_free_dlist(&shell->line); 
-    ft_init_console(shell, shell->line);
-	if (shell->autocompl->can_print < 1)
-	{
-    	ft_cpy_autocompl_to_lineshell(shell);
-		shell->autocompl->can_print++;
-		return ;
-	}
     i = -1;
     tmp = NULL;
-    jump = (ft_count(shell->autocompl) / shell->autocompl->col) + 1;
-	if (shell->autocompl->current)
+    jump = (ft_count(tsh->autoc) / tsh->autoc->col) + 1;
+	if (tsh->autoc->current)
     {
-        tmp = shell->autocompl->current;
+        tmp = tsh->autoc->current;
         while (tmp && ++i < jump)
             tmp = !direction ? tmp->prev : tmp->next;
     }
     if(!tmp)
-    {
-		last_word = (int)(((int)(shell->autocompl->end->index / jump)) * jump);
-		tmp = shell->autocompl->current;
-		if (!direction)
-			index = (tmp->index == 1) ? (tmp->index + (jump * (shell->autocompl->col - 2))) :
-				(tmp->index - 1 + jump * (shell->autocompl->col - 2));
-		else
-			index = (tmp->index == last_word) ? jump : (tmp->index - (jump * ((int)(tmp->index / jump))) + 1);
-		while (tmp &&  tmp->index != index)
-			tmp = !direction ? tmp->next : tmp->prev;
-		if (tmp)
-			shell->autocompl->current = tmp;
-	}
+        ft_auto_movesplit(tsh, direction, jump);
     else
-        shell->autocompl->current = tmp;
-    ft_cpy_autocompl_to_lineshell(shell);
-	shell->autocompl->can_print = 2;
+        tsh->autoc->current = tmp;
+    ft_cpy_autocompl_to_lineshell(tsh);
+	tsh->autoc->can_print = 2;
 }
 
-void    ft_auto_down_up(t_lineterm *end, t_termc *shell, char **env, int direction)
+void    ft_auto_down_up(t_lineterm *end, t_termc *tsh, int dire)
 {
     (void)end;
-    (void)env;
 
-    if (!shell->autocompl->current
-			|| shell->len_prompt >= (int)get_columns())
+    if (!(ft_reset_key(tsh)))
         return ;
-    shell->autocompl->arrow = 1;
-    ft_free_dlist(&shell->line); 
-    ft_init_console(shell, shell->line);
-	if (shell->autocompl->can_print < 1)
-	{
-    	ft_cpy_autocompl_to_lineshell(shell);
-		shell->autocompl->can_print++;
-		return ;
-	}
-    if (shell->autocompl->current && shell->autocompl->current->next 
-			&& direction)
-        shell->autocompl->current = shell->autocompl->current->next;
-	else if (shell->autocompl->current && shell->autocompl->current->prev
-			&& !direction)
-        shell->autocompl->current = shell->autocompl->current->prev;
+    if (tsh->autoc->current && tsh->autoc->current->next && dire)
+        tsh->autoc->current = tsh->autoc->current->next;
+	else if (tsh->autoc->current && tsh->autoc->current->prev && !dire)
+        tsh->autoc->current = tsh->autoc->current->prev;
     else
-	{
-        shell->autocompl->current = (direction) ? 
-			shell->autocompl->begin : shell->autocompl->end;
-	}
-    ft_cpy_autocompl_to_lineshell(shell);
-	shell->autocompl->can_print = 2;
+        tsh->autoc->current = (dire) ?
+			tsh->autoc->begin : tsh->autoc->end;
+    ft_cpy_autocompl_to_lineshell(tsh);
+	tsh->autoc->can_print = 2;
 }

@@ -1,17 +1,6 @@
-#include "../../inc/autocompletion.h"
 #include "../../inc/globbing.h"
-
-static char	**ft_reset_glob(t_termc *sh, char *line)
-{
-	char		**tmp_tab;
-
-	tputs(sh->term->upstr, 1, ft_inputstr);
-	tputs(sh->term->upstr, 1, ft_inputstr);
-	ft_free_dlist(&sh->line); 
-	ft_init_console(sh, sh->line);
-	tmp_tab = ft_strsplit2(line);
-	return (tmp_tab);
-}
+#include "../../inc/sh21.h"
+#include "../../inc/line_edition.h"
 
 void	ft_init_escape_tab(char *escape_tab)
 {
@@ -42,7 +31,7 @@ void	ft_init_escape_tab(char *escape_tab)
 	escape_tab[24] = '\0';
 }
 
-char	*ft_add_backslah(char *tmp, int index)
+/*char	*ft_add_backslah(char *tmp, int index)
 {
 	char	*word;
 	int		i;
@@ -131,12 +120,6 @@ static void	ft_replace_now(t_termc *sh, char *word, char **env, char *before)
 					ft_fill_back_dlst(sh->line, before[index], 1);
 			}
 			ft_add_slash_if(glob->tab_str[i], &ok);
-			while (glob->tab_str[i][++j])
-			{
-				if (glob->tab_str[i][j] == '\\' && !ok)
-					ft_fill_back_dlst(sh->line, '\\', 1);
-				ft_fill_back_dlst(sh->line, glob->tab_str[i][j], 1);
-			}
 			ft_fill_back_dlst(sh->line, ' ', 1);
 			ok = 0;
 		}
@@ -162,42 +145,54 @@ char	*ft_replace_with_dir(char *str)
 	free(after);
 	before = ft_before_antislash(str,index);
 	return (before);
-}
+}*/
 
-void	ft_replace_glob(t_termc *sh, char *str, char **env)
+static void ft_cpy(char *line, t_termc *tsh, int ret)
 {
-	int			k;
-	char		**tmp_tab;
-	char		*before;
+	int i;
 
-	k = -1;
-	tmp_tab = ft_reset_glob(sh, str);
-	before = NULL;
-	while (tmp_tab[++k])
+	i = 0;
+	while (line[i])
 	{
-		if (ft_strchr(tmp_tab[k], '/') != NULL)
-			before = ft_replace_with_dir(tmp_tab[k]);
-		if (ft_glob_here(tmp_tab[k]))
-			ft_replace_now(sh, tmp_tab[k], env, before);
-		else
-			ft_replace_now_split(sh, tmp_tab[k]);
+		ft_fill_back_dlst(tsh->line, line[i], 1);
+		i++;
 	}
-	ft_free_tab(tmp_tab);
-	sh->count_tab = 0;
+	if (ret)
+		ft_fill_back_dlst(tsh->line, ' ', 1);
+}
+static char	**ft_reset_glob(t_termc *tsh, char *line)
+{
+	char		**tmp_tab;
+
+	ft_clean_line(tsh);
+	tmp_tab = ft_strsplit2(line);
+	return (tmp_tab);
 }
 
-int		ft_can_replace_glob(char *line)
+void		ft_replace_all(char *line, t_termc *tsh)
 {
 	int			i;
-	int			flag;
 	char		**tmp_tab;
+	char		*tmp;
+	// t_shell		sh;
 
-	tmp_tab = ft_strsplit2(line);
+	tmp_tab = ft_reset_glob(tsh, line);
 	i = -1;
-	flag = 0;
 	while (tmp_tab[++i])
+	{
 		if (ft_glob_here(tmp_tab[i]))
-			flag = 1;
+		{
+			tmp = ft_glob(tmp_tab[i]);
+			ft_cpy(tmp, tsh, 0);
+			free(tmp);
+		}
+		/*else
+		{
+			sh.line = ft_strdup(tmp_tab[i]);
+			ft_replace(&sh);
+			ft_cpy(sh.line, tsh, 1);
+			free(sh.line);
+		}*/
+	}
 	ft_free_tab(tmp_tab);
-	return (flag);
 }

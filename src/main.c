@@ -17,12 +17,6 @@ int		ft_singleton(int nb, int opt)
 	return (ret);
 }
 
-void	ft_init_shell(t_shell *sh)
-{
-	sh->output = NULL;
-	sh->input = NULL;
-}
-
 int     main(int ac, char **av, char **env)
 {
 	t_termc *tsh;

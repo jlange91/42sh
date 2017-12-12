@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:42:28 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/16 13:28:01 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/12/06 17:11:23 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ void				ft_fill_env(t_shell *sh, char **env)
 		sh->pwd = ft_strdup(&pwd2[4]);
 		sh->env = ft_replace_env(ft_setenv("PWD", sh->pwd, sh->env), sh->env);
 	}
+	sh->var = load_env(sh->env);
 }

@@ -1,6 +1,35 @@
 #include "../../inc/autocompletion.h"
 
-static char	*ft_antislash_here(char *str)
+static char    *ft_slash_here_bis(int limit, int len, char *str)
+{
+    char	*new;
+    int     j;
+
+    if ((new = (char *)malloc(sizeof(char) *
+        ((ft_strlen(str) - len) + 1))) == NULL)
+    {
+        ft_putendl_fd("error malloc", 2);
+        return (NULL);
+    }
+    j = -1;
+    while (str[++j])
+    {
+        if (j == limit)
+        {
+            if (j == 0)
+            {
+                new[j] = str[j];
+                j++;
+            }
+            break;
+        }
+        new[j] = str[j];
+    }
+    new[j] = '\0';
+    return (new);
+}
+
+static char	*ft_slash_here(char *str)
 {
     char	*new;
     int		i;
@@ -18,92 +47,29 @@ static char	*ft_antislash_here(char *str)
             count++;
             i--;
         }
-        new = ft_antislash_here_bis(i, count, str);
+        new = ft_slash_here_bis(i, count, str);
     }
     return (new);
 }
 
-char	*ft_new_word_backslash(char *word)
-{
-	char	*new;
-	int		i;
-	int		j;
-
-	if ((new = (char *)malloc(sizeof(char) * (ft_strlen(word) + 2))) == NULL)
-	{
-		ft_putendl_fd("Error malloc", 2);
-		return (NULL);
-	}
-	i = -1;
-	j = -1;
-	while (word[++i])
-	{
-		if (word[i] == '\\')
-			new[++j] = '\\';
-		new[++j] = word[i];
-	}
-	new[++j] = '\0';
-	return (new);
-}
-
-void    ft_init_simple_autocompl(t_termc *tsh, char **env)
-{
-    char            *pwd;
-	char			*backslash;
-    int             i;
-    DIR             *path;
-    struct dirent   *file;
-
-    i = 1;
-    pwd = ft_getenv("PWD", env);
-    if (pwd[4] && (path = opendir(&pwd[4])) != NULL)
-    {
-        ft_free_autocompletion(&tsh->autocompl);
-        while ((file = readdir(path)) != NULL)
-		{
-			if (ft_strchr(file->d_name, '\\') != NULL)
-			{
-				backslash = ft_new_word_backslash(file->d_name);
-                ft_fill_back_autocompl(tsh->autocompl, backslash, i++);
-				free(backslash);
-			}
-			else if (file->d_name[0] != '.')
-                ft_fill_back_autocompl(tsh->autocompl, file->d_name, i++);
-		}
-        tsh->autocompl->current = tsh->autocompl->begin;
-        closedir(path);
-    }
-}
-
-int    ft_open_and_fill(t_termc *shell, DIR *path, int nbr)
+static int    ft_open_and_fill(t_termc *tsh, DIR *path, int nbr)
 {
     int             i;
     struct dirent   *file;
 
     i = 1;
-    if (nbr == 1)
-    {
-        ft_free_autocompletion(&shell->autocompl);
-        while ((file = readdir(path)) != NULL)
-            if (file->d_name[0] != '.')
-                ft_fill_back_autocompl(shell->autocompl, file->d_name, i++);
-        if (!shell->autocompl->begin)
-            shell->auto_active = 0;
-        shell->autocompl->current = shell->autocompl->begin;
-    }
-    else if (nbr == 2)
-    {
-        ft_free_autocompletion(&shell->autocompl);
-        while ((file = readdir(path)) != NULL)
-            if (file->d_name[0] != '.')
-                ft_fill_back_autocompl(shell->autocompl, file->d_name, i++);
-        shell->autocompl->current = shell->autocompl->begin;
-    }
+    ft_free_autocompletion(&tsh->autoc);
+    while ((file = readdir(path)) != NULL)
+        if (file->d_name[0] != '.')
+            ft_fill_back_autocompl(tsh->autoc, file->d_name, i++);
+    if (!tsh->autoc->begin && nbr == 1)
+        tsh->auto_active = 0;
+    tsh->autoc->current = tsh->autoc->begin;
     closedir(path);
     return (1);
 }
 
-void     ft_init_autocompl_bis(t_termc *shell, char *line_tmp, int *flag, char **env)
+static void     ft_split(t_termc *tsh, char *line_tmp, int *flag)
 {
     int     i;
     char    *tmp;
@@ -111,17 +77,17 @@ void     ft_init_autocompl_bis(t_termc *shell, char *line_tmp, int *flag, char *
     DIR *path;
 
     if ((path = opendir(line_tmp)) != NULL)
-        *flag = ft_open_and_fill(shell, path, 1);
+        *flag = ft_open_and_fill(tsh, path, 1);
     else if ((tab_word = ft_strsplit2(line_tmp)) != NULL)
     {
         i = ft_count_dtab(tab_word) - 1;
         if ((path = opendir(tab_word[i])) != NULL)
-            *flag = ft_open_and_fill(shell, path, 2);
-        else if ((tmp = ft_antislash_here(tab_word[i])) != NULL)    //Because may be file after is bad
+            *flag = ft_open_and_fill(tsh, path, 2);
+        else if ((tmp = ft_slash_here(tab_word[i])) != NULL)    //Because may be file after is bad
         {
             if ((path = opendir(tmp)) != NULL)
             {
-                *flag = ft_open_and_fill(shell, path, 2);
+                *flag = ft_open_and_fill(tsh, path, 2);
                 *flag = 0;
             }
             free(tmp);
@@ -129,10 +95,10 @@ void     ft_init_autocompl_bis(t_termc *shell, char *line_tmp, int *flag, char *
         ft_free_tab(tab_word);
     }
     else
-        ft_init_simple_autocompl(shell, env);
+        ft_init_simple_autocompl(tsh);
 }
 
-int    	ft_init_autocompl(t_termc *shell, char *line, char **env)
+int    	ft_init_autocompl(t_termc *tsh, char *line)
 {
     char			*line_tmp;
     int             flag;
@@ -141,11 +107,11 @@ int    	ft_init_autocompl(t_termc *shell, char *line, char **env)
     line_tmp = ft_strdup(line);
     if (line_tmp[ft_strlen(line_tmp) - 1] == ' ')  //RESET IF SPACE
     {
-        ft_init_simple_autocompl(shell, env);
+        ft_init_simple_autocompl(tsh);
         free(line_tmp);
         return (1);
     }
-    ft_init_autocompl_bis(shell, line_tmp, &flag, env);
+    ft_split(tsh, line_tmp, &flag);
     free(line_tmp);
     return (flag);
 }

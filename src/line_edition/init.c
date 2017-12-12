@@ -13,20 +13,20 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-static	inline	t_console	*init_console(void)
-{
-	t_console	*console;
-
-	console = NULL;
-	if ((console = (t_console *)malloc(sizeof(t_console))) == NULL)
-	{
-		return (NULL);
-	}
-	console->total_line = 0;
-	console->line_pos = 1;
-	console->char_pos = 0;
-	return (console);
-}
+// static	inline	t_console	*init_console(void)
+// {
+// 	t_console	*console;
+//
+// 	console = NULL;
+// 	if ((console = (t_console *)malloc(sizeof(t_console))) == NULL)
+// 	{
+// 		return (NULL);
+// 	}
+// 	console->total_line = 0;
+// 	console->line_pos = 1;
+// 	console->char_pos = 0;
+// 	return (console);
+// }
 
 static	inline	t_term		*init_term(char **env)
 {
@@ -68,130 +68,115 @@ static	inline	t_term		*init_term(char **env)
 	return (term);
 }
 
-static	inline	hlist		*init_history(void)
-{
-	hlist	*h;
+// static	inline	hlist		*init_history(void)
+// {
+// 	hlist	*h;
+//
+// 	h = NULL;
+// 	if ((h = (hlist *)malloc(sizeof(hlist))) == NULL)
+// 	{
+// 		ft_putendl_fd("Error malloc", 2);
+// 		return (NULL);
+// 	}
+// 	h->begin = NULL;
+// 	h->end = NULL;
+// 	h->current = NULL;
+// 	h->active = 0;
+//     h->ecrase_hist = 0;
+//     h->down = 0;
+//     h->up = 0;
+//     h->line_history = 0;
+// 	return (h);
+// }
+//
+// static  inline  t_keyflag   *init_keyflag(void)
+// {
+//     t_keyflag   *new;
+//
+//     if ((new = (t_keyflag *)malloc(sizeof(*new))) == NULL)
+//     {
+//         ft_putendl_fd("Error malloc", 2);
+//         return (NULL);
+//     }
+//     new->backspace = 0;
+//     new->mleft = 0;
+//     new->mright = 0;
+//     new->underline = 0;
+//     new->cl = 0;
+//     return (new);
+// }
+//
+// static	inline	t_auto		*init_autocompletion(void)
+// {
+//     t_auto   *autoc;
+//
+// 	autoc = NULL;
+// 	if ((autoc = (t_auto *)malloc(sizeof(t_auto))) == NULL)
+// 	{
+// 		ft_putendl_fd("Error malloc", 2);
+// 		return (NULL);
+// 	}
+//     autoc->str = NULL;
+// 	autoc->end = NULL;
+//     autoc->current = NULL;
+// 	autoc->begin = NULL;
+//     autoc->finish = 0;
+//     autoc->jump = 0;
+//     autoc->max_len = 0;
+//     autoc->row = 0;
+//     autoc->col = 0;
+//     autoc->pages = 0;
+//     autoc->more_pages = 0;
+//     autoc->nbr_word = 0;
+//     autoc->updaterow = 0;
+//     autoc->arrow = 0;
+//     autoc->clr_yes = 0;
+// 	autoc->can_print = 0;
+// 	autoc->possiblitie = 0;
+// 	return (autoc);
+// }
 
-	h = NULL;
-	if ((h = (hlist *)malloc(sizeof(hlist))) == NULL)
-	{
-		ft_putendl_fd("Error malloc", 2);
-		return (NULL);
-	}
-	h->begin = NULL;
-	h->end = NULL;
-	h->current = NULL;
-	h->active = 0;
-    h->ecrase_hist = 0;
-    h->down = 0;
-    h->up = 0;
-    h->line_history = 0;
-	return (h);
-}
-
-static  inline  t_keyflag   *init_keyflag(void)
-{
-    t_keyflag   *new;
-
-    if ((new = (t_keyflag *)malloc(sizeof(*new))) == NULL)
-    {
-        ft_putendl_fd("Error malloc", 2);
-        return (NULL);
-    }
-    new->backspace = 0;
-    new->mleft = 0;
-    new->mright = 0;
-    new->underline = 0;
-    new->cl = 0;
-    return (new);
-}
-
-static	inline	t_auto		*init_autocompletion(void)
-{
-    t_auto   *autocomp;
-
-	autocomp = NULL;
-	if ((autocomp = (t_auto *)malloc(sizeof(t_auto))) == NULL)
-	{
-		ft_putendl_fd("Error malloc", 2);
-		return (NULL);
-	}
-    autocomp->str = NULL;
-	autocomp->end = NULL;
-    autocomp->current = NULL;
-	autocomp->begin = NULL;
-    autocomp->finish = 0;
-    autocomp->jump = 0;
-    autocomp->max_len = 0;
-    autocomp->row = 0;
-    autocomp->col = 0;
-    autocomp->pages = 0;
-    autocomp->more_pages = 0;
-    autocomp->nbr_word = 0;
-    autocomp->updaterow = 0;
-    autocomp->arrow = 0;
-    autocomp->clr_yes = 0;
-	autocomp->can_print = 0;
-	autocomp->possiblitie = 0;
-	return (autocomp);
-}
-
-static	inline	dlist		*init_lineterm(void)
-{
-	dlist	*line;
-
-	line = NULL;
-	if ((line = (dlist *)malloc(sizeof(dlist))) == NULL)
-	{
-		ft_putendl_fd("Error malloc", 2);
-		return (NULL);
-	}
-	line->lenght = 0;
-	line->lnk_before = 0;
-	line->last = 0;
-	line->begin = NULL;
-	line->end = NULL;
-	return (line);
-}
+// static	inline	dlist		*init_lineterm(void)
+// {
+// 	dlist	*line;
+//
+// 	line = NULL;
+// 	if ((line = (dlist *)malloc(sizeof(dlist))) == NULL)
+// 	{
+// 		ft_putendl_fd("Error malloc", 2);
+// 		return (NULL);
+// 	}
+// 	line->lenght = 0;
+// 	line->lnk_before = 0;
+// 	line->last = 0;
+// 	line->begin = NULL;
+// 	line->end = NULL;
+// 	return (line);
+// }
 
 t_termc						*init_termc(char **env)
 {
-	t_termc	*shell;
+	t_termc	*tsh;
 
-	shell = NULL;
-	if ((shell = (t_termc *)malloc(sizeof(t_termc))) == NULL)
+	tsh = NULL;
+	if ((tsh = (t_termc *)malloc(sizeof(t_termc))) == NULL)
 	{
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
 	}
-    if ((shell->term = init_term(env)) == NULL)
+    if ((tsh->term = init_term(env)) == NULL)
 		ft_putendl_fd("Error init_term", 2);
-	if ((shell->line = init_lineterm()) == NULL)
-		ft_putendl_fd("Error init_lineterm", 2);
-	if ((shell->line_dup = init_lineterm()) == NULL)
-		ft_putendl_fd("Error init_lineterm", 2);
-	if ((shell->history = init_history()) == NULL)
-		ft_putendl_fd("Error init_history", 2);
-	if ((shell->from_hist = init_history()) == NULL)
-		ft_putendl_fd("Error init_history", 2);
-	if ((shell->console = init_console()) == NULL)
-		ft_putendl_fd("Error init_console", 2);
-    if ((shell->autocompl = init_autocompletion()) == NULL)
-        ft_putendl_fd("Error init_autocompletion", 2);
-    if ((shell->autocompl_binary = init_autocompletion()) == NULL)
-        ft_putendl_fd("Error init_autocompletion_binary", 2);
-	if ((shell->keyflag = init_keyflag()) == NULL)
-		ft_putendl_fd("Error init_keyflag", 2);
-    ft_init_fill_history(shell->from_hist);
-    ft_init_autocompl_binary(shell, env);
-	shell->pwd = NULL;
-    shell->nbr_hist = 0;
-    shell->ret_signal = 0;
-    shell->move_cursor = 0;
-    shell->auto_active = 0;
-    shell->multiauto_active = 0;
-    shell->count_tab = 0;
-    shell->len_prompt = 0;
-	shell->quotes = 0;
-	return (shell);
+	ft_init_termc2(&tsh);
+    ft_init_fill_history(tsh->from_hist);
+    ft_init_autocompl_binary(tsh, env);
+	tsh->pwd = NULL;
+    tsh->nbr_hist = 0;
+    tsh->ret_signal = 0;
+    tsh->move_cursor = 0;
+    tsh->auto_active = 0;
+    tsh->multiauto_active = 0;
+    tsh->count_tab = 0;
+    tsh->len_prompt = 0;
+	tsh->quotes = 0;
+	return (tsh);
 }

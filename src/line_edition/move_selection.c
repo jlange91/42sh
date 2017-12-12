@@ -4,76 +4,74 @@
 /************************************************************************************
  * FUNCTION MOVE_RIGHT OR MOVE_LEFT
  *
- * ALL VARIABLE			shell->history->down ===> reinitialise
- *						shell->history->up ===> reinitialise
- *						shell->end->s_pos ===> If cursor can be here or not
+ * ALL VARIABLE			tsh->history->down ===> reinitialise
+ *						tsh->history->up ===> reinitialise
+ *						tsh->end->s_pos ===> If cursor can be here or not
  *												if s_pos == 0 , cursor can be on the letter else can't
- *						shell->end->under ==> active underline caractere if keyflag->underline is active
- *						shell->line->last ==> if we are end of the double linked , we active this variable
- *												else we active shell->line->lnk_before
- *						
+ *						tsh->end->under ==> active underline caractere if keyflag->underline is active
+ *						tsh->line->last ==> if we are end of the double linked , we active this variable
+ *												else we active tsh->line->lnk_before
+ *
  *
  *	Explication : This function display caractere by caractere correctly
  *
  * NO NORME
  * *********************************************************************************/
 
-void	ft_move_right(t_lineterm *end, t_termc *shell, char **env)
+void	ft_move_right(t_lineterm *end, t_termc *tsh)
 {
-	(void)env;
-    if (shell->auto_active || shell->multiauto_active)
+    if (tsh->auto_active || tsh->multiauto_active)
     {
-        ft_autoMove(end, shell, env, 1);
+        ft_autoMove(end, tsh, 1);
         return ;
     }
-    shell->history->down = 0;
-    shell->history->up = 0;
-    shell->auto_active = 0;
-    shell->multiauto_active = 0;
+    tsh->history->down = 0;
+    tsh->history->up = 0;
+    tsh->auto_active = 0;
+    tsh->multiauto_active = 0;
     if (end->next)
     {
-        if (shell->keyflag->underline && end->under != 1)
+        if (tsh->keyflag->underline && end->under != 1)
             end->under = 1;
         end->s_pos = 0;
         end->next->s_pos = 1;
         if (!end->next->next)
-            shell->line->last = 1;
+            tsh->line->last = 1;
         else
-            shell->line->lnk_before = 1;
-        shell->move_cursor = 1;
+            tsh->line->lnk_before = 1;
+        tsh->move_cursor = 1;
     }
 }
 
-void    ft_move_left(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_left(t_lineterm *end, t_termc *tsh)
 {
-	(void)env;
-    if (shell->auto_active || shell->multiauto_active)
+    if (tsh->auto_active || tsh->multiauto_active)
     {
-        ft_autoMove(end, shell, env, 0);
+        ft_autoMove(end, tsh, 0);
         return ;
     }
-    shell->history->down = 0;
-    shell->history->up = 0;
-    shell->auto_active = 0;
-    shell->multiauto_active = 0;
+    tsh->history->down = 0;
+    tsh->history->up = 0;
+    tsh->auto_active = 0;
+    tsh->multiauto_active = 0;
     if (end->prev && end->index != 0)
     {
-        if (shell->keyflag->underline && end->under != 1)
+        if (tsh->keyflag->underline && end->under != 1)
             end->under = 1;
         end->s_pos = 0;
         end->prev->s_pos = 1;
-        shell->line->last = 0;
-        shell->move_cursor = 1;
+        tsh->line->last = 0;
+        tsh->move_cursor = 1;
     }
 }
 
 /************************************************************************************
  * FUNCTION MAJ_RIGHT OR MAJ_LEFT
  *
- * ALL VARIABLE			shell->keyflag->underline ===> initialise
- *						shell->mleft ===> is SHIFT + arrow left
- *						shell->mright ==> is SHIFT + arrow right
- *						
+ * ALL VARIABLE			tsh->keyflag->underline ===> initialise
+ *						tsh->mleft ===> is SHIFT + arrow left
+ *						tsh->mright ==> is SHIFT + arrow right
+ *
  *
  *	Explication : This function is for active underline caractere by caractere
  *				 The last condition IF , for active underline last caractere where is cursor
@@ -81,26 +79,26 @@ void    ft_move_left(t_lineterm *end, t_termc *shell, char **env)
  * NO NORME
  * *********************************************************************************/
 
-void    ft_move_mleft(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_mleft(t_lineterm *end, t_termc *tsh)
 {
-    if (shell->auto_active || shell->multiauto_active)
+    if (tsh->auto_active || tsh->multiauto_active)
         return ;
-    shell->keyflag->underline = 1;
-    shell->keyflag->mleft = 1;
-    shell->keyflag->mright = 0;
-    ft_move_left(end, shell, env);
+    tsh->keyflag->underline = 1;
+    tsh->keyflag->mleft = 1;
+    tsh->keyflag->mright = 0;
+    ft_move_left(end, tsh);
 }
 
-void    ft_move_mright(t_lineterm *end, t_termc *shell, char **env)
+void    ft_move_mright(t_lineterm *end, t_termc *tsh)
 {
-    if (shell->auto_active || shell->multiauto_active)
+    if (tsh->auto_active || tsh->multiauto_active)
         return ;
-    shell->keyflag->underline = 1;
-    shell->keyflag->mright = 1;
-    shell->keyflag->mleft = 0;
+    tsh->keyflag->underline = 1;
+    tsh->keyflag->mright = 1;
+    tsh->keyflag->mleft = 0;
 	if (end && end->index == 0)
 		end = end->next;
-	ft_move_right(end, shell, env);
-    if (shell->keyflag->underline && end->under != 1)
+	ft_move_right(end, tsh);
+    if (tsh->keyflag->underline && end->under != 1)
 		end->under = 1;
 }

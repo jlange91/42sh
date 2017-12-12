@@ -12,34 +12,31 @@
  *
  * NO NORME
  * **********************************************************************************/
-static inline int    ft_cursor_pos(t_lineterm *end, t_termc *shell)
+static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh, int up)
 {
     size_t  last;
-    int     up;
 
     if (!end)
         return (-1);
-    up = 0;
-    last = 0;
-    shell->move_cursor = 0;
-    while (end->s_pos == 0 && end->index != 0)	
+    tsh->move_cursor = 0;
+    while (end->s_pos == 0 && end->index != 0)
     {
-        if (shell->console->char_pos == 0 && end->prev)
+        if (tsh->console->char_pos == 0 && end->prev)
         {
-            shell->move_cursor++;
-            tputs(shell->term->upstr, 1, ft_inputstr);
-            shell->console->char_pos = get_columns() - 1;
+            tsh->move_cursor++;
+            tputs(tsh->term->upstr, 1, ft_inputstr);
+            tsh->console->char_pos = get_columns() - 1;
             last = get_columns() - 1;
             while (last--)
-                tputs(shell->term->ndstr, 1, ft_inputstr);
+                tputs(tsh->term->ndstr, 1, ft_inputstr);
             up++;
         }
-        tputs(shell->term->lestr, 1, ft_inputstr);
-        shell->console->char_pos--;
+        tputs(tsh->term->lestr, 1, ft_inputstr);
+        tsh->console->char_pos--;
         end = end->prev;
     }
-    if (shell->keyflag->mright && shell->keyflag->underline)
-        tputs(shell->term->lestr, 1, ft_inputstr);
+    if (tsh->keyflag->mright && tsh->keyflag->underline)
+        tputs(tsh->term->lestr, 1, ft_inputstr);
     return (up);
 }
 
@@ -52,30 +49,30 @@ static inline int    ft_cursor_pos(t_lineterm *end, t_termc *shell)
  *
  * NO NORME
  * **********************************************************************************/
-static inline void    ft_del_line(t_termc *shell, int down)
+static inline void    ft_del_line(t_termc *tsh, int down)
 {
     size_t  len;
     int     down2;
 
-    len = shell->console->char_pos;
+    len = tsh->console->char_pos;
     while (len--)
     {
-        tputs(shell->term->lestr, 1, ft_inputstr);
-        if (shell->keyflag->backspace == 1)
-            tputs(shell->term->dcstr, 1, ft_inputstr);
+        tputs(tsh->term->lestr, 1, ft_inputstr);
+        if (tsh->keyflag->backspace == 1)
+            tputs(tsh->term->dcstr, 1, ft_inputstr);
     }
-    while (shell->console->total_line-- > 1)
-        tputs(shell->term->upstr, 1, ft_inputstr);
-    down2 = down - shell->move_cursor;
+    while (tsh->console->total_line-- > 1)
+        tputs(tsh->term->upstr, 1, ft_inputstr);
+    down2 = down - tsh->move_cursor;
     if (down2 == -1)
         while (down2-- > 0)
-            tputs(shell->term->dostr, 1, ft_inputstr);
-    else if (shell->history->up == 0
-            && shell->history->down == 0 && shell->keyflag->cl == 0)
-        while (down--) 
-            tputs(shell->term->dostr, 1, ft_inputstr);
-    if (shell->keyflag->backspace == 1)
-        tputs(shell->term->dlstr, 1, ft_inputstr);
+            tputs(tsh->term->dostr, 1, ft_inputstr);
+    else if (tsh->history->up == 0
+            && tsh->history->down == 0 && tsh->keyflag->cl == 0)
+        while (down--)
+            tputs(tsh->term->dostr, 1, ft_inputstr);
+    if (tsh->keyflag->backspace == 1)
+        tputs(tsh->term->dlstr, 1, ft_inputstr);
 }
 
 /************************************************************************************
@@ -87,47 +84,47 @@ static inline void    ft_del_line(t_termc *shell, int down)
  *
  * NO NORME
  * *********************************************************************************/
-static void		ft_display_char_split(t_lineterm *begin, t_termc *shell, int *ret)
+static void		ft_display_char_split(t_lineterm *begin, t_termc *tsh, int *ret)
 {
     size_t  	col;
 
     col = get_columns() - 1;
-    if (begin->index == 0 && !shell->quotes)
+    if (begin->index == 0 && !tsh->quotes)
         ft_putstr(BLUE);
     else
         ft_putstr(RESET);
-    if (shell->console->char_pos == col)
+    if (tsh->console->char_pos == col)
     {
-        tputs(shell->term->dostr, 1, ft_inputstr);
-        shell->console->total_line++;
-        shell->console->char_pos = 0;
+        tputs(tsh->term->dostr, 1, ft_inputstr);
+        tsh->console->total_line++;
+        tsh->console->char_pos = 0;
         *ret = *ret + 1;
     }
     if (begin->under)
         ft_putstr(RED);
     ft_putchar(begin->c);
-    shell->console->char_pos++;
-    *ret = *ret + shell->console->char_pos;
+    tsh->console->char_pos++;
+    *ret = *ret + tsh->console->char_pos;
     ft_putstr(RESET);
 }
 
-int    ft_display_char(t_lineterm *begin, t_termc *shell)
+int    ft_display_char(t_lineterm *begin, t_termc *tsh)
 {
     int     	ret;
 
     ret = 0;
-    shell->console->char_pos = 0;
-    shell->console->total_line = 1;
+    tsh->console->char_pos = 0;
+    tsh->console->total_line = 1;
     while (begin)
     {
-        ft_display_char_split(begin ,shell, &ret);
+        ft_display_char_split(begin ,tsh, &ret);
         begin = begin->next;
     }
-    if (shell->auto_active || shell->multiauto_active)
-        tputs(shell->term->cestr, 1, ft_inputstr);
+    if (tsh->auto_active || tsh->multiauto_active)
+        tputs(tsh->term->cestr, 1, ft_inputstr);
     else
-        tputs(shell->term->cdstr, 1, ft_inputstr);
-    shell->history->line_history = shell->console->total_line;
+        tputs(tsh->term->cdstr, 1, ft_inputstr);
+    tsh->history->line_history = tsh->console->total_line;
     return (ret);
 }
 
@@ -141,25 +138,27 @@ int    ft_display_char(t_lineterm *begin, t_termc *shell)
  *	Explication : DISPLAY LOL ;)
  * NORME OK
  * **********************************************************************************/
-int    ft_display(t_termc *shell, int *nbr, int close)
+int    ft_display(t_termc *tsh, int *nbr, int close)
 {
     static int  down;
     static int  down2;
+    int         up;
 
     if (close)
     {
         down = 0;
         return (0);
     }
-    tputs(shell->term->vistr, 1, ft_inputstr);
-    ft_del_line(shell, down);
-    *nbr = ft_display_char(shell->line->begin, shell);
-    down = ft_cursor_pos(shell->line->end, shell);
-    if (shell->auto_active || shell->multiauto_active)
+    tputs(tsh->term->vistr, 1, ft_inputstr);
+    ft_del_line(tsh, down);
+    *nbr = ft_display_char(tsh->line->begin, tsh);
+    up = 0;
+    down = ft_cursor_pos(tsh->line->end, tsh, up);
+    if (tsh->auto_active || tsh->multiauto_active)
     {
-        ft_display_autocompletion(shell, &down2);
+        ft_display_autocompletion(tsh, &down2);
         return (down2);
     }
-    tputs(shell->term->vestr, 1, ft_inputstr);
+    tputs(tsh->term->vestr, 1, ft_inputstr);
     return (down);
 }

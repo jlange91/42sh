@@ -1,20 +1,5 @@
 #include "../../inc/quote.h"
 
-int		ft_skip_useless(char *line)
-{
-	int i;
-
-    i = 0;
-    while (line[i])
-    {
-        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-            break ;
-	    while (line[i] == ' ' || line[i] == '\t' || line[i] == '\n')
-            i++;
-    }
-	return (i);
-}
-
 int    ft_return(char c)
 {
     if (c == '"')
@@ -25,4 +10,14 @@ int    ft_return(char c)
         return (-3);
     else
         return (0);
+}
+
+void	ft_remove_space(char **str)
+{
+	char	*tmp;
+
+	tmp = ft_strtrim(*str);
+	free(*str);
+	*str = ft_strdup(tmp);
+	free(tmp);
 }

@@ -6,7 +6,7 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2017/11/28 17:02:23 by jlange           ###   ########.fr        #
+#    Updated: 2017/12/12 15:10:10 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ LDCURSE = -lncurses
 SRCS = src/line_edition/line_edition.c\
 	   src/line_edition/term.c\
 	   src/line_edition/init.c\
+	   src/line_edition/init2.c\
 	   src/line_edition/readline.c\
 	   src/line_edition/utils_read.c\
 	   src/line_edition/tools_readline.c\
@@ -50,6 +51,7 @@ SRCS = src/line_edition/line_edition.c\
 	   src/quote/fill_line.c\
 	   src/quote/main_quote.c\
 	   src/quote/tools.c\
+	   src/quote/read_quote.c\
 	   src/autocompletion/init_autocompletion.c\
 	   src/autocompletion/init_autocompletion2.c\
 	   src/autocompletion/print_autocompletion.c\
@@ -61,8 +63,11 @@ SRCS = src/line_edition/line_edition.c\
 	   src/autocompletion/multi_choice_autocompletion.c\
 	   src/autocompletion/update_cursor.c\
 	   src/autocompletion/multi_pages.c\
-	   src/globbing/init_glob.c\
-	   src/globbing/get_glob.c\
+	   src/autocompletion/print.c\
+	   src/globbing/main_glob.c\
+	   src/globbing/check_glob.c\
+	   src/globbing/tool_glob.c\
+	   src/globbing/open_glob.c\
 	   src/globbing/result_glob.c\
 	   src/globbing/match_chunk.c\
 	   src/globbing/match.c\
@@ -98,14 +103,18 @@ SRCS = src/line_edition/line_edition.c\
 		src/other/ft_remove_useless_path.c	\
 		src/other/ft_replace_str.c			\
 		src/other/ft_chdir_error.c			\
+		src/builtins/ft_help.c 				\
+		src/builtins/export.c 				\
+		src/builtins/export2.c 				\
+		src/builtins/export3.c 				\
+		src/redirection/count.c				\
+		src/redirection/fill_word.c			\
+		src/redirection/ft_ret_word.c		\
+		src/redirection/ft_redirection.c	\
+		src/other/ft_skip_useless.c		\
 		src/other/ft_skip_quote.c			\
-		src/other/ft_skip_dquote.c			\
-		src/ret_word/count.c\
-		src/ret_word/fill_word.c\
-		src/ret_word/ft_ret_word.c\
-		src/redirection/ft_redirection.c
-					
-OBJ = $(SRCS:.c=.o) 
+
+OBJ = $(SRCS:.c=.o)
 
 all : $(NAME)
 
@@ -114,6 +123,7 @@ OBJ : $(OBJ)
 
 $(NAME) : $(OBJ)
 	@make -C libft
+	@make -C Help_master
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) $(LDLIBS) $(LDCURSE)
 	@echo COMPIALTION 21SH OK !!!!
 

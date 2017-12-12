@@ -19,7 +19,7 @@ void    ft_fill_back_dlst(dlist *line, int c, int i)
 	new = NULL;
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
-	new->c = (char)c; 
+	new->c = (char)c;
     new->under = 0;
 	new->index = i;
 	new->s_pos = 1;
@@ -60,14 +60,14 @@ static inline t_lineterm *get_cursor_current(t_lineterm *end)
 	return (end);
 }
 
-int		ft_count_dlnk(t_termc *shell)
+int		ft_count_dlnk(t_termc *tsh)
 {
 	t_lineterm *tmp;
 	int			i;
 
-	tmp = shell->line->begin;
+	tmp = tsh->line->begin;
 	if (tmp->next)
-		tmp = ft_dont_get_prompt(tmp);
+		tmp = ft_dontGetPrompt2(tmp);
 	i = 0;
 	while (tmp)
 	{
@@ -77,15 +77,15 @@ int		ft_count_dlnk(t_termc *shell)
 	return (i);
 }
 
-void  ft_insert_dlnk(t_lineterm *end, t_termc *shell, int c, int i)
+void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 {
 	t_lineterm  *new;
 
 	end = get_cursor_current(end);
 	if (end->index == 0)
 	{
-		ft_fill_back_dlst(shell->line, c, i);
-		shell->line->last = 1;
+		ft_fill_back_dlst(tsh->line, c, i);
+		tsh->line->last = 1;
 		return ;
 	}
 	new = NULL;
@@ -99,5 +99,5 @@ void  ft_insert_dlnk(t_lineterm *end, t_termc *shell, int c, int i)
 	new->prev = end->prev;
 	end->prev->next = new;
 	end->prev = new;
-	shell->line->lenght += 1;
+	tsh->line->lenght += 1;
 }
