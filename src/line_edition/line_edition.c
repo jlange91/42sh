@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2017/12/12 15:13:56 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/12 18:36:55 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,20 @@ static int	ft_start_preparsing(t_termc *tsh, t_shell sh)
 		sh.line = ft_strdup(tsh->line_shell);
 		ft_free_free(tsh);
 		ft_replace(&sh);
-		write(1, "\n", 1);		
-		ft_redirection(&sh);
+		write(1, "\n", 1);
+		ft_add_file_history(tsh);		//HISTORY NO FINISH		
+		if (ft_redirection(&sh) == -1)
+		{
+			free(sh.line);
+			ft_end_term(tsh);
+			ft_remove_redirection(&sh);
+			continue ;
+		}
 		sh.av = ft_fill_av(sh.line);
 		sh.ac = tab_2d_len(sh.av);
 		if (sh.av[0] && sh.av[0][0])
 			ft_cmd(&sh);
 		ft_remove_redirection(&sh);
-		ft_add_file_history(tsh);		//HISTORY NO FINISH
 		ft_end_term(tsh);
 		free_tab_2d(sh.av);
 		free(sh.line);

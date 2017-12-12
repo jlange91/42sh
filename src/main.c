@@ -27,6 +27,7 @@ int     main(int ac, char **av, char **env)
 	tsh = NULL;
 	ft_fill_env(&sh, env);
 	tsh = init_termc(sh.env);
+	sh.cfd = NULL;
     ft_line_edition(tsh, sh);
 	free_shell(&sh, tsh);
     return (0);

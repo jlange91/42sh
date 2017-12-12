@@ -185,6 +185,12 @@ typedef struct          s_cmd
 /*******************************************/
 /*              test de fusion              */
 
+typedef struct      s_toclose
+{
+    int                 fd;
+    struct s_toclose    *next;
+}                   t_toclose;
+
 typedef struct		s_shell
 {
 	char	*line;
@@ -194,6 +200,8 @@ typedef struct		s_shell
 	char	**var;
 	char	**env;
 	char	*pwd;
+    t_toclose       *cfd;
+    
 }					t_shell;
 
 typedef struct      s_redir
