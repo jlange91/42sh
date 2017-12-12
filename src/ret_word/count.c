@@ -71,7 +71,7 @@ static void     skip_quote(char *line, int *i, int *count)
     }
 }
 
-int     ft_count_char_word(char *line, int *nb)
+int     ft_count_char_word(char *line)
 {
     int i;
     int count;
@@ -87,10 +87,7 @@ int     ft_count_char_word(char *line, int *nb)
         skip_quote(line, &i, &count);
         space = ft_skip_useless(&line[i]);
         if (space > 0 || !line[i] || line[i] == '>' || line[i] == '<')
-        {
-            *nb = i;
             return (count);
-        }
     }
     return (count);
 }

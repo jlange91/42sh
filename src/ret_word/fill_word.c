@@ -74,9 +74,11 @@ static void     skip_quote(char *line, int *i, char *word)
 void     ft_fill_word(char *line, char *word)
 {
     int i;
+    int j;
     int space;
 
     i = 0;
+    j = 0;
     space = 0;
     while (line[i])
     {
@@ -85,6 +87,13 @@ void     ft_fill_word(char *line, char *word)
         skip_quote(line, &i, word);
         space = ft_skip_useless(&line[i]);
         if (space > 0 || !line[i] || line[i] == '>' || line[i] == '<')
+        {
+            while (j < i)
+            {
+                line[j] = ' ';
+                j++;
+            }
             return ;
+        }
     }
 }

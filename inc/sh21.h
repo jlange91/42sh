@@ -273,10 +273,10 @@ void		ft_remove_redirection(t_shell *sh);
 /*            ret_word          */
 /********************************/
 
-char    *ft_ret_word(char *line, int *size);
+char    *ft_ret_word(char *line);
 void     ft_fill_word(char *line, char *word);
 
-int     ft_count_char_word(char *line, int *nb);
+int     ft_count_char_word(char *line);
 
 
 void			ft_cmd(t_shell *sh);
