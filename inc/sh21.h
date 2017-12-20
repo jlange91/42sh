@@ -174,7 +174,15 @@ typedef struct		s_cmd
 	char	**var;
 	char	**env;
 	char	*pwd;
+    struct s_cmd    *next;
 }					t_cmd;
+
+typedef struct      s_shell
+{
+    char **env;
+    char *pwd;
+    char *line;
+}                   t_shell;
 
 typedef struct      s_redir
 {
@@ -190,9 +198,9 @@ void		ft_perror(char *str, int error, char *str2);
 /*            replace           */
 /********************************/
 
-void		ft_replace(t_cmd *cmd);
-void		ft_replace_dollar(t_cmd *cmd, int save);
-void		ft_replace_tilde(t_cmd *cmd, int save);
+void		ft_replace(t_shell *sh);
+void		ft_replace_dollar(t_shell *sh, int save);
+void		ft_replace_tilde(t_shell *sh, int save);
 char		*ft_replace_line(char *str1, char *value, char *str2);
 char        *ft_add_escape(char *str);
 
@@ -210,7 +218,7 @@ void		signal_sigint();
 void		ft_display_env(char **env);
 void		ft_chdir_error(char *path);
 char		*ft_getenv(const char *name, char **env);
-void		ft_fill_env(t_cmd *cmd, char **env);
+void		ft_fill_env(t_shell *sh, char **env);
 char		**ft_replace_env(char **new_env, char **old_env);
 char		*ft_remove_useless_path(char *str);
 char		*ft_replace_str(char *new, char *old);
@@ -236,7 +244,7 @@ void		ft_cmd(t_cmd *cmd);
 int		    ft_singleton(int nb, int opt);
 int			ft_skip_quote(char *str);
 int			ft_skip_dquote(char *str);
-t_cmd     	*ft_ret_cmd(t_cmd *arg);
+t_shell    	*ft_ret_sh(t_shell *arg);
 
 /********************************/
 /*         redirection          */

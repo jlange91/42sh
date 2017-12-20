@@ -55,24 +55,15 @@ static char	**ft_reset_glob(t_termc *tsh, char *line)
 	return (tmp_tab);
 }
 
-t_cmd		*ft_ret_cmd(t_cmd *arg)
-{
-	static t_cmd *cmd = NULL;
-
-	if (arg)
-		cmd = arg;
-	return (cmd);
-}
-
 void		ft_replace_all(char *line, t_termc *tsh)
 {
 	int			i;
 	int 		count;
 	char		**tabt;
 	char		*tmp;
-	t_cmd		 	*cmd;
+	t_shell		*sh;
 
-	cmd = ft_ret_cmd(NULL);
+	sh = ft_ret_sh(NULL);
 	tabt = ft_reset_glob(tsh, line);
 	i = -1;
 	count = ft_count_dtab(tabt) - 1;
@@ -86,11 +77,11 @@ void		ft_replace_all(char *line, t_termc *tsh)
 		}
 		else
 		{
-			cmd->line = ft_strdup(tabt[i]);
-			ft_replace(cmd);
-			(ft_strlen(cmd->line) > 0) ? ft_cpy(cmd->line, tsh, count, i) :
+			sh->line = ft_strdup(tabt[i]);
+			ft_replace(sh);
+			(ft_strlen(sh->line) > 0) ? ft_cpy(sh->line, tsh, count, i) :
 			ft_cpy(tabt[i], tsh, count, i);
-			free(cmd->line);
+			free(sh->line);
 		}
 	}
 	ft_free_tab(tabt);

@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:42:28 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:20:35 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/20 18:55:04 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,22 @@ static inline char	**up_sh_lvl(char **env, int i)
 	return (new_env);
 }
 
-void				ft_fill_env(t_cmd *cmd, char **env)
+void				ft_fill_env(t_shell *sh, char **env)
 {
 	char	pwd[PATH_MAX];
 	char	*pwd2;
 
-	cmd->env = up_sh_lvl(env, tab_2d_len(env));
+	sh->env = up_sh_lvl(env, tab_2d_len(env));
 	if ((pwd2 = ft_getenv("PWD", env)) == NULL)
 	{
 		getcwd(pwd, sizeof(pwd));
-		cmd->env = ft_replace_env(ft_setenv("PWD", pwd, cmd->env), cmd->env);
-		cmd->pwd = ft_strdup(pwd);
+		sh->env = ft_replace_env(ft_setenv("PWD", pwd, sh->env), sh->env);
+		sh->pwd = ft_strdup(pwd);
 	}
 	else
 	{
-		cmd->pwd = ft_strdup(&pwd2[4]);
-		cmd->env = ft_replace_env(ft_setenv("PWD", cmd->pwd, cmd->env), cmd->env);
+		sh->pwd = ft_strdup(&pwd2[4]);
+		sh->env = ft_replace_env(ft_setenv("PWD", sh->pwd, sh->env), sh->env);
 	}
-	cmd->var = load_env(cmd->env);
+	//sh->var = load_env(sh->env);
 }

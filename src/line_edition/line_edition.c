@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2017/12/20 17:15:46 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/20 18:04:28 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,6 @@
 #include "../../inc/built_in.h"
 #include "../../inc/globbing.h"
 #include "../../inc/quote.h"
-
-static void  ft_free_free(t_termc *sh)
-{
-	free(sh->line_shell);
-	ft_free_dlist(&sh->line);
-	ft_free_history(sh->history);
-}
 
 void			ft_cmd(t_cmd *cmd)
 {
@@ -57,40 +50,20 @@ void			ft_cmd(t_cmd *cmd)
 	//printf("{%d}\n", ft_singleton(0,0));
 }
 
-static void	ft_update_pwd_to_tsh(t_cmd cmd, t_termc *tsh)
+int	ft_line_edition(t_termc *tsh, t_cmd *cmd)
 {
-	if (cmd.pwd)
-	{
-		if (tsh->pwd)
-			free(tsh->pwd);
-		tsh->pwd = ft_strdup(cmd.pwd);
-	}
-}
 
-int	ft_line_edition(t_termc *tsh, t_cmd cmd)
-{
-	ft_ret_cmd(&cmd);
-	ft_ret_tsh(&tsh);
-	while (42)
-	{
-		signal(SIGINT, ft_handle_signal);
+
 		ft_singleton(0, 1);
-		ft_update_pwd_to_tsh(cmd, tsh);
-		ft_fill_history(tsh);
-		ft_fill_line(tsh);				// replace glob is in fct ft_line_input
-		cmd.line = ft_strdup(tsh->line_shell);
-		ft_free_free(tsh);
-		ft_replace(&cmd);
-		write(1, "\n", 1);
-		ft_redirection(&cmd);
-		cmd.av = ft_fill_av(cmd.line);
-		cmd.ac = tab_2d_len(cmd.av);
-		if (cmd.av[0] && cmd.av[0][0])
-			ft_cmd(&cmd);
-		ft_remove_redirection(&cmd);
+		ft_redirection(cmd);
+		cmd->av = ft_fill_av(cmd->line);
+		cmd->ac = tab_2d_len(cmd->av);
+		if (cmd->av[0] && cmd->av[0][0])
+			ft_cmd(cmd);
+		ft_remove_redirection(cmd);
 		ft_end_term(tsh);
-		free_tab_2d(cmd.av);
-		free(cmd.line);
-	}
+		free_tab_2d(cmd->av);
+
+
 	return (ft_singleton(0, 0));
 }

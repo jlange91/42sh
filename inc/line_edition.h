@@ -177,6 +177,6 @@ void				ft_catch_sigwinch(int signum);
 
 /**************************************************************************************/
 /*FT_LINE_EDITION*/
-int                 ft_line_edition(t_termc *shell, t_cmd cmd);
+int                 ft_line_edition(t_termc *shell, t_cmd *cmd);
 
 #endif

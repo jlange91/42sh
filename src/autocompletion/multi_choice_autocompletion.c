@@ -20,7 +20,7 @@ static void 	ft_no_doublon(t_auto *tmp, char *str, int k)
 		ft_fill_back_autocompl(tmp, str, ++k);
 }
 
-static void 	ft_suitlist(t_cmd *cmd, char *after, t_auto *tmp, int i)
+static void 	ft_suitlist(char **env, char *after, t_auto *tmp, int i)
 {
 	int 			k;
 	char			**dtab;
@@ -28,7 +28,7 @@ static void 	ft_suitlist(t_cmd *cmd, char *after, t_auto *tmp, int i)
 	DIR             *dir;
 	struct dirent   *file;
 
-	if ((path = ft_getenv("PATH", cmd->env)) != NULL && path[5])
+	if ((path = ft_getenv("PATH", env)) != NULL && path[5])
 	{
 		dtab = ft_strsplit(&path[5], ':');
 		i = -1;
@@ -54,7 +54,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 	int         	i;
 	t_auto      	*tmp;
 	t_autocompl 	*begin;
-	t_cmd	 		*cmd;
+	t_shell	 		*sh;
 
 	if ((tmp = (t_auto *)malloc(sizeof(*tmp))) == NULL)
 		return (NULL);
@@ -62,7 +62,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 	tmp->end = NULL;
 	tmp->current = NULL;
 	begin = tsh->autoc->begin;
-	cmd = ft_ret_cmd(NULL);
+	sh = ft_ret_sh(NULL);
 	i = 0;
 	if (begin)																					//CURRENT DIRECTORY
 	{
@@ -73,7 +73,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 			begin = begin->next;
 		}
         if (ret)																				//IF MULTIAUTO_ACTIVE :)
-			ft_suitlist(cmd, after, tmp, i);
+			ft_suitlist(sh->env, after, tmp, i);
 	}
 	return (tmp);
 }

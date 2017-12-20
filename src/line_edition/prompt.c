@@ -30,12 +30,15 @@ static	void	ft_print_hour(void)
 	ft_putstr("] ");
 }
 
-static	int	ft_print_current_work(t_termc *tsh)
+static	int	ft_print_current_work()
 {
+	t_shell *sh;
+
+	sh = ft_ret_sh(NULL);
     ft_putstr(GREEN_FRONT);
-	ft_putendl(tsh->pwd);
+	ft_putendl(sh->pwd);
 	ft_putstr(RESET);
-	return (ft_strlen(tsh->pwd));
+	return (ft_strlen(sh->pwd));
 }
 
 void			ft_display_prompt(t_termc *tsh)
@@ -58,6 +61,6 @@ void			ft_display_prompt(t_termc *tsh)
 	ft_putstr(host);
 	ft_putstr(RESET);
 	ft_putchar(' ');
-	len += ft_print_current_work(tsh);
+	len += ft_print_current_work();
 	tsh->len_prompt = len + 3;
 }
