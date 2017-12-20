@@ -1,18 +1,17 @@
 #include "../../inc/autocompletion.h"
+#include "../../inc/line_edition.h"
 
-static int    ft_print_page(t_termc *tsh, t_auto *select, t_autocompl *begin)
+static void    ft_print_page(t_termc *tsh, t_auto *select, t_autocompl *begin)
 {
     int         i;
-    int         total;
 
     i = 0;
-    total = 0;
     while (++i <= select->pages)
     {
         tsh->autoc->jump = select->row;
         if (select->nbr_word >= select->current->index)
         {
-            total = ft_diff_print(select, begin, i, 2);
+            ft_diff_print(select, begin, i, 2);
             break;
         }
         else if (select->nbr_word * (i + 1) >= select->current->index
@@ -22,11 +21,10 @@ static int    ft_print_page(t_termc *tsh, t_auto *select, t_autocompl *begin)
             while (begin && begin->index < select->nbr_word * i)
                 begin = begin->next;
             begin = begin->next;
-            total = ft_diff_print(select, begin, i + 1, 2);
+            ft_diff_print(select, begin, i + 1, 2);
             break;
         }
     }
-    return (total);
 }
 
 static void    what_pages(t_termc *tsh, t_auto *select, int *ecrase, int *e_s)
@@ -54,43 +52,58 @@ static void    what_pages(t_termc *tsh, t_auto *select, int *ecrase, int *e_s)
     }
 }
 
-
 static void ft_clean_screen(t_auto *select, t_termc *tsh, int *ecrase, int *e_s)
 {
     int         row;
 
     tputs(tgoto(tgetstr("cm", NULL), 0, select->row + 4), 1, ft_inputstr);
     row = select->row + 4;
-    while (row--)
-        tputs(tgetstr("up", NULL), 1, ft_inputstr);
+    while (row)
+    {
+        tputs(tsh->term->upstr, 1, ft_inputstr);
+        row--;
+    }
     what_pages(tsh, select, ecrase, e_s);
 }
 
-void    ft_mpages(t_auto *select, t_termc *tsh, t_autocompl *begin, int *total)
+int     ft_clean_all_letter(int i, int res)
 {
     static int ret;
+    static int count;
+
+    if (i == -1 && res == -1)
+    {
+        ret = -1;
+        count = 0;
+    }
+    if (i == 0 && ret == -1 && count++ > 1)
+        ret = res;
+    else if (i == 0 && ret != res && count > 1)
+        ret = -1;
+    return (ret);
+}
+
+void    ft_mpages(t_auto *select, t_termc *tsh, t_autocompl *begin)
+{
     static int ecrase;
     static int ecrase_simple;
 
     ft_clean_screen(select, tsh, &ecrase, &ecrase_simple);
-    if (ret != ecrase)
-    {
-        tputs(tgetstr("cd", NULL), 1, ft_inputstr);
-        ret = ecrase;
-    }
+    if (ft_clean_all_letter(0, ecrase) != ecrase && ecrase_simple == 0)
+        tputs(tsh->term->cdstr, 1, ft_inputstr);
     ft_display_prompt(tsh);
     ft_display_char(tsh->line->begin, tsh);
     tsh->autoc->updaterow = 3;
-    *total = ft_print_page(tsh, select, begin);
+    ft_print_page(tsh, select, begin);
     if (select->more_pages != 0
             && select->current->index > select->nbr_word * select->pages)
     {
-        ret = -1;
+        ft_clean_all_letter(-1, -1);
         if (ecrase_simple++ < 1)
-            tputs(tgetstr("cd", NULL), 1, ft_inputstr);
+            tputs(tsh->term->cdstr, 1, ft_inputstr);
         tsh->autoc->jump = select->more_pages;
         while (begin && begin->index <= select->nbr_word * select->pages)
             begin = begin->next;
-        *total = ft_diff_print(select, begin, 0, 1);
+        ft_diff_print(select, begin, 0, 1);
     }
 }

@@ -7,8 +7,6 @@ void    ft_move_up_line(t_lineterm *end, t_termc *tsh)
 
     if (tsh->auto_active == 1 || tsh->multiauto_active == 1)
         return ;
-    tsh->history->down = 0;
-    tsh->history->up = 0;
     col = get_columns() - 1;
     if (end->prev)
     {
@@ -23,17 +21,21 @@ void    ft_move_up_line(t_lineterm *end, t_termc *tsh)
     }
 }
 
-void    ft_move_down_line(t_lineterm *end, t_termc *tsh)
+void    ft_move_down_line_auto(t_lineterm *end, t_termc *tsh)
 {
-    size_t col;
-
     if (tsh->auto_active == 1 || tsh->multiauto_active == 1)
 	{
 		ft_auto_down_up(end, tsh, 1);
         return ;
 	}
-    tsh->history->down = 0;
-    tsh->history->up = 0;
+}
+
+void    ft_move_down_line(t_lineterm *end, t_termc *tsh)
+{
+    size_t col;
+
+    if (tsh->auto_active == 1 || tsh->multiauto_active == 1)
+        return ;
     col = get_columns() - 1;
     if (end->next)
     {
@@ -49,20 +51,22 @@ void    ft_move_down_line(t_lineterm *end, t_termc *tsh)
         tsh->line->last = 1;
 }
 
-static void	ft_move_history_split(t_termc *tsh, t_history **current, int flag)
+static int	ft_move_history_split(t_history **current, int flag)
 {
-    tsh->history->down = 0;
-    tsh->history->up = 0;
+    int ret;
+
+    ret = 0;
     if ((*current)->next && flag == 1)
     {
         *current = (*current)->next;
-        tsh->history->down = 1;
+        ret = 1;
     }
     if ((*current)->prev && flag == 2)
     {
         *current = (*current)->prev;
-        tsh->history->up = 1;
+        ret = 1;
     }
+    return (ret);
 }
 
 static int ft_passed_or_not(t_termc *tsh)
@@ -93,17 +97,13 @@ void	ft_move_history(t_termc *tsh, t_history **current, int flag)
 		return ;
     }
     tsh->line->last = 1;
-    if (!(*current) || !ft_passed_or_not(tsh))
+    if (!(*current) || !ft_passed_or_not(tsh) ||
+        !ft_move_history_split(current, flag) )
         return ;
-    ft_move_history_split(tsh, current, flag);
-    tsh->history->active = 1;
     if (ft_count_dlnk(tsh) >= 1)
-    {
-        ft_free_dlist(&tsh->line);
-        ft_init_console(tsh, tsh->line);
-    }
+        ft_clean_line(tsh);
     i = -1;
     while ((*current)->data[++i])
-        ft_fill_back_dlst(tsh->line, (*current)->data[i], i + 2);
+        push_backdlst(tsh->line, (*current)->data[i], i + 2);
     tsh->line->last = 1;
 }

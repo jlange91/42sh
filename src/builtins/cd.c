@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:03 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/16 13:25:34 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/12/20 17:04:12 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,52 +41,51 @@ static inline int		init_flags(char **av, int *flags, int save)
 	return (j);
 }
 
-void					swap_pwd(t_shell *sh, int opt)
+void					swap_pwd(t_cmd *cmd, int opt)
 {
 	char *oldpwd;
 
-	if ((oldpwd = ft_getenv("OLDPWD", sh->env)) == NULL || !oldpwd[7])
+	if ((oldpwd = ft_getenv("OLDPWD", cmd->env)) == NULL || !oldpwd[7])
 	{
 		ft_putstr_fd("cd: OLDPWD not set\n", 2);
 		ft_singleton(1, 1);
 		return ;
 	}
 	if (opt == 1)
-		ft_cd_p(sh, &oldpwd[7]);
+		ft_cd_p(cmd, &oldpwd[7]);
 	else
-		ft_cd_l(sh, &oldpwd[7]);
+		ft_cd_l(cmd, &oldpwd[7]);
 }
 
-void					go_home(t_shell *sh, int opt)
+void					go_home(t_cmd *cmd, int opt)
 {
 	char	*home;
 
-	if ((home = ft_getenv("HOME", sh->env)) == NULL || !home[5])
+	if ((home = ft_getenv("HOME", cmd->env)) == NULL || !home[5])
 	{
 		ft_putstr_fd("cd: HOME not set\n", 2);
-		ft_singleton(1, 1);		
+		ft_singleton(1, 1);
 		return ;
 	}
 	if (opt == 1)
-		ft_cd_p(sh, &home[5]);
+		ft_cd_p(cmd, &home[5]);
 	else
-		ft_cd_l(sh, &home[5]);
+		ft_cd_l(cmd, &home[5]);
 }
 
-void					ft_cd(t_shell *sh)
+void					ft_cd(t_cmd *cmd)
 {
 	int		opt;
 	int		i;
-	
 
 	opt = 0;
-	i = init_flags(sh->av, &opt, 0);
-	if (!sh->av[i])
-		go_home(sh, opt);
-	else if (!ft_strcmp(sh->av[i], "-"))
-		swap_pwd(sh, opt);
+	i = init_flags(cmd->av, &opt, 0);
+	if (!cmd->av[i])
+		go_home(cmd, opt);
+	else if (!ft_strcmp(cmd->av[i], "-"))
+		swap_pwd(cmd, opt);
 	else if (opt == 0)
-		ft_cd_l(sh, sh->av[i]);
+		ft_cd_l(cmd, cmd->av[i]);
 	else if (opt == 1)
-		ft_cd_p(sh, sh->av[i]);
+		ft_cd_p(cmd, cmd->av[i]);
 }

@@ -12,6 +12,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
+#include "../../inc/autocompletion.h"
 
 int		ft_init_terminal_mode(t_termc *tsh)
 {
@@ -47,36 +48,11 @@ int		ft_fill_prompt(dlist *line)
     {
         i = -1;
         while (str[++i])
-            ft_fill_back_dlst(line, str[i], 0);
+            push_backdlst(line, str[i], 0);
         free(str);
         return (1);
     }
     return (0);
-}
-
-static inline void	ft_init_console_split(t_termc *tsh)
-{
-    int	            i;
-    size_t          res;
-    size_t          col;
-
-    res = 0;
-    col = get_columns() - 1;
-    i = -1;
-    while (++i < (int)col)
-    {
-        tputs(tsh->term->lestr, 1, ft_inputstr);
-        if (tsh->keyflag->backspace)
-            tputs(tsh->term->dcstr, 1, ft_inputstr);
-    }
-    res = tsh->history->line_history;
-    res = res - tsh->move_cursor;
-    while (res > 1)
-    {
-        tputs(tsh->term->upstr, 1, ft_inputstr);
-        res--;
-    }
-    tputs(tsh->term->cdstr, 1, ft_inputstr);
 }
 
 void    ft_init_console(t_termc *tsh, dlist *line)
@@ -85,11 +61,6 @@ void    ft_init_console(t_termc *tsh, dlist *line)
     tsh->console->line_pos = 1;
     tsh->console->char_pos = 0;
     ft_fill_prompt(line);
-    if (tsh->history->active)
-    {
-        ft_init_console_split(tsh);
-        return ;
-    }
     if (!tsh->auto_active && !tsh->multiauto_active)
         ft_init_terminal_mode(tsh);
     ft_display_prompt(tsh);

@@ -16,7 +16,7 @@ static t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
 	return (tmp);
 }
 
-static inline char  *ft_getstr2(t_termc *shell, t_lineterm *begin)
+static inline char  *ft_getstr2(t_termc *tsh, t_lineterm *begin)
 {
 	t_lineterm *tmp;
 	char        *str;
@@ -29,7 +29,7 @@ static inline char  *ft_getstr2(t_termc *shell, t_lineterm *begin)
 		return (NULL);
 	else if (tmp->next)
 		tmp = ft_dont_get_prompt(tmp);
-	str = (char *)malloc(sizeof(char) * (ft_count_dlnk(shell) + 2));
+	str = (char *)malloc(sizeof(char) * (ft_count_dlnk(tsh) + 2));
 	if (!str)
 		return (NULL);
 	while (tmp)
@@ -60,7 +60,7 @@ static int		ft_fill_prompt_quotes(dlist *line, int ret)
     {
         i = -1;
         while (str[++i])
-            ft_fill_back_dlst(line, str[i], 0);
+            push_backdlst(line, str[i], 0);
         free(str);
         return (1);
     }
@@ -70,10 +70,8 @@ static int		ft_fill_prompt_quotes(dlist *line, int ret)
 char	*ft_line_input_quotes(t_termc *sh, int ret)
 {
 	long	c;
-	int		nbr;
 
 	c = 0;
-	nbr = 0;
 	sh->line->lnk_before = 0;
 	ft_free_dlist(&sh->line);
 	ft_fill_prompt_quotes(sh->line, ret);
@@ -84,14 +82,14 @@ char	*ft_line_input_quotes(t_termc *sh, int ret)
 		if ((ft_is_key(sh->line, sh, c) == 0 && ft_isprint((char)c)))
 		{
 			(sh->line->lnk_before) ? ft_insert_dlnk(sh->line->end, sh, c, 1) :
-			ft_fill_back_dlst(sh->line, c, 1);
+			push_backdlst(sh->line, c, 1);
 		}
 		else
 			sh->line->lnk_before = 1;
 		if (sh->line->last)
 			sh->line->lnk_before = 0;
 		c = 0;
-		ft_display(sh, &nbr, 0);
+		ft_display(sh, 0);
 	}
 	return (ft_getstr2(sh, sh->line->begin));
 }

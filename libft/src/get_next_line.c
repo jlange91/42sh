@@ -5,16 +5,62 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/07 12:28:27 by stvalett          #+#    #+#             */
-/*   Updated: 2017/12/12 12:20:13 by stvalett         ###   ########.fr       */
+/*   Created: 2016/11/25 11:02:47 by stvalett          #+#    #+#             */
+/*   Updated: 2017/04/05 12:04:51 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/get_next_line.h"
 
-static int	multi_gnl(char **line, char *buff, int size, int *len)
+static int		ft_multi_fd(t_line **list, t_line **current, const int fd)
 {
-	char	*tmp;
+	t_line		*tmp;
+
+	if (*list == NULL)
+	{
+		if (((*list) = (t_line *)malloc(sizeof(t_line))) == NULL)
+			return (1);
+		(*list)->fd = fd;
+		(*list)->ret = 0;
+		(*list)->next = NULL;
+	}
+	tmp = *list;
+	while (tmp->fd != fd)
+	{
+		if (tmp->next == NULL)
+		{
+			ft_multi_fd(&(tmp->next), current, fd);
+			return (0);
+		}
+		tmp = tmp->next;
+	}
+	*current = tmp;
+	return (0);
+}
+
+static void		ft_del_multi_fd(t_line **list, t_line *current)
+{
+	t_line		*tmp;
+
+	ft_memdel((void **)&current->next);
+	tmp = *list;
+	if (*list == current)
+	{
+		*list = (*list)->next;
+		free(current);
+	}
+	else
+	{
+		while (tmp->next != current)
+			tmp = tmp->next;
+		tmp->next = current->next;
+		free(current);
+	}
+}
+
+static int		ft_multi_gnl(char **line, char *buff, int size, int *len)
+{
+	char		*tmp;
 
 	if (*len == -1)
 	{
@@ -38,52 +84,55 @@ static int	multi_gnl(char **line, char *buff, int size, int *len)
 	return (0);
 }
 
-static int	read_file(char **line, char **first, int *len, int *ret)
+static int		ft_read_file(char **line, t_line *current, int *len)
 {
-	char *tmp;
+	char		*tmp;
 
-	if ((tmp = ft_memchr(*first, CHAR, *ret)) == NULL)
+	if ((tmp = ft_memchr(current->first, CHAR, current->ret)) == NULL)
 	{
-		if ((multi_gnl(line, *first, *ret, len)) == 1)
+		if ((ft_multi_gnl(line, current->first, current->ret, len)) == 1)
 			return (-1);
-		*ret = 0;
-		*first = NULL;
+		current->ret = 0;
+		current->first = NULL;
 	}
 	else
 	{
-		if ((multi_gnl(line, *first, tmp - (*first), len)) == 1)
+		if ((ft_multi_gnl(line, current->first, tmp - current->first, len))
+				== 1)
 			return (-1);
-		*ret = *ret - (tmp + 1 - (*first));
-		*first = (tmp + 1);
+		current->ret = current->ret - (tmp + 1 - current->first);
+		current->first = tmp + 1;
 		return (1);
 	}
 	return (0);
 }
 
-int			get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
-	static t_b	tab;
-	char		*buff;
-	int			ret;
-	int			len;
+	static t_line	*list;
+	t_line			*current;
+	int				ret;
+	int				res;
+	int				len;
 
 	len = -1;
-	if (tab.ret2 != 0)
-		if ((tab.res = read_file(line, &tab.first, &len, &tab.ret2)) == 1)
-			return (tab.res);
-	if ((buff = (char *)malloc(sizeof(char) * BUFF_SIZE + 1)) == NULL)
+	if (line == NULL || (ft_multi_fd(&list, &current, fd)) == 1)
+    {
 		return (-1);
-	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
+    }
+	if (current->ret != 0)
 	{
-		tab.first = buff;
-		if ((tab.res = read_file(line, &tab.first, &len, &ret)) == 1)
-		{
-			tab.ret2 = ret;
-			free(buff);
-			return (tab.res);
-		}
+		if ((res = ft_read_file(line, current, &len)) == 1)
+			return (res);
 	}
-	free(buff);
+	while ((ret = read(fd, current->buff, BUFF_SIZE)) > 0)
+	{
+		current->ret = ret;
+		current->first = current->buff;
+		if ((res = ft_read_file(line, current, &len)) == 1)
+			return (res);
+	}
+	ft_del_multi_fd(&list, current);
 	if (ret == -1)
 		return (-1);
 	return (len != -1);

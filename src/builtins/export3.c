@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:18:32 by adebrito          #+#    #+#             */
-/*   Updated: 2017/12/08 16:19:02 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/20 17:06:33 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,21 @@ int		find_bin(char **path_tab, char *elem)
 		while (path_tab[++i])
 		{
 			path_tab[i] = ft_free_join(path_tab[i],
-				ft_strjoin("/", elem), 'B');
+					ft_strjoin("/", elem), 'B');
 			if (!access(path_tab[i], X_OK))
 				return (i);
 		}
 	return (-1);
 }
 
-int		search_exec(char **str, t_shell *sh, char **t_tmp, char *elem)
+int		search_exec(char **str, t_cmd *cmd, char **t_tmp, char *elem)
 {
 	int		i;
 	char	**path_tab;
 	int		info;
 
 	i = -1;
-	path_tab = ft_strsplit(ft_getenv("PATH", sh->env), ':');
+	path_tab = ft_strsplit(ft_getenv("PATH", cmd->env), ':');
 	if ((info = find_bin(path_tab, t_tmp[1])) >= 0)
 		elem = ft_strdup(path_tab[info]);
 	if (info == -2)
@@ -67,44 +67,51 @@ int		search_exec(char **str, t_shell *sh, char **t_tmp, char *elem)
 	return (-1);
 }
 
-void	export_flag_b(t_shell *sh, int i)
+void	export_flag_b(t_cmd *cmd, int i)
 {
 	char	**tmp;
 	char	*str;
 
 	str = NULL;
-	tmp = ft_strsplit(sh->av[i], '=');
-	search_exec(&sh->av[i], sh, tmp, str);
-	if (ft_getenv(tmp[0], sh->var) == NULL)
+	tmp = ft_strsplit(cmd->av[i], '=');
+	search_exec(&cmd->av[i], cmd, tmp, str);
+	if (tmp[0])
 	{
-		sh->var = rapid_set(sh->av[i], sh->var, 0);
-		sh->env = rapid_set(sh->av[i], sh->env, 1);
+		if (ft_getenv(tmp[0], cmd->var) == NULL)
+		{
+			str = ft_strdup(cmd->av[i]);
+			cmd->var = rapid_set(str, cmd->var, 0);
+			cmd->env = rapid_set(str, cmd->env, 1);
+		}
+		else if (ft_getenv(tmp[0], cmd->var) != NULL)
+		{
+			replace_elem(tmp[0], cmd->av[i], cmd->var, cmd);
+			replace_elem(tmp[0], cmd->av[i], cmd->env, cmd);
+		}
+		ft_free_tab(tmp);
 	}
-	else if (ft_getenv(tmp[0], sh->var) != NULL)
-	{
-		replace_elem(tmp[0], sh->av[i], sh->var, sh);
-		replace_elem(tmp[0], sh->av[i], sh->env, sh);
-	}
-	ft_free_tab(tmp);
 }
 
-int		check_correct_arg(t_shell *sh, int i)
+int		check_correct_arg(t_cmd *cmd, int i)
 {
 	char	**tmp;
 	char	*str;
 	int		nb;
 
 	str = NULL;
-	nb = 1;
-	tmp = ft_strsplit(sh->av[i], '=');
-	if (tab_2d_len(tmp) == 2)
+	nb = -1;
+	tmp = ft_strsplit(cmd->av[i], '=');
+	if (tmp[0])
 	{
-		nb = search_exec(&sh->av[i], sh, tmp, str);
-		if (nb == -1)
-			ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
+		if (tab_2d_len(tmp) == 2)
+		{
+			nb = search_exec(&cmd->av[i], cmd, tmp, str);
+			if (nb == -1)
+				ft_putstr_fd("command not found", 2);
+		}
+		else
+			ft_putendl_fd("Error : bad declaration write it like %s=%s", 2);
+		ft_free_tab(tmp);
 	}
-	else
-		ft_putendl_fd("Error : bad declaration write it like %s=%s", 2);
-	ft_free_tab(tmp);
 	return (nb);
 }

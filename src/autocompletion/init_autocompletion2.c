@@ -42,39 +42,10 @@ void    ft_init_simple_autocompl(t_termc *tsh)
                 ft_fill_back_autocompl(tsh->autoc, backslash, i++);
 				free(backslash);
 			}
-			else if (file->d_name[0] != '.')
+			else if (file->d_name[0] != '.' && file->d_name[1] != '.')
                 ft_fill_back_autocompl(tsh->autoc, file->d_name, i++);
 		}
         tsh->autoc->current = tsh->autoc->begin;
         closedir(path);
     }
-}
-
-void    ft_init_autocompl_binary(t_termc *tsh, char **env)
-{
-	int             i;
-	char			**dtab;
-	char			*path;
-	DIR             *dir;
-	struct dirent   *file;
-
-	path = ft_getenv("PATH", env);
-	if (path != NULL)
-	{
-		dtab = ft_strsplit(path, ':');
-		i = -1;
-		while (dtab[++i])
-		{
-			if ((dir = opendir(dtab[i])) != NULL)
-			{
-				while ((file = readdir(dir)) != NULL)
-				{
-					(file->d_name[0] == '.') ? file :
-					ft_fill_back_autocompl(tsh->auto_binary, file->d_name, i++);
-				}
-				closedir(dir);
-			}
-		}
-		ft_free_tab(dtab);
-	}
 }

@@ -12,11 +12,12 @@ static void    ft_init_tab_key(long keycode[15])
     keycode[6] = OPT_F;
     keycode[7] = OPT_B;
     keycode[8] = OPT_C;
-    keycode[9] = OPT_P;
+    keycode[9] = OPT_V;
     keycode[10] = OPT_X;
     keycode[11] = OPT_UP;
     keycode[12] = OPT_DOWN;
-    keycode[13] = TAB;
+    keycode[13] = NO_PRINT;
+    keycode[14] = TAB;
 }
 
 static void    ft_init_tab_funct(t_k funct[15])
@@ -34,23 +35,24 @@ static void    ft_init_tab_funct(t_k funct[15])
     funct[10] = ft_cut_line;
     funct[11] = ft_move_up_line;
     funct[12] = ft_move_down_line;
-    funct[13] = ft_autocompletion;
+    funct[13] = ft_move_down_line_auto;
+    funct[14] = ft_autocompletion;
 }
 
 int     ft_dynamique_autocompletion(long *c, t_termc *tsh)
 {
     static int compt;
 
-    if (tsh->count_tab && (tsh->auto_active || tsh->multiauto_active) && *c == TAB)
+    if (tsh->key_tab && (tsh->auto_active || tsh->multiauto_active)&& *c == TAB)
     {
         compt++;
-        *c = OPT_DOWN;
+        *c = NO_PRINT;
 		tsh->autoc->can_print++;
     }
     if (*c == '\n' && (tsh->auto_active || tsh->multiauto_active))
     {
-		tsh->autoc->can_print = 0;
-        tsh->count_tab = 0;
+		tsh->autoc->can_print = 14;
+        tsh->key_tab = 0;
         if (compt < 1)
         {
             tsh->auto_active = 0;
@@ -76,13 +78,13 @@ static int  ft_exec_key(t_termc *tsh, long c, t_lineterm *end)
         ft_init_tab_funct(funct);
     }
     i = -1;
-    while (++i < 14)
+    while (++i < 15)
         if (keycode[i] == c)
         {
 			if (tsh->quotes && i > 1)
 				return (1);
-			else if (tsh->autoc->can_print < 2 && i == 12)
-				return (1);
+			else if (tsh->autoc->can_print < 2 && i == 13)
+                return (1);
             funct[i](end, tsh);
             return (1);
         }
@@ -93,7 +95,7 @@ int     ft_other_key(t_lineterm *end, t_termc *tsh, long c)
 {
     if (!ft_dynamique_autocompletion(&c, tsh))
         return (0);
-	if (tsh->autoc->can_print < 2 && c == OPT_DOWN)
+	if (tsh->autoc->can_print < 2 && c == NO_PRINT)
 	{
         ft_clean_line(tsh);
     	ft_cpy_autocompl_to_lineshell(tsh);

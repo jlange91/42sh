@@ -60,7 +60,7 @@ static int    ft_open_and_fill(t_termc *tsh, DIR *path, int nbr)
     i = 1;
     ft_free_autocompletion(&tsh->autoc);
     while ((file = readdir(path)) != NULL)
-        if (file->d_name[0] != '.')
+        if (file->d_name[0] != '.' && file->d_name[1] != '.')
             ft_fill_back_autocompl(tsh->autoc, file->d_name, i++);
     if (!tsh->autoc->begin && nbr == 1)
         tsh->auto_active = 0;
@@ -69,16 +69,16 @@ static int    ft_open_and_fill(t_termc *tsh, DIR *path, int nbr)
     return (1);
 }
 
-static void     ft_split(t_termc *tsh, char *line_tmp, int *flag)
+static void     ft_split(t_termc *tsh, char *line, int *flag)
 {
     int     i;
     char    *tmp;
     char    **tab_word;
     DIR *path;
 
-    if ((path = opendir(line_tmp)) != NULL)
+    if ((path = opendir(line)) != NULL)
         *flag = ft_open_and_fill(tsh, path, 1);
-    else if ((tab_word = ft_strsplit2(line_tmp)) != NULL)
+    else if ((tab_word = ft_strsplit2(line)) != NULL)
     {
         i = ft_count_dtab(tab_word) - 1;
         if ((path = opendir(tab_word[i])) != NULL)
@@ -100,18 +100,14 @@ static void     ft_split(t_termc *tsh, char *line_tmp, int *flag)
 
 int    	ft_init_autocompl(t_termc *tsh, char *line)
 {
-    char			*line_tmp;
     int             flag;
 
     flag = 0;
-    line_tmp = ft_strdup(line);
-    if (line_tmp[ft_strlen(line_tmp) - 1] == ' ')  //RESET IF SPACE
+    if (line[ft_strlen(line) - 1] == ' ')  //RESET IF SPACE
     {
         ft_init_simple_autocompl(tsh);
-        free(line_tmp);
         return (1);
     }
-    ft_split(tsh, line_tmp, &flag);
-    free(line_tmp);
+    ft_split(tsh, line, &flag);
     return (flag);
 }

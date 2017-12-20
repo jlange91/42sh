@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:13:58 by adebrito          #+#    #+#             */
-/*   Updated: 2017/12/08 16:22:59 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/20 17:06:07 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	**rapid_set(char *input, char **env, int j)
 	return (new_env);
 }
 
-void	replace_elem(char *compare, char *input, char **env, t_shell *sh)
+void	replace_elem(char *compare, char *input, char **env, t_cmd *cmd)
 {
 	int		i;
 
@@ -48,67 +48,75 @@ void	replace_elem(char *compare, char *input, char **env, t_shell *sh)
 		else if (ft_strncmp(input, env[i], ft_strlen(input)) == 0)
 			return ;
 	}
-	if (ft_getenv(compare, sh->env) == NULL)
-		sh->env = rapid_set(input, sh->env, 0);
+	if (ft_getenv(compare, cmd->env) == NULL)
+		cmd->env = rapid_set(input, cmd->env, 0);
 }
 
-void	export_flagb(t_shell *sh)
+void	export_flagb(t_cmd *cmd)
 {
 	int		i;
 
 	i = 1;
-	while (sh->av[++i])
+	while (cmd->av[++i])
 	{
-		if (ft_strchr(sh->av[i], '=') && ft_strchr(sh->av[i], '-'))
+		if (ft_strchr(cmd->av[i], '=') && ft_strchr(cmd->av[i], '-'))
 		{
 			ft_putendl_fd("bad option -=", 2);
 			return ;
 		}
-		else if (!ft_strchr(sh->av[i], '=') || sh->av[i][0] == '=')
+		else if (!ft_strchr(cmd->av[i], '=') || cmd->av[i][0] == '=')
 		{
 			ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
 			return ;
 		}
-		else if (check_correct_arg(sh, i) == -1)
+		else if (check_correct_arg(cmd, i) == -1)
 			return ;
 	}
 	i = 1;
-	while (sh->av[++i])
-		export_flag_b(sh, i);
+	while (cmd->av[++i])
+		export_flag_b(cmd, i);
 }
 
-void	export_no_eq(t_shell *sh, int i)
+void	export_no_eq(t_cmd *cmd, int i)
 {
-	if (ft_getenv(sh->av[i], sh->var) == NULL && !ft_strchr(sh->av[i], '='))
-		sh->var = rapid_set(ft_strjoin(sh->av[i], "=''"), sh->var, 1);
-	else if (ft_getenv(sh->av[i], sh->var) != NULL && \
-			!ft_strchr(sh->av[i], '=') && \
-			ft_getenv(sh->av[i], sh->env) == NULL)
-		sh->env = rapid_set(ft_strjoin(sh->av[i], "="), sh->env, 1);
+	if (ft_getenv(cmd->av[i], cmd->var) == NULL && !ft_strchr(cmd->av[i], '='))
+		cmd->var = rapid_set(ft_strjoin(cmd->av[i], "=''"), cmd->var, 1);
+	else if (ft_getenv(cmd->av[i], cmd->var) != NULL && \
+			!ft_strchr(cmd->av[i], '=') && \
+			ft_getenv(cmd->av[i], cmd->env) == NULL)
+	{
+		if (ft_strchr(ft_getenv(cmd->av[i], cmd->var), '\''))
+			cmd->env = rapid_set(ft_strjoin(cmd->av[i], "="), cmd->env, 1);
+		else
+			cmd->env = rapid_set(ft_getenv(cmd->av[i], cmd->var), cmd->env, 0);
+	}
 }
 
-void	export_with_eq(t_shell *sh, int i)
+void	export_with_eq(t_cmd *cmd, int i)
 {
 	char	**tmp;
 	char	*str;
 
 	str = NULL;
-	if (sh->av[i][0] == '=')
+	if (cmd->av[i][0] == '=')
 	{
-			ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
-			return ;
+		ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
+		return ;
 	}
-	tmp = ft_strsplit(sh->av[i], '=');
-	if (ft_getenv(tmp[0], sh->var) == NULL)
+	tmp = ft_strsplit(cmd->av[i], '=');
+	if (tmp[0])
 	{
-		str = ft_strdup(sh->av[i]);
-		sh->var = rapid_set(str, sh->var, 0);
-		sh->env = rapid_set(str, sh->env, 1);
+		if (ft_getenv(tmp[0], cmd->var) == NULL)
+		{
+			str = ft_strdup(cmd->av[i]);
+			cmd->var = rapid_set(str, cmd->var, 0);
+			cmd->env = rapid_set(str, cmd->env, 1);
+		}
+		if (ft_getenv(tmp[0], cmd->var) != NULL)
+		{
+			replace_elem(tmp[0], cmd->av[i], cmd->var, cmd);
+			replace_elem(tmp[0], cmd->av[i], cmd->env, cmd);
+		}
+		ft_free_tab(tmp);
 	}
-	if (ft_getenv(tmp[0], sh->var) != NULL)
-	{
-		replace_elem(tmp[0], sh->av[i], sh->var, sh);
-		replace_elem(tmp[0], sh->av[i], sh->env, sh);
-	}
-	ft_free_tab(tmp);
 }

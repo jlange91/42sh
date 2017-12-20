@@ -28,10 +28,9 @@ static void     ft_check_line_simple(t_auto *select, t_var_auto *var)
     tputs(tgoto(tgetstr("cm", NULL), var->len, var->row), 1, ft_inputstr);
 }
 
-static int      ft_print_simple_auto(t_auto *select, t_autocompl *begin)
+static void      ft_print_simple_auto(t_auto *select, t_autocompl *begin)
 {
     t_var_auto  *var;
-    int total;
 
     var = ft_init_var_auto(select);
     while (begin)
@@ -43,9 +42,7 @@ static int      ft_print_simple_auto(t_auto *select, t_autocompl *begin)
     if (var->down != 0)
         select->updaterow = select->updaterow - (var->down + 1);
     select->clr_yes = 1;
-    total = var->len;
     free(var);
-    return (total);
 }
 
 static int ft_pfsc(t_auto *select, t_var_auto *var, t_autocompl *begin, int l_w)
@@ -69,48 +66,42 @@ static int ft_pfsc(t_auto *select, t_var_auto *var, t_autocompl *begin, int l_w)
         ft_display_autocompl(begin, select);
         begin = begin->next;
     }
-    return (var->len);
+    return (0);
 }
 
-int    ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag)
+void    ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag)
 {
     t_var_auto  *var;
 
     int         limit_word;
-    int         total;
 
     if (flag == 2)
     {
         var = ft_init_var_auto(select);
         limit_word = select->jump * select->col * nbr;
-        total = ft_pfsc(select, var, begin, limit_word);
+        ft_pfsc(select, var, begin, limit_word);
         free(var);
         select->clr_yes = 1;
-        return (total);
     }
     else
-        return (ft_print_simple_auto(select, begin));
+        ft_print_simple_auto(select, begin);
 }
 
-void ft_menu_autocompletion(t_auto *select, t_termc *tsh, int *total)
+
+void ft_menu_autocompletion(t_auto *select, t_termc *tsh)
 {
     t_autocompl *begin;
-    static int count;
 
     begin = select->begin;
     if (begin)
     {
         ft_init_value(tsh, select);
         if (tsh->autoc->jump > select->row)
-            ft_mpages(select, tsh, begin, total);
+            ft_mpages(select, tsh, begin);
         else
         {
-            if (!tsh->autoc->arrow && count++ < 1)
-            {
-                tsh->autoc->updaterow = ft_cursor_update();
-                count = 0;
-            }
-            *total = ft_diff_print(select, begin, 0, 1);
+            tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
+            ft_diff_print(select, begin, 0, 1);
         }
         select->arrow = 0;
     }

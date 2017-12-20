@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 10:57:45 by adebrito          #+#    #+#             */
-/*   Updated: 2017/11/22 13:31:06 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/18 16:44:26 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void				ft_read_commande(t_select **select)
 			ft_valide_select(select);
 		else if (buf[0] == 27 && ft_strlen(buf) == 3)
 			ft_arrow_key(select, buf);
-	else if (buf[0] == 27 && ft_strlen(buf) == 1)
-		ft_escape(select, NULL);
+		else if (buf[0] == 27 && ft_strlen(buf) == 1)
+			ft_escape(select, NULL);
 	}
 }

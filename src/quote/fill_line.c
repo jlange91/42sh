@@ -33,7 +33,7 @@ static char	*ft_new_line(char *str)
 	return (ret);
 }
 
-char 	*ft_get_line(t_termc *sh, char *tmp, int ret)
+char 	*ft_get_line(t_termc *tsh, char *tmp, int ret)
 {
 	char 	*line;
 	int 	opt;
@@ -41,7 +41,7 @@ char 	*ft_get_line(t_termc *sh, char *tmp, int ret)
 	opt = 1;
 	while (1)
 	{
-		line = ft_line_input_quotes(sh, ret);
+		line = ft_line_input_quotes(tsh, ret);
 		if (opt == 1)
 		{
 			opt = 0;
@@ -61,24 +61,24 @@ char 	*ft_get_line(t_termc *sh, char *tmp, int ret)
 	return (line);
 }
 
-void	ft_fill_line(t_termc *sh)
+void	ft_fill_line(t_termc *tsh)
 {
 	int 	ret;
 	char 	*tmp;
 	char 	*line;
 
 	ret = 0;
-	line = ft_line_input(sh);
-	ft_end_term(sh);
+	line = ft_line_input(tsh);
+	ft_end_term(tsh);
 	if ((ret = ft_check_quote(line)) != 0)
 	{
-		sh->quotes = 1;
+		tsh->quotes = 1;
 		tmp = ft_strjoin(line, "\n");
 		display_missing_quote(ret);
-		ft_init_terminal_mode(sh);
+		ft_init_terminal_mode(tsh);
 		free(line);
-		line = ft_get_line(sh, tmp, ret);
+		line = ft_get_line(tsh, tmp, ret);
 	}
-	sh->line_shell = ft_strdup(line);
+	tsh->line_shell = ft_strdup(line);
 	free(line);
 }

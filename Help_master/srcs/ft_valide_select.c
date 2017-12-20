@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 11:37:49 by adebrito          #+#    #+#             */
-/*   Updated: 2017/11/27 11:10:25 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/18 16:49:03 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,70 +14,65 @@
 
 void	read_text(int fd)
 {
-	char	BUFF[120];
-	
+	char	buff[120];
+
 	if (fd == -1)
+		ft_putstr_fd("FILE NOT FOUND", 2);
+	else
 	{
-		ft_putstr_fd("SORRY DUDE MAIS UNE PERSONNE MAL INTENTIONNER A ", 2);
-		ft_putstr_fd("SUPPRIMER LE FICHIER TEXTE CORRESPONDANT A TA ", 2);
-		ft_putstr_fd("SELECTION DEMANDE AU MARABOUT QUE TES VENUE ", 2); 
-		ft_putstr_fd("CORRIGER POUR QUIL TEXPLIQUE LOVE KEUR KEUR <3 <3", 2);
-	}
-		else
-	{
-		while(read(fd, BUFF, 1))
-			ft_putchar(*BUFF);
+		while (read(fd, buff, 1))
+			ft_putchar(*buff);
 	}
 }
 
-void	open_text1(char	*str)
+void	open_text1(char *str)
 {
 	int fd;
 
 	if (!ft_strcmp(str, "COPIER/COLLER"))
 	{
-			fd = open("/tmp/copcol.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/copcol.txt", O_RDONLY);
+		read_text(fd);
 	}
 	if (!ft_strcmp(str, "COUPER/COLLER"))
 	{
-			fd = open("/tmp/coupcol.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/coupcol.txt", O_RDONLY);
+		read_text(fd);
 	}
 	if (!ft_strcmp(str, "SE_DEPLACER"))
 	{
-			fd = open("/tmp/deplacement.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/deplacement.txt", O_RDONLY);
+		read_text(fd);
 	}
 	if (!ft_strcmp(str, "SELECTION"))
 	{
-			fd = open("/tmp/selection.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/selection.txt", O_RDONLY);
+		read_text(fd);
 	}
 }
 
-void	open_text2(char	*str)
+void	open_text2(char *str)
 {
 	int fd;
 
 	if (!ft_strcmp(str, "AUTOCOMPLETION"))
 	{
-			fd = open("/tmp/autocompletion.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/autocompletion.txt", O_RDONLY);
+		read_text(fd);
 	}
 	if (!ft_strcmp(str, "GLOBBING"))
 	{
-			fd = open("/tmp/globbing.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/globbing.txt", O_RDONLY);
+		read_text(fd);
 	}
 	if (!ft_strcmp(str, "HISTORIQUE"))
 	{
-			fd = open("/tmp/historique.txt", O_RDONLY);
-			read_text(fd);
+		fd = open("/tmp/historique.txt", O_RDONLY);
+		read_text(fd);
 	}
 }
 
-			void	ft_valide_select(t_select **select)
+void	ft_valide_select(t_select **select)
 {
 	int			i;
 	t_select	*s;

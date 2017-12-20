@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   unsetenv.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:41 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/03 18:39:04 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/20 17:11:00 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/sh21.h"
 
-static inline int	ft_ret(t_shell *sh)
+static inline int	ft_ret(t_cmd *cmd)
 {
-	if (sh->ac < 2)
+	if (cmd->ac < 2)
 	{
 		ft_putstr_fd("unsetenv: Too few arguments.\n", 2);
 		ft_singleton(1, 1);
@@ -58,17 +58,27 @@ char				**ft_unsetenv(char *name, char **env)
 	return (new_env);
 }
 
-void				ft_prepare_unsetenv(t_shell *sh)
+void				ft_prepare_unsetenv(t_cmd *cmd)
 {
 	int		i;
 
 	i = 0;
-	if (ft_ret(sh))
+	if (ft_ret(cmd))
 		return ;
-	while (sh->av[++i])
+	while (cmd->av[++i])
 	{
-		if (ft_getenv(sh->av[i], sh->env) == NULL)
+		if (ft_getenv(cmd->av[i], cmd->env) == NULL)
 			continue ;
-		sh->env = ft_replace_env(ft_unsetenv(sh->av[i], sh->env), sh->env);
+		cmd->env = ft_replace_env(ft_unsetenv(cmd->av[i], cmd->env), cmd->env);
+	}
+	if (!ft_strcmp(cmd->av[0], "unset"))
+	{
+		i = 0;
+		while (cmd->av[++i])
+		{
+			if (ft_getenv(cmd->av[i], cmd->var) == NULL)
+				continue ;
+			cmd->var = ft_replace_env(ft_unsetenv(cmd->av[i], cmd->var), cmd->var);
+		}
 	}
 }

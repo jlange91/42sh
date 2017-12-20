@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:10:40 by adebrito          #+#    #+#             */
-/*   Updated: 2017/12/08 16:19:26 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/20 17:05:12 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,69 +26,88 @@ char	**load_env(char **env)
 	return (var);
 }
 
-void	print_var(t_shell *sh, char **var)
+void	print_var(t_cmd *cmd, char **var)
 {
 	int i;
 
 	i = 1;
-	while (sh->av[++i])
+	while (cmd->av[++i])
 	{
-		if (ft_getenv(sh->av[i], var) == NULL)
+		if (ft_getenv(cmd->av[i], var) == NULL)
 		{
 			ft_putstr_fd("export: no such variable ", 2);
-			ft_putendl_fd(sh->av[i], 2);
+			ft_putendl_fd(cmd->av[i], 2);
 		}
 	}
 	i = 1;
-	while (sh->av[++i])
+	while (cmd->av[++i])
 	{
-		if (ft_getenv(sh->av[i], var) != NULL)
+		if (ft_getenv(cmd->av[i], var) != NULL && ft_strcmp(cmd->av[i], "-p") &&
+				ft_strcmp(cmd->av[i], "-b"))
 		{
 			ft_putstr("export ");
-			ft_putendl(ft_getenv(sh->av[i], var));
+			ft_putendl(ft_getenv(cmd->av[i], var));
 		}
 	}
 }
 
-void	find_flagp_not1(t_shell *sh)
+int		find_flagp_not1(t_cmd *cmd, int indicator, int i)
 {
-	int i;
-
-	i = 0;
-	while (sh->av[++i])
+	if (only_p(cmd) == 1)
+		return (0);
+	while (cmd->av[++i])
 	{
-		if (i != 1 && !ft_strcmp(sh->av[i], "-p"))
-			ft_putendl_fd("export: not valid in this context: -p", 2);
+		if (ft_strcmp(cmd->av[i], "-p") && ft_strcmp(cmd->av[i], "-b") &&
+				check_pattern(cmd->av[i]) == 0)
+		{
+			ft_putstr_fd("Bad pattern (not alpha) or bad option only", 2);
+			ft_putstr_fd(" -p and -b can be used", 2);
+			return (0);
+		}
 	}
+	i = 0;
+	while (cmd->av[++i])
+	{
+		if (i != 1 && !ft_strcmp(cmd->av[i], "-p") && ft_strcmp(cmd->av[1], "-p"))
+			indicator = 1;
+	}
+	if (indicator == 1)
+		ft_putstr_fd("export; -p not valid in this context", 2);
+	return (1);
 }
 
-void	export_process(t_shell *sh)
+void	export_process(t_cmd *cmd)
 {
 	int		i;
 
 	i = 0;
-	while (sh->av[++i])
+	while (cmd->av[++i])
 	{
-		if (!ft_strchr(sh->av[i], '='))
-			export_no_eq(sh, i);
-		else
-			export_with_eq(sh, i);
+		if (ft_strcmp(cmd->av[i], "-p") && ft_strcmp(cmd->av[i], "-b"))
+		{
+			if (!ft_strchr(cmd->av[i], '='))
+				export_no_eq(cmd, i);
+			else
+				export_with_eq(cmd, i);
+		}
 	}
 }
 
-void	prepare_export(t_shell *sh)
+void	prepare_export(t_cmd *cmd)
 {
-	find_flagp_not1(sh);
-	if (sh->av[1] == NULL)
-		ft_display_env(sh->var);
-	else if (!ft_strcmp(sh->av[1], "-p") && sh->av[2] == NULL)
-		ft_display_env(sh->var);
-	else if (!ft_strcmp(sh->av[1], "-b") && sh->av[2] == NULL)
-		ft_putstr_fd("Not valid in this context", 2);
-	else if (!ft_strcmp(sh->av[1], "-p") && sh->av[2] != NULL)
-		print_var(sh, sh->var);
-	else if (!ft_strcmp(sh->av[1], "-b") && sh->av[2] != NULL)
-		export_flagb(sh);
-	else
-		export_process(sh);
+	if (find_flagp_not1(cmd, 0, 0) == 1)
+	{
+		if (cmd->av[1] == NULL)
+			ft_display_env(cmd->var);
+		else if (!ft_strcmp(cmd->av[1], "-p") && cmd->av[2] == NULL)
+			ft_display_export(cmd->var);
+		else if (!ft_strcmp(cmd->av[1], "-b") && cmd->av[2] == NULL)
+			ft_putstr_fd("Not valid in this context", 2);
+		else if (!ft_strcmp(cmd->av[1], "-p") && cmd->av[2] != NULL)
+			print_var(cmd, cmd->var);
+		else if (!ft_strcmp(cmd->av[1], "-b") && cmd->av[2] != NULL)
+			export_flagb(cmd);
+		else
+			export_process(cmd);
+	}
 }

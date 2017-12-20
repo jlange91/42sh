@@ -20,14 +20,15 @@ void    ft_ajuste_and_fill_line(t_termc *tsh, char *data, char *before, int ret)
 
 	free(tsh->autoc->str);
 	ft_clean_line(tsh);
+	tsh->key_tab = 0;
 	tsh->autoc->str = ft_strdup(data);
 	i = -1;
 	if (ret)
 		while (before[++i])
-			ft_fill_back_dlst(tsh->line, before[i], i + 2);
+			push_backdlst(tsh->line, before[i], i + 2);
 	i = -1;
 	while (data[++i])
-		ft_fill_back_dlst(tsh->line, data[i], i + 2);
+		push_backdlst(tsh->line, data[i], i + 2);
 	ft_check_is_dir(tsh);
 }
 
@@ -58,7 +59,6 @@ void    ft_addslash(t_termc *tsh, char **after, char *before)
 {
 	char		*res;
 	char        **tab_word;
-	int         i;
 
 	if (ft_dir_or_not(tsh->autoc->str)
 			&& tsh->autoc->str[ft_strlen(tsh->autoc->str) - 1] != '/')
@@ -67,8 +67,7 @@ void    ft_addslash(t_termc *tsh, char **after, char *before)
 	if (res)
 	{
 		tab_word = ft_strsplit2(res);
-		i = ft_count_dtab(tab_word) - 1;
-		if (ft_dir_or_not(tab_word[i]))
+		if (ft_dir_or_not(tab_word[ft_count_dtab(tab_word) - 1]))
 			*after = ft_free_join(*after, "/", 'L');
 		ft_free_tab(tab_word);
 		free(res);
@@ -93,7 +92,6 @@ void	ft_autocompletion_bis(t_termc *tsh)
 				(after != NULL && ft_findword(tsh, begin->data, before, after)))
 		{
 			tsh->auto_active = 0;
-			tputs(tsh->term->cdstr, 1, ft_inputstr);
 			if (ft_count(tsh->autoc) == 1)// If One word in list , don't display
 				tsh->multiauto_active = 0;
 			break;
@@ -131,10 +129,5 @@ void    ft_autocompletion(t_lineterm *end, t_termc *tsh)
 			ft_autocompletion_bis(tsh);
 		else
 			tsh->auto_active = 0;
-		if (ft_count(tsh->autoc) == 1)
-		{
-			tsh->auto_active = 0;
-			tsh->multiauto_active = 0;
-		}
 	}
 }

@@ -1,5 +1,6 @@
 #include "../../inc/autocompletion.h"
 
+
 int ft_cursor_update(void)
 {
     int         fd, row;
@@ -13,28 +14,32 @@ int ft_cursor_update(void)
     return (row);
 }
 
+int     ft_sk_cursor(int i, int res, t_termc *tsh)
+{
+    static int ret;
+
+    if (i == 0 && res == 0)
+        ret = ft_cursor_update();
+    else if (!tsh->autoc->arrow && ret != res)
+        ret = ft_cursor_update();
+    return (ret);
+}
+
 void    ft_display_autocompletion(t_termc *tsh, int *down)
 {
-    int         total;
     int         i;
 
 	if (tsh->len_prompt >= (int)get_columns())
 		return ;
     i = -1;
-    total = 0;
     tsh->line->last = 1;
     tsh->autoc->jump = 0;
-    ft_menu_autocompletion(tsh->autoc, tsh, &total);
+    ft_menu_autocompletion(tsh->autoc, tsh);
     *down = tsh->autoc->jump;
     if (tsh->autoc->clr_yes)
         tputs(tgoto(tgetstr("cm", NULL), 0, tsh->autoc->updaterow - 1),
         1, ft_inputstr);
-    while (total--)
-        tputs(tsh->term->lestr, 1, ft_inputstr);
-    while (++i < ft_count_dlnk(tsh) + 8)
-        tputs(tsh->term->ndstr, 1, ft_inputstr);
     tsh->autoc->clr_yes = 0;
-    tputs(tsh->term->vestr, 1, ft_inputstr);
 }
 
 int    ft_init_value(t_termc *tsh, t_auto *select)

@@ -16,8 +16,8 @@ int     curs();
 
 /**************************************************************************************/
 /*FT_PRINT_AUTO_COMPLETION*/
-void    ft_menu_autocompletion(t_auto *select, t_termc *shell, int *total);
-int     ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag);
+void    ft_menu_autocompletion(t_auto *select, t_termc *shell);
+void     ft_diff_print(t_auto *select, t_autocompl *begin, int nbr, int flag);
 
 /**************************************************************************************/
 /*FT_AUTO_COMPLETION_KEY*/
@@ -33,15 +33,15 @@ int     ft_init_value(t_termc *shell, t_auto *select);
 int     ft_max_len(t_auto *select);
 int     ft_count(t_auto *select);
 int     ft_cursor_update(void);
+int     ft_sk_cursor(int i, int res, t_termc *tsh);
 
 /*******************************************************************************/
 /*FT_INIT_AUTOCOMPLETION*/
-void    ft_init_simple_autocompl(t_termc *shell);
 int     ft_init_autocompl(t_termc *shell, char *line);
 
 /*******************************************************************************/
-/*FT_INIT_AUTOCOMPLETION2*/
-void    ft_init_autocompl_binary(t_termc *shell, char **env);
+/*FT_INIT2_AUTOCOMPLETION2*/
+void    ft_init_simple_autocompl(t_termc *shell);
 
 /*******************************************************************************/
 /*TOOL_AUTOCOMPLETION*/
@@ -68,7 +68,8 @@ int     ft_current_tty(void);
 
 /*******************************************************************************/
 /*MULTI_PAGES_AUTOCOMPLETION*/
-void    ft_mpages(t_auto *, t_termc *, t_autocompl *, int *);
+void    ft_mpages(t_auto *, t_termc *, t_autocompl *);
+int     ft_clean_all_letter(int i, int res);
 
 /*******************************************************************************/
 /*PRINT.C*/

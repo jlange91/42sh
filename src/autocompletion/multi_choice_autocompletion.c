@@ -1,39 +1,60 @@
 #include "../../inc/autocompletion.h"
 
-static void 	ft_suitlist(t_termc *tsh, char *after, t_auto *tmp, int i)
+static void 	ft_no_doublon(t_auto *tmp, char *str, int k)
 {
 	int test;
-	t_autocompl *begin;
 	t_autocompl *begin_tmp;
 
-	begin = tsh->auto_binary->begin;
-	while (begin)
+	test = 0;
+	begin_tmp = tmp->begin;
+	while (begin_tmp)
 	{
-		if (ft_strncmp(after, begin->data, ft_strlen(after)) == 0)
+		if (ft_strcmp(begin_tmp->data, str) == 0)
 		{
-			test = 0;
-			begin_tmp = tmp->begin;
-			while (begin_tmp)
-			{
-				if (ft_strcmp(begin_tmp->data, begin->data) == 0)
-				{
-					test = 1;
-					break;
-				}
-				begin_tmp = begin_tmp->next;
-			}
-			if (!test)
-				ft_fill_back_autocompl(tmp, begin->data, ++i);
+			test = 1;
+			break;
 		}
-		begin = begin->next;
+		begin_tmp = begin_tmp->next;
+	}
+	if (!test)
+		ft_fill_back_autocompl(tmp, str, ++k);
+}
+
+static void 	ft_suitlist(t_cmd *cmd, char *after, t_auto *tmp, int i)
+{
+	int 			k;
+	char			**dtab;
+	char			*path;
+	DIR             *dir;
+	struct dirent   *file;
+
+	if ((path = ft_getenv("PATH", cmd->env)) != NULL && path[5])
+	{
+		dtab = ft_strsplit(&path[5], ':');
+		i = -1;
+		k = 0;
+		while (dtab[++i])
+		{
+			if ((dir = opendir(dtab[i])) != NULL)
+			{
+				while ((file = readdir(dir)) != NULL)
+				{
+					if (ft_strncmp(after, file->d_name, ft_strlen(after)) == 0)
+						ft_no_doublon(tmp, file->d_name, ++k);
+				}
+				closedir(dir);
+			}
+		}
+		ft_free_tab(dtab);
 	}
 }
 
 static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 {
-	int         i;
-	t_auto      *tmp;
-	t_autocompl *begin;
+	int         	i;
+	t_auto      	*tmp;
+	t_autocompl 	*begin;
+	t_cmd	 		*cmd;
 
 	if ((tmp = (t_auto *)malloc(sizeof(*tmp))) == NULL)
 		return (NULL);
@@ -41,6 +62,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 	tmp->end = NULL;
 	tmp->current = NULL;
 	begin = tsh->autoc->begin;
+	cmd = ft_ret_cmd(NULL);
 	i = 0;
 	if (begin)																					//CURRENT DIRECTORY
 	{
@@ -51,7 +73,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 			begin = begin->next;
 		}
         if (ret)																				//IF MULTIAUTO_ACTIVE :)
-			ft_suitlist(tsh, after, tmp, i);
+			ft_suitlist(cmd, after, tmp, i);
 	}
 	return (tmp);
 }

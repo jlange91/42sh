@@ -29,6 +29,7 @@ SRCS = src/ft_memset.c\
 	   src/ft_strncmp.c\
 	   src/ft_isalpha.c\
 	   src/ft_isdigit.c\
+	   src/ft_only_digit.c\
 	   src/ft_isalnum.c\
 	   src/ft_isascii.c\
 	   src/ft_toupper.c\
@@ -46,6 +47,7 @@ SRCS = src/ft_memset.c\
 	   src/ft_putchar_fd.c\
 	   src/ft_putnbr.c\
 	   src/ft_putnbr_fd.c\
+	   src/count_from_file.c\
 	   src/ft_strstr.c\
 	   src/ft_strnstr.c\
 	   src/ft_strnstr.c\

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
+#include "../../inc/sh21.h"
 
 char	*ft_lnk_to_str(t_lineterm *begin, t_termc *tsh) // TOOLS PR TOUT
 {
@@ -38,51 +39,44 @@ char	*ft_lnk_to_str(t_lineterm *begin, t_termc *tsh) // TOOLS PR TOUT
 	return (str);
 }
 
-int     ft_count_history(char *path)
+int 	ft_useless(char *line)
 {
-    int     fd;
-    int     count;
-    int     ret;
-    char    *line;
+	int i;
 
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		return (0);
-	line = NULL;
-    count = 0;
-    while ((ret = get_next_line(fd, &line)) > 0)
-	{
-        count++;
-		free(line);
-	}
-    close(fd);
-    return (count);
+	i = 0;
+	while (line[i] && ft_isdigit(line[i]))
+		i++;
+	if (line[i] == ' ')
+		return (i + 1);
+	return (0);
 }
 
 int		ft_find_history(t_termc *tsh)
 {
-    t_history   *begin;
+    t_history   *hist;
     char        *str;
 
-    begin = NULL;
+    hist = NULL;
     str = NULL;
-    begin = tsh->from_hist->begin;
-    if (!begin || !tsh->from_hist)
+    hist = tsh->histfile->begin;
+    if (!hist || !tsh->histfile)
         return (0);
     else
     {
 	    ft_free_history(tsh->history);
         if ((str = ft_lnk_to_str(tsh->line->begin, tsh)) != NULL)
         {
-            while (begin)
+            while (hist)
 		    {
-			    if (ft_strncmp(str, begin->data, ft_strlen(str)) == 0)
-				    ft_fill_back_hlst(tsh->history, begin->data);
-                begin = begin->next;
+			    if (!ft_strncmp(str, &hist->data[ft_useless(hist->data)],\
+					ft_strlen(str)))
+				    push_backhist(tsh->history,\
+					&hist->data[ft_useless(hist->data)], hist->index, hist->new);
+                hist = hist->next;
 		    }
-			ft_fill_back_hlst(tsh->history, "");
+			push_backhist(tsh->history, "", -1, 0);
+			tsh->history->current = tsh->history->end;
 		    free(str);
-		    tsh->history->current = tsh->history->end;
 	    }
     }
 	return (1);
@@ -90,47 +84,46 @@ int		ft_find_history(t_termc *tsh)
 
 int		ft_fill_history(t_termc *tsh)
 {
-    t_history   *begin;
+    t_history   *hist;
 	static int 	count;
 
-    begin = NULL;
+    hist = NULL;
 	if (count++ < 1)
-		tsh->from_hist->pwd = ft_strjoin(tsh->pwd, "/.21sh_history");
-    begin = tsh->from_hist->begin;
-    if (!begin || !tsh->from_hist)
+		tsh->histfile->pwd = ft_strjoin(tsh->pwd, NAME_HIST);
+    hist = tsh->histfile->begin;
+    if (!hist || !tsh->histfile)
         return (0);
     else
     {
-        ft_free_history(tsh->history);
-        while (begin)
-        {
-            ft_fill_back_hlst(tsh->history, begin->data);
-            begin = begin->next;
-        }
-	    ft_fill_back_hlst(tsh->history, "");
-	    tsh->history->current = tsh->history->end;
+		ft_free_history(tsh->history);
+		while (hist)
+		{
+			if (hist->print)
+				push_backhist(tsh->history, &hist->data[ft_useless(hist->data)],\
+				hist->index, hist->new);
+			hist = hist->next;
+		}
+		push_backhist(tsh->history, "", -1, 0);
+		tsh->history->current = tsh->history->end;
     }
 	return (1);
 }
 
-int    ft_init_fill_history(hlist *from_hist)
+int    ft_init_fill_history(hlist *histfile)
 {
     char    *line;
     int     fd;
     int     i;
     int     ret;
-    int     res;
 
     i = 0;
-	fd = open(".21sh_history", O_RDONLY);
+	fd = open(&NAME_HIST[1], O_RDONLY);
 	if (fd < 0)
 		return (0);
 	line = NULL;
-    res = ft_count_history(".21sh_history");
     while ((ret = get_next_line(fd, &line)) > 0)
 	{
-        if (i++ >= res - 500)
-		    ft_fill_back_hlst(from_hist, line);
+		push_backhist(histfile, &line[ft_useless(line)], ++i, 0);
 		free(line);
 	}
     close(fd);

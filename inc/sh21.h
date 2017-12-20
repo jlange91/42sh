@@ -32,19 +32,18 @@ typedef struct          s_term
     char                *cdstr;												//Clean all screen until end
     char                *vistr;												//Cursor invisible
     char                *vestr;												//Cursor visible
-    char                *usstr;         /*START UNDERLNE*/
-	char                *uestr; /*STOP UNDERLINE*/
 	char                *cestr; /*STOP UNDERLINE*/
 	char				bp[2048];
 	char				area[2048];
     struct termios      old_termios;
     struct termios      term;
-    int                 li;
-    int                 co;
 }                       t_term;
 
 typedef struct          s_history
 {
+    int                 index;
+    int                 new;
+    int                 print;
     char                *data;
     struct  s_history   *next;
     struct  s_history   *prev;
@@ -52,12 +51,7 @@ typedef struct          s_history
 
 typedef struct			hlist
 {
-    int                 active;
-    int                 error;
-	int					up;
-	int					down;
     int                 ecrase_hist;
-    int                 line_history;
     char                *pwd;
 	t_history			*begin;
     t_history           *current;
@@ -142,20 +136,17 @@ typedef struct          s_termc
 {
     char                *line_shell;
 	char				*pwd;
-    int                 nbr_hist;
     int                 ret_signal;
-    int                 move_cursor;
 	int					quotes;
-    int                 count_tab;          //how time touch tab
+    int                 key_tab;          //how time touch tab
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
 	int					len_prompt;
     t_auto              *autoc;
-    t_auto              *auto_binary;
     dlist         		*line;
 	dlist				*line_dup;
 	hlist				*history;
-    hlist               *from_hist;
+    hlist               *histfile;
     t_term              *term;
     t_console           *console;
     t_keyflag           *keyflag;
@@ -171,27 +162,10 @@ typedef struct		s_glob
 	int				len;
 }					t_glob;
 
-/********************************************************************************/
-/*FROM TREE DIRECTORY*/
-
-typedef struct          s_cmd
-{
-    char                *str_type;
-	char				*str_line;
-    char                **str_t;
-    int                 type;
-}                       t_cmd;
-
 /*******************************************/
 /*              test de fusion              */
 
-typedef struct      s_toclose
-{
-    int                 fd;
-    struct s_toclose    *next;
-}                   t_toclose;
-
-typedef struct		s_shell
+typedef struct		s_cmd
 {
 	char	*line;
 	char	**av;
@@ -200,9 +174,7 @@ typedef struct		s_shell
 	char	**var;
 	char	**env;
 	char	*pwd;
-    t_toclose       *cfd;
-    
-}					t_shell;
+}					t_cmd;
 
 typedef struct      s_redir
 {
@@ -218,9 +190,9 @@ void		ft_perror(char *str, int error, char *str2);
 /*            replace           */
 /********************************/
 
-void		ft_replace(t_shell *sh);
-void		ft_replace_dollar(t_shell *sh, int save);
-void		ft_replace_tilde(t_shell *sh, int save);
+void		ft_replace(t_cmd *cmd);
+void		ft_replace_dollar(t_cmd *cmd, int save);
+void		ft_replace_tilde(t_cmd *cmd, int save);
 char		*ft_replace_line(char *str1, char *value, char *str2);
 char        *ft_add_escape(char *str);
 
@@ -238,7 +210,7 @@ void		signal_sigint();
 void		ft_display_env(char **env);
 void		ft_chdir_error(char *path);
 char		*ft_getenv(const char *name, char **env);
-void		ft_fill_env(t_shell *sh, char **env);
+void		ft_fill_env(t_cmd *cmd, char **env);
 char		**ft_replace_env(char **new_env, char **old_env);
 char		*ft_remove_useless_path(char *str);
 char		*ft_replace_str(char *new, char *old);
@@ -246,20 +218,25 @@ char		**ft_cp_env(char **env);
 void		ft_charcat(char *str, char c);
 void		free_tab_2d(char **tab);
 int			tab_2d_len(char **tab);
-void		ft_help(t_shell *sh);
+void		ft_help(t_cmd *cmd);
 char		**rapid_set(char *input, char **env, int j);
-void		export_no_eq(t_shell *sh, int i);
-void		export_with_eq(t_shell *sh, int i);
+void		export_no_eq(t_cmd *cmd, int i);
+void		export_with_eq(t_cmd *cmd, int i);
 char		**load_env(char **env);
-void		export_flagb(t_shell *sh);
-void		replace_elem(char *compare, char *input, char **env, t_shell *sh);
-int			check_correct_arg(t_shell *sh, int i);
-void		export_flag_b(t_shell *sh, int i);
+void		export_flagb(t_cmd *cmd);
+void		replace_elem(char *compare, char *input, char **env, t_cmd *cmd);
+int			check_correct_arg(t_cmd *cmd, int i);
+void		export_flag_b(t_cmd *cmd, int i);
+int			only_p(t_cmd *cmd);
+int			check_pattern(char *str);
+void		ft_display_export(char	**var);
+
 int		    ft_skip_useless(char *line);
-void		ft_cmd(t_shell *sh);
+void		ft_cmd(t_cmd *cmd);
 int		    ft_singleton(int nb, int opt);
 int			ft_skip_quote(char *str);
 int			ft_skip_dquote(char *str);
+t_cmd     	*ft_ret_cmd(t_cmd *arg);
 
 /********************************/
 /*         redirection          */
@@ -267,8 +244,8 @@ int			ft_skip_dquote(char *str);
 
 char        *ft_ret_word(char *line);
 void        ft_fill_word(char *line, char *word);
-int 		ft_redirection(t_shell *sh);
-void		ft_remove_redirection(t_shell *sh);
+int 		ft_redirection(t_cmd *cmd);
+void		ft_remove_redirection();
 int         ft_count_char_word(char *line);
 
 #endif

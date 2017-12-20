@@ -31,17 +31,19 @@ void	ft_init_escape_tab(char *escape_tab)
 	escape_tab[24] = '\0';
 }
 
-static void ft_cpy(char *line, t_termc *tsh, int ret)
+static void ft_cpy(char *line, t_termc *tsh, int count, int index)
 {
 	int i;
 
 	i = 0;
+	tsh->autoc->updaterow = 0;
 	while (line[i])
 	{
-		ft_fill_back_dlst(tsh->line, line[i], 1);
+		push_backdlst(tsh->line, line[i], 1);
 		i++;
 	}
-	(void)ret;
+	if (index < count)
+		push_backdlst(tsh->line, ' ', 1);
 }
 
 static char	**ft_reset_glob(t_termc *tsh, char *line)
@@ -53,33 +55,43 @@ static char	**ft_reset_glob(t_termc *tsh, char *line)
 	return (tmp_tab);
 }
 
+t_cmd		*ft_ret_cmd(t_cmd *arg)
+{
+	static t_cmd *cmd = NULL;
+
+	if (arg)
+		cmd = arg;
+	return (cmd);
+}
+
 void		ft_replace_all(char *line, t_termc *tsh)
 {
 	int			i;
-	char		**tmp_tab;
+	int 		count;
+	char		**tabt;
 	char		*tmp;
-	// t_shell		sh;
+	t_cmd		 	*cmd;
 
-	tmp_tab = ft_reset_glob(tsh, line);
-	i = 0;
-	while (tmp_tab[i])
+	cmd = ft_ret_cmd(NULL);
+	tabt = ft_reset_glob(tsh, line);
+	i = -1;
+	count = ft_count_dtab(tabt) - 1;
+	while (tabt[++i])
 	{
-		if (ft_glob_here(tmp_tab[i]))
+		if (ft_glob_here(tabt[i]) && (tmp = ft_glob(tabt[i])) != NULL)
 		{
-			tmp = ft_glob(tmp_tab[i]);
-			ft_cpy(tmp, tsh, 0);
+			tsh->key_tab = 0;
+			ft_cpy(tmp, tsh, count, i);
 			free(tmp);
 		}
 		else
 		{
-			// sh.line = ft_strdup(tmp_tab[i]);
-			// ft_replace(&sh);
-			if (i != ft_count_dtab(tmp_tab) - 1)
-				tmp_tab[i] = ft_free_join(tmp_tab[i], " ", 'L');
-			ft_cpy(tmp_tab[i], tsh, 1);
-			// free(sh.line);
+			cmd->line = ft_strdup(tabt[i]);
+			ft_replace(cmd);
+			(ft_strlen(cmd->line) > 0) ? ft_cpy(cmd->line, tsh, count, i) :
+			ft_cpy(tabt[i], tsh, count, i);
+			free(cmd->line);
 		}
-		i++;
 	}
-	ft_free_tab(tmp_tab);
+	ft_free_tab(tabt);
 }

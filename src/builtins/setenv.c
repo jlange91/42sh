@@ -3,34 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   setenv.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:30 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/03 18:37:44 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/20 17:09:02 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/sh21.h"
 
-static inline int		ft_ret(t_shell *sh)
+static inline int		ft_ret(t_cmd *cmd)
 {
 	int i;
 
 	i = 0;
-	if (sh->ac < 2)
+	if (cmd->ac < 2)
 	{
-		ft_display_env(sh->env);
+		ft_display_env(cmd->env);
 		return (1);
 	}
-	else if (sh->ac > 3)
+	else if (cmd->ac > 3)
 	{
 		ft_putstr_fd("setenv: Too many arguments.\n", 2);
 		ft_singleton(1, 1);
 		return (1);
 	}
-	while (sh->av[1][i])
+	while (cmd->av[1][i])
 	{
-		if (!ft_isalnum(sh->av[1][i]))
+		if (!ft_isalnum(cmd->av[1][i]))
 		{
 			ft_putstr_fd("setenv: Variable name must contain alphanumeric \
 characters.\n", 2);
@@ -100,13 +100,13 @@ char					**ft_setenv(char *name, char *value, char **env)
 	return (new_env);
 }
 
-void					ft_prepare_setenv(t_shell *sh)
+void					ft_prepare_setenv(t_cmd *cmd)
 {
 	char **new_env;
 
-	if (ft_ret(sh))
+	if (ft_ret(cmd))
 		return ;
-	new_env = ft_setenv(sh->av[1], sh->av[2], sh->env);
-	free_tab_2d(sh->env);
-	sh->env = new_env;
+	new_env = ft_setenv(cmd->av[1], cmd->av[2], cmd->env);
+	free_tab_2d(cmd->env);
+	cmd->env = new_env;
 }

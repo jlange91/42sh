@@ -6,11 +6,11 @@
 #    By: adebrito <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/24 14:18:08 by adebrito          #+#    #+#              #
-#    Updated: 2017/11/22 14:02:56 by adebrito         ###   ########.fr        #
+#    Updated: 2017/12/20 17:21:21 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = /tmp/builtin_help
+NAME = builtin_help
 
 FLAGS = -Wall -Wextra -Werror
 
@@ -43,11 +43,11 @@ OBJ = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@echo "Compiling" [$(NAME)] "..."
+	@echo "Compiling Builtin Help"  "..."
 	@make -C libft/
 	@gcc -I includes libft/libft.a -o $(NAME) $(SRCS) -lreadline -ltermcap -g
 	@clear
-	@echo "Compiling" [$(NAME)] $(SUCCESS)
+	@echo "Compiling Builtin Help" $(SUCCESS)
 
 %.o: %.c
 	@gcc -I includes -o $@ -c $< $(FLAGS)
@@ -55,12 +55,12 @@ $(NAME): $(OBJ)
 clean:
 	@rm -rf $(OBJ) $(OBJ_MAIN)
 	@make clean -C libft/
-	@echo "Cleaning" [$(NAME)] "..."$(OK)
+	@echo "Cleaning..." $(OK)
 
 fclean: clean
 	@rm -f $(NAME) $(LIB)
 	@make fclean -C libft/
-	@echo "Delete" [$(NAME)] $(OK)
+	@echo "Delete" $(OK)
 
 re: fclean all
 

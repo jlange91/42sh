@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:11 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/03 19:15:38 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/20 17:08:34 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,20 @@ static inline int		init_flags(char **av, int *flags)
 	return (j);
 }
 
-void					ft_pwd(t_shell *sh)
+void					ft_pwd(t_cmd *cmd)
 {
 	char	pwd[PATH_MAX];
 	int		flags;
 
 	flags = 0;
-	if (init_flags(sh->av, &flags) == -1)
+	if (init_flags(cmd->av, &flags) == -1)
 	{
 		ft_putstr_fd("pwd: usage: pwd [-LP]\n", 2);
-		ft_singleton(1, 1);		
+		ft_singleton(1, 1);
 		return ;
 	}
 	if (flags == 0)
-		ft_putendl(sh->pwd);
+		ft_putendl(cmd->pwd);
 	else
 	{
 		getcwd(pwd, sizeof(pwd));

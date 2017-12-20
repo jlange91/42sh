@@ -92,15 +92,13 @@ void    ft_free_all(t_termc *tsh)
 	free(tsh->line_dup);
     free(tsh->console);
 	free(tsh->history);
-    ft_free_history(tsh->from_hist);
-    free(tsh->from_hist->pwd);
-    free(tsh->from_hist);
+    ft_free_history(tsh->histfile);
+    free(tsh->histfile->pwd);
+    free(tsh->histfile);
     if (tsh->autoc->str)
         free(tsh->autoc->str);
     ft_free_autocompletion(&tsh->autoc);
-    ft_free_autocompletion(&tsh->auto_binary);
     free(tsh->autoc);
-    free(tsh->auto_binary);
     free(tsh->keyflag);
     free(tsh->term);
     free(tsh);

@@ -4,6 +4,7 @@ static int  ft_reset_key(t_termc *tsh)
 {
     if (!tsh->autoc->current || tsh->len_prompt >= (int)get_columns())
         return (0);
+    tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
     tsh->autoc->arrow = 1;
     ft_clean_line(tsh);
 	if (tsh->autoc->can_print < 1)

@@ -1,10 +1,10 @@
 # include "../inc/sh21.h"
 # include "../inc/line_edition.h"
 
-void			free_shell(t_shell *sh, t_termc *tsh)
+void			free_shell(t_cmd *cmd, t_termc *tsh)
 {
-	free_tab_2d(sh->env);
-	free(sh->pwd);
+	free_tab_2d(cmd->env);
+	free(cmd->pwd);
 	ft_free_all(tsh);
 }
 
@@ -20,15 +20,14 @@ int		ft_singleton(int nb, int opt)
 int     main(int ac, char **av, char **env)
 {
 	t_termc *tsh;
-	t_shell sh;
+	t_cmd cmd;
 
     (void)ac;
     (void)av;
 	tsh = NULL;
-	ft_fill_env(&sh, env);
-	tsh = init_termc(sh.env);
-	sh.cfd = NULL;
-    ft_line_edition(tsh, sh);
-	free_shell(&sh, tsh);
+	ft_fill_env(&cmd, env);
+	tsh = init_termc(cmd.env);
+    ft_line_edition(tsh, cmd);
+	free_shell(&cmd, tsh);
     return (0);
 }

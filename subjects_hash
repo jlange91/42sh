@@ -1,4 +1,4 @@
-t_shell *sh;
+t_cmd *cmd;
 
 dans la structure t_shell il y aura une table de hash a remplir
 

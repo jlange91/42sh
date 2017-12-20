@@ -17,12 +17,9 @@ size_t	get_columns(void)
 
 int     ft_reset_line(t_termc *tsh, int ret)
 {
-    int nbr;
-
-    nbr = 0;
+    (void)ret;
     if (tsh->auto_active || tsh->multiauto_active)
     {
-        tputs(tsh->term->dostr, 1, ft_inputstr);
         free(tsh->autoc->str);
         tsh->autoc->str = NULL;
         ft_free_autocompletion(&tsh->autoc);
@@ -30,9 +27,7 @@ int     ft_reset_line(t_termc *tsh, int ret)
         tsh->multiauto_active = 0;
     }
     tsh->autoc->finish = 1;
-    ft_display(tsh, &nbr, 1);
-    while (ret--)
-        tputs(tsh->term->dostr, 1, ft_inputstr);
+    ft_display(tsh, 1);
 	tsh->keyflag->cl = 0;
     return (0);
 }
@@ -42,7 +37,7 @@ int     ft_save_line(t_termc *tsh)
     t_lineterm *tmp;
 
     tputs(tsh->term->clrstr, 1, ft_inputstr);
-    ft_display(tsh, 0, 1);
+    ft_display(tsh, 1);
     tsh->keyflag->cl = 1;
     tmp = tsh->line->begin;
     tmp = ft_dontGetPrompt2(tmp);
@@ -50,7 +45,7 @@ int     ft_save_line(t_termc *tsh)
         ft_free_dlist(&tsh->line_dup);
     while (tmp)
     {
-        ft_fill_back_dlst(tsh->line_dup, tmp->c, 1);
+        push_backdlst(tsh->line_dup, tmp->c, 1);
         tmp = tmp->next;
     }
     return (0);

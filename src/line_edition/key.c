@@ -12,23 +12,7 @@
 
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
-
-/**************************************************************************************
- * FUNCTION FIND CURSOR
- * ALL VARIABLE :
- *
- * Explication : FIND CURSOR LOL;
- *
- * NO NORME
- * ***********************************************************************************/
-static inline t_lineterm *find_cursor(t_lineterm *end)
-{
-	if (!end)
-		return (NULL);
-	while (end->s_pos == 0)
-		end = end->prev;
-	return (end);
-}
+#include "../../inc/globbing.h"
 
 static inline void 	ft_reset_var(t_termc *tsh, int flag)
 {
@@ -45,7 +29,7 @@ static inline void 	ft_reset_var(t_termc *tsh, int flag)
 	if (flag == 2  || flag == 3)
 	{
 		tsh->autoc->can_print = 0;
-		tsh->count_tab = 0;
+		tsh->key_tab = 0;
 		tsh->auto_active = 0;
 		tsh->multiauto_active = 0;
 	}
@@ -96,6 +80,8 @@ static inline int	ft_del_caractere(t_lineterm *end, t_termc *tsh)
 	{
 		if (!ft_del_split(&(tsh)->line, tsh))
 			return (0);
+		if (tmp->prev->index == 0)
+			ft_reset_var(tsh, 1);
 	}
 	else if (tmp->prev && tmp->index != 0)
 	{
@@ -125,11 +111,11 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
     t_lineterm  *tmp;
 
     tmp = NULL;
-	tmp = find_cursor(line->end);
+	tmp = find_cursor(line->end, 0);
 	if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3)
 		return (1);
     if (c == TAB && !tsh->quotes)
-        tsh->count_tab = 1;
+		tsh->key_tab = 1;
     if (c == '\n' && !tsh->quotes)
 		ft_reset_var(tsh, 2);
 	if (c == BACKSPACE)

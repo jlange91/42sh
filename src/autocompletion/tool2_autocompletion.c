@@ -20,8 +20,8 @@ void    ft_check_is_dir(t_termc *tsh)
     ft_memset(&info, 0, sizeof(struct stat));
     stat(tab_word[i], &info);
     if (S_ISDIR(info.st_mode) && tsh->line->end->c != '/'
-            && tsh->line->end->c != ' ')
-        ft_fill_back_dlst(tsh->line, '/', 0 + 2);
+            && tsh->line->end->c != ' ' && tsh->line->end->c != '.')
+        push_backdlst(tsh->line, '/', 0 + 2);
     ft_free_tab(tab_word);
 }
 
@@ -39,12 +39,12 @@ void    ft_cpy_autocompl_to_lineshell(t_termc *tsh)
             j--;
         j++;
         while (tsh->autoc->str[++i] && i < j)
-            ft_fill_back_dlst(tsh->line, tsh->autoc->str[i], i + 2);
+            push_backdlst(tsh->line, tsh->autoc->str[i], i + 2);
     }
     ft_check_is_dir(tsh);
     i = -1;
     while (tsh->autoc->current->data[++i])
-        ft_fill_back_dlst(tsh->line, tsh->autoc->current->data[i], i + 2);
+        push_backdlst(tsh->line, tsh->autoc->current->data[i], i + 2);
 }
 
 int    ft_reset(t_termc *tsh)
@@ -56,7 +56,6 @@ int    ft_reset(t_termc *tsh)
         tsh->autoc->str = NULL;
     }
     tsh->auto_active = 1;
-    tsh->history->active = 0;
     tsh->line->last = 1;
     if (tsh->autoc->finish == 1)
         tsh->autoc->finish = 0;

@@ -12,7 +12,7 @@
 
 #include "../../inc/line_edition.h"
 
-void    ft_fill_back_dlst(dlist *line, int c, int i)
+void    push_backdlst(dlist *line, int c, int i)
 {
 	t_lineterm	*new;
 
@@ -34,7 +34,7 @@ void    ft_fill_back_dlst(dlist *line, int c, int i)
 	line->end = new;
 }
 
-void    ft_fill_back_hlst(hlist *h, const char *str)
+void    push_backhist(hlist *h, const char *str, int index, int n)
 {
 	t_history	*new;
 
@@ -42,6 +42,9 @@ void    ft_fill_back_hlst(hlist *h, const char *str)
 	if ((new = (t_history *)malloc(sizeof(t_history))) == NULL)
 		exit(1);
 	new->data = ft_strdup((char *)str);
+	new->index = index;
+	new->print = 1;
+	new->new = n;
 	new->next = NULL;
 	new->prev = h->end;
 	if (h->end)
@@ -51,13 +54,24 @@ void    ft_fill_back_hlst(hlist *h, const char *str)
 	h->end = new;
 }
 
-static inline t_lineterm *get_cursor_current(t_lineterm *end)
+t_lineterm *find_cursor(t_lineterm *end, int flag)
 {
-	if (!end->prev)
+	if (flag)
+	{
+		if (!end->prev)
+			return (end);
+		while (end->prev->s_pos == 0)
+			end = end->prev;
 		return (end);
-	while (end->prev->s_pos == 0)
-		end = end->prev;
-	return (end);
+	}
+	else
+	{
+		if (!end)
+			return (NULL);
+		while (end->s_pos == 0)
+			end = end->prev;
+		return (end);
+	}
 }
 
 int		ft_count_dlnk(t_termc *tsh)
@@ -81,10 +95,10 @@ void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 {
 	t_lineterm  *new;
 
-	end = get_cursor_current(end);
+	end = find_cursor(end, 1);
 	if (end->index == 0)
 	{
-		ft_fill_back_dlst(tsh->line, c, i);
+		push_backdlst(tsh->line, c, i);
 		tsh->line->last = 1;
 		return ;
 	}

@@ -4,8 +4,7 @@
 /************************************************************************************
  * FUNCTION MOVE_RIGHT OR MOVE_LEFT
  *
- * ALL VARIABLE			tsh->history->down ===> reinitialise
- *						tsh->history->up ===> reinitialise
+ * ALL VARIABLE
  *						tsh->end->s_pos ===> If cursor can be here or not
  *												if s_pos == 0 , cursor can be on the letter else can't
  *						tsh->end->under ==> active underline caractere if keyflag->underline is active
@@ -25,11 +24,9 @@ void	ft_move_right(t_lineterm *end, t_termc *tsh)
         ft_autoMove(end, tsh, 1);
         return ;
     }
-    tsh->history->down = 0;
-    tsh->history->up = 0;
     tsh->auto_active = 0;
     tsh->multiauto_active = 0;
-    if (end->next)
+    if (end && end->next)
     {
         if (tsh->keyflag->underline && end->under != 1)
             end->under = 1;
@@ -39,7 +36,6 @@ void	ft_move_right(t_lineterm *end, t_termc *tsh)
             tsh->line->last = 1;
         else
             tsh->line->lnk_before = 1;
-        tsh->move_cursor = 1;
     }
 }
 
@@ -50,8 +46,6 @@ void    ft_move_left(t_lineterm *end, t_termc *tsh)
         ft_autoMove(end, tsh, 0);
         return ;
     }
-    tsh->history->down = 0;
-    tsh->history->up = 0;
     tsh->auto_active = 0;
     tsh->multiauto_active = 0;
     if (end->prev && end->index != 0)
@@ -61,7 +55,6 @@ void    ft_move_left(t_lineterm *end, t_termc *tsh)
         end->s_pos = 0;
         end->prev->s_pos = 1;
         tsh->line->last = 0;
-        tsh->move_cursor = 1;
     }
 }
 
@@ -96,9 +89,13 @@ void    ft_move_mright(t_lineterm *end, t_termc *tsh)
     tsh->keyflag->underline = 1;
     tsh->keyflag->mright = 1;
     tsh->keyflag->mleft = 0;
-	if (end && end->index == 0)
-		end = end->next;
-	ft_move_right(end, tsh);
-    if (tsh->keyflag->underline && end->under != 1)
-		end->under = 1;
+    if (end && !end->next)
+    {
+        if (end->c != ' ' && tsh->keyflag->underline && end->under != 1)
+            end->under = 1;
+        return ;
+    }
+	if (end && end->index == 0) //FIX START UNDERLINE FIRST LETTER
+        end = end->next;
+    ft_move_right(end, tsh);
 }

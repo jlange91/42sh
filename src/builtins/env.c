@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:51 by jlange            #+#    #+#             */
-/*   Updated: 2017/11/16 13:26:31 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/12/20 17:04:48 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,28 +60,28 @@ static int		skip_flags(char **av, char ***env)
 	return (i);
 }
 
-static void		try_to_exec(t_shell *sh, char **av, char **env)
+static void		try_to_exec(t_cmd *cmd, char **av, char **env)
 {
 	char	**sav;
 	char	**senv;
 
-	sav = sh->av;
-	senv = sh->env;
-	sh->av = av;
-	sh->env = env;
-	ft_cmd(sh);
-	sh->av = sav;
-	sh->env = senv;
+	sav = cmd->av;
+	senv = cmd->env;
+	cmd->av = av;
+	cmd->env = env;
+	ft_cmd(cmd);
+	cmd->av = sav;
+	cmd->env = senv;
 }
 
-void			ft_env(t_shell *sh)
+void			ft_env(t_cmd *cmd)
 {
 	char	**env;
 	char	**av;
 	int		ret;
 
-	env = ft_cp_env(sh->env);
-	ret = skip_flags(sh->av, &env);
+	env = ft_cp_env(cmd->env);
+	ret = skip_flags(cmd->av, &env);
 	if (ret == -1)
 	{
 		ft_putstr_fd("env [-i][name=value]... [-u name] \
@@ -90,14 +90,14 @@ void			ft_env(t_shell *sh)
 		ft_singleton(1, 1);
 		return ;
 	}
-	ret += env_skip_name_value(&sh->av[ret], &env);
-	if (!sh->av[ret])
+	ret += env_skip_name_value(&cmd->av[ret], &env);
+	if (!cmd->av[ret])
 	{
 		ft_display_env(env);
 		free_tab_2d(env);
 		return ;
 	}
-	av = &sh->av[ret];
-	try_to_exec(sh, av, env);
+	av = &cmd->av[ret];
+	try_to_exec(cmd, av, env);
 	free_tab_2d(env);
 }

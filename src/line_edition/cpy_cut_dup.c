@@ -20,7 +20,7 @@ t_lineterm	*ft_cut_split(t_lineterm *tmp, t_termc *tsh)
 {
 	t_lineterm *del;
 
-	ft_fill_back_dlst(tsh->line_dup, tmp->c, 2);
+	push_backdlst(tsh->line_dup, tmp->c, 2);
 	del = tmp;
 	tsh->keyflag->backspace = 1;
 	if (tmp->next == NULL)
@@ -65,10 +65,7 @@ void    ft_cut_line(t_lineterm *end, t_termc *tsh)
 				ret = 0;
 		}
 	}
-	if (end->next == NULL)
-		tsh->line->last = 1;
-	else
-		tsh->line->last = 0;
+	tsh->line->last = (end->next == NULL) ? 1 : 0;
 }
 
 void	ft_dup_line(t_lineterm *end, t_termc *tsh)
@@ -85,7 +82,7 @@ void	ft_dup_line(t_lineterm *end, t_termc *tsh)
 		while (begin)
 		{
 			if (begin->under == 1)
-				ft_fill_back_dlst(tsh->line_dup, begin->c, i++);
+				push_backdlst(tsh->line_dup, begin->c, i++);
 			i++;
 			begin = begin->next;
 		}
@@ -104,7 +101,7 @@ void	ft_past_line(t_lineterm *end, t_termc *tsh)
 		if (!end->next)
 			while (begin)
 			{
-				ft_fill_back_dlst(tsh->line, begin->c, i++);
+				push_backdlst(tsh->line, begin->c, i++);
 				begin = begin->next;
 			}
 		else

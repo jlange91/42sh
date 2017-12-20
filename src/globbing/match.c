@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   match.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/19 15:17:07 by adebrito          #+#    #+#             */
+/*   Updated: 2017/12/19 15:18:58 by adebrito         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/globbing.h"
 
 static	int 	ft_token_glob(char **pat, int escape, int *ret, int *brac)
@@ -51,9 +63,9 @@ static	char	*ft_get_next_pattern(char **pattern, int *star, int *bracket)
 		return (NULL);
 	chunk = NULL;
 	if ((chunk = (char *)malloc(sizeof(char) *
-			(ft_strlen(*pattern) + 1))) == NULL)
+					(ft_strlen(*pattern) + 1))) == NULL)
 		return (NULL);
-	if  (*(pattern[0]) == '*')
+	if (*(pattern[0]) == '*')
 	{
 		(*pattern)++;
 		*star = 1;
@@ -61,7 +73,7 @@ static	char	*ft_get_next_pattern(char **pattern, int *star, int *bracket)
 	return (ft_split_pattern(&chunk, pattern, bracket));
 }
 
-static int ft_match_split(char *pattern, char *word, char *chunk)
+static int		ft_match_split(char *pattern, char *word, char *chunk)
 {
 	int i;
 
@@ -79,7 +91,7 @@ static int ft_match_split(char *pattern, char *word, char *chunk)
 	return (ft_returnfree(chunk, 0, 'f'));
 }
 
-int	ft_match(char *pattern, char *word)
+int				ft_match(char *pattern, char *word)
 {
 	char	*chunk;
 	int		star;

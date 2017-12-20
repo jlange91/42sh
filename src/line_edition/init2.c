@@ -29,11 +29,7 @@ static	inline	hlist		*init_history(void)
 	h->begin = NULL;
 	h->end = NULL;
 	h->current = NULL;
-	h->active = 0;
     h->ecrase_hist = 0;
-    h->down = 0;
-    h->up = 0;
-    h->line_history = 0;
 	return (h);
 }
 
@@ -110,14 +106,12 @@ void    ft_init_termc2(t_termc **tsh)
 	   ft_putendl_fd("Error init_lineterm", 2);
 	if (((*tsh)->history = init_history()) == NULL)
 	   ft_putendl_fd("Error init_history", 2);
-	if (((*tsh)->from_hist = init_history()) == NULL)
+	if (((*tsh)->histfile = init_history()) == NULL)
 	   ft_putendl_fd("Error init_history", 2);
 	if (((*tsh)->console = init_console()) == NULL)
 	   ft_putendl_fd("Error init_console", 2);
 	if (((*tsh)->autoc = init_autocompletion()) == NULL)
 	   ft_putendl_fd("Error init_autocompletion", 2);
-	if (((*tsh)->auto_binary = init_autocompletion()) == NULL)
-	   ft_putendl_fd("Error init_autocompletion_binary", 2);
 	if (((*tsh)->keyflag = init_keyflag()) == NULL)
 	   ft_putendl_fd("Error init_keyflag", 2);
 }

@@ -6,17 +6,17 @@
 /*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 19:11:16 by stvalett42        #+#    #+#             */
-/*   Updated: 2017/12/06 18:56:28 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/12/19 15:14:59 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/globbing.h"
 
-static inline t_glob	ft_fillGlob(char *file, char *word)
+static inline t_glob	ft_fillglob(char *file, char *word)
 {
-	t_glob	glob;
-	int		k;
-	char	**s_tab;
+	t_glob		glob;
+	int			k;
+	char		**s_tab;
 	struct stat info;
 
 	s_tab = ft_add_slash(word, word[ft_strlen(word) - 1]);
@@ -34,7 +34,7 @@ static inline t_glob	ft_fillGlob(char *file, char *word)
 	return (glob);
 }
 
-static inline int		ft_initVar(char ***res, char ***s_tab, char *wo, int st)
+static inline int		ft_initvar(char ***res, char ***s_tab, char *wo, int st)
 {
 	int len;
 
@@ -46,7 +46,7 @@ static inline int		ft_initVar(char ***res, char ***s_tab, char *wo, int st)
 	return (len);
 }
 
-static inline t_glob	*ft_firstInitGlob(char *word, int star)
+static inline t_glob	*ft_firstinitglob(char *word, int star)
 {
 	t_glob	*glob;
 	char	**s_tab;
@@ -54,14 +54,14 @@ static inline t_glob	*ft_firstInitGlob(char *word, int star)
 	int		i;
 	int		len;
 
-	len = ft_initVar(&res, &s_tab, word, star);
+	len = ft_initvar(&res, &s_tab, word, star);
 	if ((glob = (t_glob *)malloc(sizeof(t_glob) * (len))) == NULL)
 		return (NULL);
 	if (len != 1 || res != NULL)
 	{
 		i = -1;
 		while (res[++i])
-			glob[i] = ft_fillGlob(res[i], word);
+			glob[i] = ft_fillglob(res[i], word);
 		if (i == 0)
 		{
 			ft_freeall_glob(NULL, res, s_tab, glob);
@@ -69,13 +69,13 @@ static inline t_glob	*ft_firstInitGlob(char *word, int star)
 		}
 	}
 	else
-		glob[0] = ft_fillGlob(NULL, word);
+		glob[0] = ft_fillglob(NULL, word);
 	ft_freeall_glob(NULL, res, s_tab, NULL);
 	glob->len = len;
 	return (glob);
 }
 
-static inline char	*ft_braces_glob(char *word)
+static inline char		*ft_braces_glob(char *word)
 {
 	char	**tab;
 	char	*tmp;
@@ -104,7 +104,7 @@ static inline char	*ft_braces_glob(char *word)
 	return (str);
 }
 
-char    *ft_glob(char *word)
+char					*ft_glob(char *word)
 {
 	int		star;
 	t_glob	*glob;
@@ -114,14 +114,14 @@ char    *ft_glob(char *word)
 	if (word && ft_glob_here(word) && ft_syntax_braces(word))
 		return (ft_braces_glob(word));
 	if (word && ft_glob_here(word) && !ft_syntax_braces(word) &&
-		ft_syntax_bracket(word))
+			ft_syntax_bracket(word))
 	{
 		star = ft_only_star(word);
-		glob = ft_firstInitGlob(word, star);
+		glob = ft_firstinitglob(word, star);
 		if (glob != NULL)
 		{
 			ft_resGlob(&glob[0], star, &str);
-			if ((str == NULL &&  glob->res == NULL) || (str == NULL && star))
+			if ((str == NULL && glob->res == NULL) || (str == NULL && star))
 				ft_save_word(&glob[0], &str, glob->len);
 			ft_freeall_glob(NULL, NULL, NULL, &glob[0]);
 			return (str);

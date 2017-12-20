@@ -85,9 +85,11 @@ static	void			ft_print2(t_select **select, int i, int col, int tmp)
 	len = s->max_strlen - ft_strlen(s->elem[i].str);
 	if (i == (s->cursor_line - 1))
 	{
+		ft_putstr_fd(GRN, 2);
 		ft_putstr_fd("  ~> ", 2);
 		print_again(select, i, NULL);
 		ft_putstr_fd(" <~", 2);
+		ft_putstr_fd(RESET, 2);
 	}
 	else
 		print_else(select, i, NULL, len);

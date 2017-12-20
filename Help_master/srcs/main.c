@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 14:40:50 by adebrito          #+#    #+#             */
-/*   Updated: 2017/11/22 14:00:17 by adebrito         ###   ########.fr       */
+/*   Updated: 2017/12/18 16:44:17 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,15 @@ static int		init_elem(t_select **select, char **av, int ac)
 	return (0);
 }
 
-int				main(int	ac, char **av,char **env)
+int				main(int ac, char **av, char **env)
 {
 	t_select	*s;
+	char			*str;
+
 	(void)ac;
+	str = "COPIER/COLLER COUPER/COLLER SE_DEPLACER SELECTION AUTOCOMPLETION \
+GLOBBING HISTORIQUE";
+	av = ft_strsplit(str, ' ');
 	if (!(s = (t_select *)malloc(sizeof(t_select))))
 		return (0);
 	s->nb_elem = ft_tablen(av);
