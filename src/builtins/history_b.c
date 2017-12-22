@@ -75,14 +75,19 @@ void 	ft_del_elem_history_split(int index, hlist *histfile)
 static inline int ft_del_elem_history(char *av, hlist *histfile, int flag)
 {
 	int index;
+	int i;
 
 	if (flag == 0)
 	{
-		index = ft_atoi(av);
-		if (!ft_only_digit(av))
-			return (ft_error_history(av, 0));
+		i = 0;
+		if (av[0] == '-')
+			while (av[i] && !ft_isdigit(av[i]))
+				i++;
+		index = ft_atoi(&av[i]);
+		if (!ft_only_digit(&av[i]))
+			return (ft_error_history(&av[i], 0));
 		else if (index < histfile->begin->index || index > histfile->end->index)
-			return (ft_error_history(av, 0));
+			return (ft_error_history(&av[i], 0));
 		else
 			ft_del_elem_history_split(index, histfile);
 	}
@@ -110,7 +115,7 @@ static inline int ft_find_index_history(char *av, hlist *hist)
 	}
 	if (index > hist->end->index)
 		return (ft_display_history(hist));
-	else if (index < hist->end->index)
+	else if (index < hist->begin->index)
 		return (ft_error_history(av, 1));
 	while (begin)
 	{
@@ -122,58 +127,58 @@ static inline int ft_find_index_history(char *av, hlist *hist)
 	return (0);
 }
 
-static inline int ft_good_opt(char *av, char opt[5], int flag)
-{
-	int i;
-	int j;
+// static inline int ft_good_opt(char *av, char opt[5], int flag)
+// {
+// 	int i;
+// 	int j;
+//
+// 	i = 0;
+// 	j = 0;
+// 	while (av[++i])
+// 	{
+// 		if (av[i] != 'a' && av[i] != 'n' && av[i] != 'r' && av[i] != 'w'
+// 			&& av[i] != 'p' && av[i] != 's')
+// 			return (0);
+// 		if ((av[i] == 'a' || av[i] == 'n' || av[i] == 'r' || av[i] == 'w'
+// 			|| av[i] == 'p' || av[i] == 's') && flag)
+// 		{
+// 			opt[j] = av[i];
+// 			j++;
+// 		}
+// 	}
+// 	opt[j]= '\0';
+// 	return (3);
+// }
+//
+// static inline int ft_anrw(char *av1, char *av2, hlist *hist, char **av)
+// {
+// 	char 	opt[5];
+// 	int		i;
+// 	t_history *begin;
+//
+// 	begin = hist->begin;
+// 	if (ft_good_opt(av1, opt, 1) != 3)
+// 		return (1);
+// 	i = 0;
+// 	while (opt[i])
+// 	{
+// 		if (opt[i] == 'a')
+// 			ft_opt_a(av2, begin, hist);
+// 		if (opt[i] == 'r')
+// 			ft_opt_r(av2, begin, hist);
+// 		if (opt[i] == 'w')
+// 			ft_opt_w(av2, begin, hist);
+// 		if (opt[i] == 'p')
+// 			ft_opt_p(av, hist);
+// 		if (opt[i] == 's')
+// 			ft_opt_s(av, hist);
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
-	i = 0;
-	j = 0;
-	while (av[++i])
-	{
-		if (av[i] != 'a' && av[i] != 'n' && av[i] != 'r' && av[i] != 'w'\
-			&& av[i] != 'p' && av[i] != 's')
-			return (0);
-		if ((av[i] == 'a' || av[i] == 'n' || av[i] == 'r' || av[i] == 'w'\
-			|| av[i] == 'p' || av[i] == 's') && flag)
-		{
-			opt[j] = av[i];
-			j++;
-		}
-	}
-	opt[j]= '\0';
-	return (3);
-}
 
-static inline int ft_anrw(char *av1, char *av2, hlist *hist, char **av)
-{
-	char 	opt[5];
-	int		i;
-	t_history *begin;
-
-	begin = hist->begin;
-	if (ft_good_opt(av1, opt, 1) != 3)
-		return (1);
-	i = 0;
-	while (opt[i])
-	{
-		if (opt[i] == 'a')
-			ft_opt_a(av2, begin, hist);
-		if (opt[i] == 'r')
-			ft_opt_r(av2, begin, hist);
-		if (opt[i] == 'w')
-			ft_opt_w(av2, begin, hist);
-		if (opt[i] == 'p')
-			ft_opt_p(av, hist);
-		if (opt[i] == 's')
-			ft_opt_s(av, hist);
-		i++;
-	}
-	return (0);
-}
-
-
-static inline int ft_get_option(char *av)
+static inline int ft_option_del(char *av, hlist *hist)
 {
 	int i;
 
@@ -182,13 +187,13 @@ static inline int ft_get_option(char *av)
 	{
 		if (av[0] != '-')
 			return (-1);
-		else if (av[1] == 'd')
-			return (1);
-		else if (av[1] == 'c')
+		else if (av[i] == 'd')
+			ft_del_elem_history(av, hist, 0);
+		else if (av[i] == 'c')
 			return (2);
-		else if (av[1] == 'a' || av[1] == 'r' || av[1] == 'w' || \
-			av[1] == 'p'|| av[1] == 's')
-			return (3);
+		// else if (av[1] == 'a' || av[1] == 'r' || av[1] == 'w' || \
+		// 	av[1] == 'p'|| av[1] == 's')
+			// return (3);
 		i++;
 	}
 	return (0);
@@ -204,15 +209,15 @@ int history(t_cmd *cmd)
         return (ft_display_history(tsh->histfile));
 	else if (cmd->av[1] != NULL && ft_only_digit(cmd->av[1]))
 		return (ft_find_index_history(cmd->av[1], tsh->histfile));
-	else if (cmd->av[1] != NULL)
+	else if (cmd->av[1] != NULL && cmd->av[2] == NULL)
 	{
-		opt = ft_get_option(cmd->av[1]);
-		if (opt == 1 && cmd->av[2] != NULL)
-			return (ft_del_elem_history(cmd->av[2], tsh->histfile, 0));
-		else if (opt == 2)
-			return (ft_del_elem_history(NULL, tsh->histfile, 1));
-		else if (opt == 3 && cmd->av[2] != NULL)
-			return (ft_anrw(cmd->av[1],cmd->av[2], tsh->histfile, cmd->av));
+		opt = ft_option_del(cmd->av[1], tsh->histfile);
+		// if (opt == 1)
+		// 	return (ft_del_elem_history(cmd->av[1], tsh->histfile, 0));
+		// else if (opt == 2)
+		// 	return (ft_del_elem_history(NULL, tsh->histfile, 1));
+		// else if (opt == 3 && cmd->av[2] != NULL)
+		// 	return (ft_anrw(cmd->av[1],cmd->av[2], tsh->histfile, cmd->av));
 	}
     return (1);
 }

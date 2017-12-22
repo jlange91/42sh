@@ -140,6 +140,8 @@ char    *ft_line_input(t_termc *tsh)
 			tsh->keyflag->backspace = 0;
 			tsh->keyflag->underline = 0;
 			tsh->keyflag->mleft = 0;
+			tsh->repl = 0;
+			tsh->sigint = 0;
 		}
 		return (ft_getstr(tsh, tsh->line->begin));
 	}

@@ -29,7 +29,7 @@ void			ft_cmd(t_cmd *cmd)
 	else if (!ft_strcmp(cmd->av[0], "echo"))
 		ft_echo(cmd->av);
 	else if (!ft_strcmp(cmd->av[0], "pwd"))
-		ft_pwd(cmd);
+		ft_pwd(cmd->av);
 	else if (!ft_strcmp(cmd->av[0], "setenv"))
 		ft_prepare_setenv(cmd);
 	else if (!ft_strcmp(cmd->av[0], "unsetenv") ||

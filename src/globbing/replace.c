@@ -31,7 +31,7 @@ void	ft_init_escape_tab(char *escape_tab)
 	escape_tab[24] = '\0';
 }
 
-static void ft_cpy(char *line, t_termc *tsh, int count, int index)
+void ft_cpy(char *line, t_termc *tsh)
 {
 	int i;
 
@@ -42,47 +42,55 @@ static void ft_cpy(char *line, t_termc *tsh, int count, int index)
 		push_backdlst(tsh->line, line[i], 1);
 		i++;
 	}
-	if (index < count)
-		push_backdlst(tsh->line, ' ', 1);
 }
 
-static char	**ft_reset_glob(t_termc *tsh, char *line)
+static inline void ft_get_result(char *after, t_termc *tsh, t_shell *sh)
 {
-	char		**tmp_tab;
+	char 		*glob;
 
-	ft_clean_line(tsh);
-	tmp_tab = ft_strsplit2(line);
-	return (tmp_tab);
-}
-
-void		ft_replace_all(char *line, t_termc *tsh)
-{
-	int			i;
-	int 		count;
-	char		**tabt;
-	char		*tmp;
-	t_shell		*sh;
-
-	sh = ft_ret_sh(NULL);
-	tabt = ft_reset_glob(tsh, line);
-	i = -1;
-	count = ft_count_dtab(tabt) - 1;
-	while (tabt[++i])
+	if (ft_glob_here(after) && (glob = ft_glob(after)) != NULL)
 	{
-		if (ft_glob_here(tabt[i]) && (tmp = ft_glob(tabt[i])) != NULL)
+		tsh->key_tab = 0;
+		ft_cpy(glob, tsh);
+		free(glob);
+		tsh->repl = 1;
+	}
+	else
+	{
+		sh->line = ft_strdup(after);
+		ft_replace(sh);
+		if (ft_strcmp(sh->line, after) != 0 && ft_strlen(sh->line) > 0)
 		{
-			tsh->key_tab = 0;
-			ft_cpy(tmp, tsh, count, i);
-			free(tmp);
+			ft_cpy(sh->line, tsh);
+			tsh->repl = 1;
 		}
 		else
-		{
-			sh->line = ft_strdup(tabt[i]);
-			ft_replace(sh);
-			(ft_strlen(sh->line) > 0) ? ft_cpy(sh->line, tsh, count, i) :
-			ft_cpy(tabt[i], tsh, count, i);
-			free(sh->line);
-		}
+			ft_cpy(after, tsh);
+		free(sh->line);
 	}
-	ft_free_tab(tabt);
+	ft_strdel(&after);
+}
+
+int 		ft_replace_all(char *line, t_termc *tsh)
+{
+	int 		i;
+	char 		*after;
+	char 		*before;
+	t_shell 	*sh;
+
+	ft_clean_line(tsh);
+	sh = ft_ret_sh(NULL);
+	i = ft_strlen(line);
+	while (--i > 0)
+		if (line[i] == ' ')
+			break;
+	// after = ft_strtrim2(ft_strdup(&line[i]), ' ', '\t');
+	after = ft_strtrim2(&line[i], ' ', '\t');
+	before = ft_strndup(line, i + 1);
+	if (ft_strlen(before) == 1)
+		before[0] = '\0';
+	ft_cpy(before, tsh);
+	ft_strdel(&before);
+	ft_get_result(after, tsh, sh);
+	return (0);
 }

@@ -18,6 +18,10 @@ size_t	get_columns(void)
 int     ft_reset_line(t_termc *tsh, int ret)
 {
     (void)ret;
+	ft_display(tsh, 1);
+	ft_putchar('\n');
+	tsh->autoc->finish = 1;
+	tsh->keyflag->cl = 0;
     if (tsh->auto_active || tsh->multiauto_active)
     {
         free(tsh->autoc->str);
@@ -26,9 +30,7 @@ int     ft_reset_line(t_termc *tsh, int ret)
         tsh->auto_active = 0;
         tsh->multiauto_active = 0;
     }
-    tsh->autoc->finish = 1;
-    ft_display(tsh, 1);
-	tsh->keyflag->cl = 0;
+	tputs(tsh->term->vestr, 1, ft_inputstr);
     return (0);
 }
 

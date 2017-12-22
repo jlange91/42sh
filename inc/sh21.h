@@ -142,6 +142,8 @@ typedef struct          s_termc
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
 	int					len_prompt;
+	int 				repl;
+	int 				sigint;
     t_auto              *autoc;
     dlist         		*line;
 	dlist				*line_dup;
@@ -173,14 +175,12 @@ typedef struct		s_cmd
 	int		load;
 	char	**var;
 	char	**env;
-	char	*pwd;
     struct s_cmd    *next;
 }					t_cmd;
 
 typedef struct      s_shell
 {
     char **env;
-    char *pwd;
     char *line;
 }                   t_shell;
 
@@ -255,5 +255,12 @@ void        ft_fill_word(char *line, char *word);
 int 		ft_redirection(t_cmd *cmd);
 void		ft_remove_redirection();
 int         ft_count_char_word(char *line);
+
+
+
+
+char	**ft_var_env(char **arg);
+char	*ft_var_pwd(char *arg);
+
 
 #endif

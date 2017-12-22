@@ -57,5 +57,5 @@ int     ft_skip_or_leave(char **tmp, char **chunk, int *count, int *escape);
  * *REPLACE_GLOB
  */
 void    ft_init_escape_tab(char *escape_tab);
-void    ft_replace_all(char *line, t_termc *tsh);
+int    ft_replace_all(char *line, t_termc *tsh);
 #endif

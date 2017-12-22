@@ -17,7 +17,7 @@ void		ft_prepare_setenv(t_cmd *cmd);
 char		**ft_setenv(char *name, char *value, char **env);
 void		ft_prepare_unsetenv(t_cmd *cmd);
 char		**ft_unsetenv(char *name, char **env);
-void		ft_pwd(t_cmd *cmd);
+void		ft_pwd(char **av);
 int			display_octal(char *str);
 int			display_hexa(char *str);
 void		prepare_export(t_cmd *cmd);

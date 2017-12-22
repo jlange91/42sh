@@ -62,12 +62,12 @@ void				ft_fill_env(t_shell *sh, char **env)
 	{
 		getcwd(pwd, sizeof(pwd));
 		sh->env = ft_replace_env(ft_setenv("PWD", pwd, sh->env), sh->env);
-		sh->pwd = ft_strdup(pwd);
+		ft_var_pwd(ft_strdup(pwd));
 	}
 	else
 	{
-		sh->pwd = ft_strdup(&pwd2[4]);
-		sh->env = ft_replace_env(ft_setenv("PWD", sh->pwd, sh->env), sh->env);
+		sh->env = ft_replace_env(ft_setenv("PWD", &pwd2[4], sh->env), sh->env);
+		ft_var_pwd(ft_strdup(&pwd2[4]));		
 	}
 	//sh->var = load_env(sh->env);
 }

@@ -16,17 +16,17 @@
 
 void 	ft_sigint(t_termc *tsh)
 {
-	ft_display(tsh, 1);
-	if (!(tsh->auto_active) && (!(tsh->multiauto_active)))
+	tsh->sigint = 1;
+	ft_display(tsh, 0);
+	if (tsh->auto_active || tsh->multiauto_active)
+		tputs(tsh->term->cdstr, 1, ft_inputstr);
+	else
 	{
-		while (tsh->ret_signal-- > 0)
-			tputs(tsh->term->dostr, 1, ft_inputstr);
 		ft_free_dlist(&tsh->line);
 		ft_init_console(tsh, tsh->line);
+		ft_display(tsh, 0);
 	}
-	else
-		tputs(tsh->term->cdstr, 1, ft_inputstr);
-	ft_display_char(tsh->line->begin, tsh);
+	ft_init_simple_autocompl(tsh);
 	tsh->autoc->updaterow = 0;
 	tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
 	tsh->autoc->arrow = 0;

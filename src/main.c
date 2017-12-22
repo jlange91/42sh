@@ -7,7 +7,7 @@
 void			free_shell(t_cmd *cmd, t_termc *tsh)
 {
 	free_tab_2d(cmd->env);
-	free(cmd->pwd);
+	free(ft_var_pwd(NULL));
 	ft_free_all(tsh);
 }
 
@@ -36,6 +36,24 @@ static void  ft_free_free(t_termc *sh)
 	ft_free_history(sh->history);
 }
 
+char	**ft_var_env(char **arg)
+{
+	static char **env = NULL;
+
+	if (arg)
+		env = arg;
+	return (env);
+}
+
+char	*ft_var_pwd(char *arg)
+{
+	static char *pwd = NULL;
+
+	if (arg)
+		pwd = arg;
+	return (pwd);
+}
+
 int     main(int ac, char **av, char **env)
 {
 	t_termc *tsh;
@@ -53,18 +71,15 @@ int     main(int ac, char **av, char **env)
 	{
 		signal(SIGINT, ft_handle_signal);
 		cmd.env = sh.env;
-		cmd.pwd = sh.pwd;
 		ft_fill_history(tsh);
 		ft_fill_line(tsh);
 		sh.line = ft_strdup(tsh->line_shell);
 		ft_free_free(tsh);
 		ft_replace(&sh);
-		write(1, "\n", 1);
 		cmd.line = ft_strdup(sh.line); // a changer plus tard
 		//while () plus tard while ligne de commande
 	    ft_line_edition(tsh, &cmd);
 		sh.env = cmd.env;
-		sh.pwd = cmd.pwd;
 		free(cmd.line);
 		free(sh.line);
 

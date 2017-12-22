@@ -133,7 +133,8 @@ int    ft_display(t_termc *tsh, int reset)
     up = 0;
     ft_display_char(tsh->line->begin, tsh);
     down = ft_cursor_pos(tsh->line->end, tsh, up);
-    if (tsh->auto_active || tsh->multiauto_active)
+	if ((tsh->auto_active || tsh->multiauto_active)\
+	&& tsh->console->total_line < 2 && !tsh->sigint)
     {
         ft_display_autocompletion(tsh, &down2);
         return (down2);

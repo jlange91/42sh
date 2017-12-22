@@ -21,7 +21,7 @@ static inline void	replace_pwd(t_cmd *cmd)
 	if (tmp && tmp[4])
 		cmd->env = ft_replace_env(ft_setenv("OLDPWD", &tmp[4], cmd->env),
 				cmd->env);
-	cmd->env = ft_replace_env(ft_setenv("PWD", cmd->pwd, cmd->env), cmd->env);
+	cmd->env = ft_replace_env(ft_setenv("PWD", ft_var_pwd(NULL), cmd->env), cmd->env);
 }
 
 void				ft_cd_l(t_cmd *cmd, char *path)
@@ -32,7 +32,7 @@ void				ft_cd_l(t_cmd *cmd, char *path)
 		curpath = ft_strdup(path);
 	else
 	{
-		curpath = ft_strjoin(cmd->pwd, "/");
+		curpath = ft_strjoin(ft_var_pwd(NULL), "/");
 		curpath = ft_replace_str(ft_strjoin(curpath, path), curpath);
 	}
 	curpath = ft_replace_str(ft_remove_useless_path(curpath), curpath);
@@ -43,7 +43,7 @@ void				ft_cd_l(t_cmd *cmd, char *path)
 		ft_singleton(1, 1);
 		return ;
 	}
-	cmd->pwd = ft_replace_str(curpath, cmd->pwd);
+	ft_var_pwd(ft_replace_str(curpath, ft_var_pwd(NULL)));
 	replace_pwd(cmd);
 }
 
@@ -58,6 +58,6 @@ void				ft_cd_p(t_cmd *cmd, char *path)
 		return ;
 	}
 	getcwd(curpath, PATH_MAX);
-	cmd->pwd = ft_replace_str(ft_strdup(curpath), cmd->pwd);
+	ft_var_pwd(ft_replace_str(ft_strdup(curpath), ft_var_pwd(NULL)));
 	replace_pwd(cmd);
 }

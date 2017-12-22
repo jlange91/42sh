@@ -122,6 +122,8 @@ void    ft_autocompletion(t_lineterm *end, t_termc *tsh)
 	{
 		tsh->autoc->str = ft_to_str(tsh);
 		ft_replace_all(tsh->autoc->str, tsh);
+		free(tsh->autoc->str);
+		tsh->autoc->str = ft_to_str(tsh);
 		ft_check_is_dir(tsh);
 		tsh->auto_active = ft_init_autocompl(tsh, tsh->autoc->str);
 		tsh->multiauto_active = ft_fill_same_word(tsh);
@@ -129,5 +131,10 @@ void    ft_autocompletion(t_lineterm *end, t_termc *tsh)
 			ft_autocompletion_bis(tsh);
 		else
 			tsh->auto_active = 0;
+		if (tsh->repl)
+		{
+			tsh->auto_active = 0;
+			tsh->multiauto_active = 0;
+		}
 	}
 }

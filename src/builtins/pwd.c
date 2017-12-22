@@ -36,20 +36,20 @@ static inline int		init_flags(char **av, int *flags)
 	return (j);
 }
 
-void					ft_pwd(t_cmd *cmd)
+void					ft_pwd(char **av)
 {
 	char	pwd[PATH_MAX];
 	int		flags;
 
 	flags = 0;
-	if (init_flags(cmd->av, &flags) == -1)
+	if (init_flags(av, &flags) == -1)
 	{
 		ft_putstr_fd("pwd: usage: pwd [-LP]\n", 2);
 		ft_singleton(1, 1);
 		return ;
 	}
 	if (flags == 0)
-		ft_putendl(cmd->pwd);
+		ft_putendl(ft_var_pwd(NULL));
 	else
 	{
 		getcwd(pwd, sizeof(pwd));

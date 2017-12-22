@@ -36,9 +36,9 @@ static	int	ft_print_current_work()
 
 	sh = ft_ret_sh(NULL);
     ft_putstr(GREEN_FRONT);
-	ft_putendl(sh->pwd);
+	ft_putendl(ft_var_pwd(NULL));
 	ft_putstr(RESET);
-	return (ft_strlen(sh->pwd));
+	return (ft_strlen(ft_var_pwd(NULL)));
 }
 
 void			ft_display_prompt(t_termc *tsh)

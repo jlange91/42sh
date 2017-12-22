@@ -72,5 +72,7 @@ t_termc						*init_termc(char **env)
     tsh->key_tab = 0;
     tsh->len_prompt = 0;
 	tsh->quotes = 0;
+	tsh->repl = 0;
+	tsh->sigint = 0;
 	return (tsh);
 }
