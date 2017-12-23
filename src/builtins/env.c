@@ -66,12 +66,12 @@ static void		try_to_exec(t_cmd *cmd, char **av, char **env)
 	char	**senv;
 
 	sav = cmd->av;
-	senv = cmd->env;
+	senv = ft_var_env(NULL);
 	cmd->av = av;
-	cmd->env = env;
+	ft_var_env(env);
 	ft_cmd(cmd);
 	cmd->av = sav;
-	cmd->env = senv;
+	ft_var_env(senv);
 }
 
 void			ft_env(t_cmd *cmd)
@@ -80,7 +80,7 @@ void			ft_env(t_cmd *cmd)
 	char	**av;
 	int		ret;
 
-	env = ft_cp_env(cmd->env);
+	env = ft_cp_env(ft_var_env(NULL));
 	ret = skip_flags(cmd->av, &env);
 	if (ret == -1)
 	{

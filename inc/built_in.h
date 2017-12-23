@@ -9,8 +9,8 @@
 
 void		ft_echo(char **av);
 void		ft_cd(t_cmd *cmd);
-void		ft_cd_l(t_cmd *cmd, char *path);
-void		ft_cd_p(t_cmd *cmd, char *path);
+void		ft_cd_l(char *path);
+void		ft_cd_p(char *path);
 void		ft_env(t_cmd *cmd);
 int			env_skip_name_value(char **av, char ***env);
 void		ft_prepare_setenv(t_cmd *cmd);
@@ -21,6 +21,7 @@ void		ft_pwd(char **av);
 int			display_octal(char *str);
 int			display_hexa(char *str);
 void		prepare_export(t_cmd *cmd);
+void		ft_help(void);
 
 /*
 * * HISTORY_B

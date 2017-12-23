@@ -174,13 +174,11 @@ typedef struct		s_cmd
 	int		ac;
 	int		load;
 	char	**var;
-	char	**env;
     struct s_cmd    *next;
 }					t_cmd;
 
 typedef struct      s_shell
 {
-    char **env;
     char *line;
 }                   t_shell;
 
@@ -218,7 +216,7 @@ void		signal_sigint();
 void		ft_display_env(char **env);
 void		ft_chdir_error(char *path);
 char		*ft_getenv(const char *name, char **env);
-void		ft_fill_env(t_shell *sh, char **env);
+void		ft_fill_env(char **env);
 char		**ft_replace_env(char **new_env, char **old_env);
 char		*ft_remove_useless_path(char *str);
 char		*ft_replace_str(char *new, char *old);
@@ -226,13 +224,12 @@ char		**ft_cp_env(char **env);
 void		ft_charcat(char *str, char c);
 void		free_tab_2d(char **tab);
 int			tab_2d_len(char **tab);
-void		ft_help(t_cmd *cmd);
 char		**rapid_set(char *input, char **env, int j);
 void		export_no_eq(t_cmd *cmd, int i);
 void		export_with_eq(t_cmd *cmd, int i);
 char		**load_env(char **env);
 void		export_flagb(t_cmd *cmd);
-void		replace_elem(char *compare, char *input, char **env, t_cmd *cmd);
+void		replace_elem(char *compare, char *input, char **env);
 int			check_correct_arg(t_cmd *cmd, int i);
 void		export_flag_b(t_cmd *cmd, int i);
 int			only_p(t_cmd *cmd);

@@ -13,18 +13,20 @@
 #include "../../inc/sh21.h"
 #include "../../inc/built_in.h"
 
-static inline void	replace_pwd(t_cmd *cmd)
+static inline void	replace_pwd(void)
 {
 	char *tmp;
+	char **tenv;
 
-	tmp = ft_getenv("PWD", cmd->env);
+	tenv = ft_var_env(NULL);
+	tmp = ft_getenv("PWD", tenv);
 	if (tmp && tmp[4])
-		cmd->env = ft_replace_env(ft_setenv("OLDPWD", &tmp[4], cmd->env),
-				cmd->env);
-	cmd->env = ft_replace_env(ft_setenv("PWD", ft_var_pwd(NULL), cmd->env), cmd->env);
+		ft_var_env(ft_replace_env(ft_setenv("OLDPWD", &tmp[4], tenv), tenv));
+	tenv = ft_var_env(NULL);
+	ft_var_env(ft_replace_env(ft_setenv("PWD", ft_var_pwd(NULL), tenv), tenv));
 }
 
-void				ft_cd_l(t_cmd *cmd, char *path)
+void				ft_cd_l(char *path)
 {
 	char *curpath;
 
@@ -44,10 +46,10 @@ void				ft_cd_l(t_cmd *cmd, char *path)
 		return ;
 	}
 	ft_var_pwd(ft_replace_str(curpath, ft_var_pwd(NULL)));
-	replace_pwd(cmd);
+	replace_pwd();
 }
 
-void				ft_cd_p(t_cmd *cmd, char *path)
+void				ft_cd_p(char *path)
 {
 	char curpath[PATH_MAX];
 
@@ -59,5 +61,5 @@ void				ft_cd_p(t_cmd *cmd, char *path)
 	}
 	getcwd(curpath, PATH_MAX);
 	ft_var_pwd(ft_replace_str(ft_strdup(curpath), ft_var_pwd(NULL)));
-	replace_pwd(cmd);
+	replace_pwd();
 }

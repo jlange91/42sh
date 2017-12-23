@@ -12,7 +12,7 @@
 
 #include "../../inc/sh21.h"
 
-void	ft_help(t_cmd *cmd)
+void	ft_help(void)
 {
 	char	**arg;
 	pid_t	father;
@@ -20,7 +20,7 @@ void	ft_help(t_cmd *cmd)
 	arg = NULL;
 	father = fork();
 	if (father == 0)
-		execve("/tmp/./builtin_help", arg, cmd->env);
+		execve("/tmp/./builtin_help", arg, ft_var_env(NULL));
 	else
 		wait(0);
 }

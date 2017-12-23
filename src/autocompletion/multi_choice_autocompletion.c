@@ -73,7 +73,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 			begin = begin->next;
 		}
         if (ret)																				//IF MULTIAUTO_ACTIVE :)
-			ft_suitlist(sh->env, after, tmp, i);
+			ft_suitlist(ft_var_env(NULL), after, tmp, i);
 	}
 	return (tmp);
 }

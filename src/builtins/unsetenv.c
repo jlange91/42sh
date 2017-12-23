@@ -60,6 +60,7 @@ char				**ft_unsetenv(char *name, char **env)
 
 void				ft_prepare_unsetenv(t_cmd *cmd)
 {
+	char	**tenv;
 	int		i;
 
 	i = 0;
@@ -67,9 +68,10 @@ void				ft_prepare_unsetenv(t_cmd *cmd)
 		return ;
 	while (cmd->av[++i])
 	{
-		if (ft_getenv(cmd->av[i], cmd->env) == NULL)
+		tenv = ft_var_env(NULL);	
+		if (ft_getenv(cmd->av[i], tenv) == NULL)
 			continue ;
-		cmd->env = ft_replace_env(ft_unsetenv(cmd->av[i], cmd->env), cmd->env);
+		ft_var_env(ft_replace_env(ft_unsetenv(cmd->av[i], tenv), tenv));
 	}
 	if (!ft_strcmp(cmd->av[0], "unset"))
 	{

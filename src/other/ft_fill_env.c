@@ -52,21 +52,23 @@ static inline char	**up_sh_lvl(char **env, int i)
 	return (new_env);
 }
 
-void				ft_fill_env(t_shell *sh, char **env)
+void				ft_fill_env(char **env)
 {
 	char	pwd[PATH_MAX];
 	char	*pwd2;
+	char	**tenv;
 
-	sh->env = up_sh_lvl(env, tab_2d_len(env));
+	ft_var_env(up_sh_lvl(env, tab_2d_len(env)));
+	tenv = ft_var_env(NULL);
 	if ((pwd2 = ft_getenv("PWD", env)) == NULL)
 	{
 		getcwd(pwd, sizeof(pwd));
-		sh->env = ft_replace_env(ft_setenv("PWD", pwd, sh->env), sh->env);
+		ft_var_env(ft_replace_env(ft_setenv("PWD", pwd, tenv), tenv));
 		ft_var_pwd(ft_strdup(pwd));
 	}
 	else
 	{
-		sh->env = ft_replace_env(ft_setenv("PWD", &pwd2[4], sh->env), sh->env);
+		ft_var_env(ft_replace_env(ft_setenv("PWD", &pwd2[4], tenv), tenv));
 		ft_var_pwd(ft_strdup(&pwd2[4]));		
 	}
 	//sh->var = load_env(sh->env);

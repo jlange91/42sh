@@ -23,7 +23,7 @@ static char		*get_value(t_shell *sh, int *i)
 	while (sh->line[*i + j] && ft_isalnum(sh->line[*i + j]))
 		++j;
 	tmp = ft_strndup(&sh->line[*i], j);
-	value = ft_getenv(tmp, sh->env);
+	value = ft_getenv(tmp, ft_var_env(NULL));
 	if (value)
 	{
 		while (*value != '=')

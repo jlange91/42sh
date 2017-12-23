@@ -12,11 +12,11 @@
 
 #include "../../inc/sh21.h"
 
-static char		*get_value(t_shell *sh)
+static char		*get_value(void)
 {
     char *value;
 
-	value = ft_getenv("HOME", sh->env);
+	value = ft_getenv("HOME", ft_var_env(NULL));
 	if (value)
 	{
 		while (*value != '=')
@@ -33,7 +33,7 @@ void			ft_replace_tilde(t_shell *sh, int i)
 	char	*str2;
 
 	str1 = ft_strndup(sh->line, i);
-	value = get_value(sh);
+	value = get_value();
     str2 = ft_strdup(&sh->line[i + 1]);
 	free(sh->line);
     sh->line = ft_replace_line(str1, value, str2);

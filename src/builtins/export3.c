@@ -40,14 +40,14 @@ int		find_bin(char **path_tab, char *elem)
 	return (-1);
 }
 
-int		search_exec(char **str, t_cmd *cmd, char **t_tmp, char *elem)
+int		search_exec(char **str, char **t_tmp, char *elem)
 {
 	int		i;
 	char	**path_tab;
 	int		info;
 
 	i = -1;
-	path_tab = ft_strsplit(ft_getenv("PATH", cmd->env), ':');
+	path_tab = ft_strsplit(ft_getenv("PATH", ft_var_env(NULL)), ':');
 	if ((info = find_bin(path_tab, t_tmp[1])) >= 0)
 		elem = ft_strdup(path_tab[info]);
 	if (info == -2)
@@ -74,19 +74,19 @@ void	export_flag_b(t_cmd *cmd, int i)
 
 	str = NULL;
 	tmp = ft_strsplit(cmd->av[i], '=');
-	search_exec(&cmd->av[i], cmd, tmp, str);
+	search_exec(&cmd->av[i], tmp, str);
 	if (tmp[0])
 	{
 		if (ft_getenv(tmp[0], cmd->var) == NULL)
 		{
 			str = ft_strdup(cmd->av[i]);
 			cmd->var = rapid_set(str, cmd->var, 0);
-			cmd->env = rapid_set(str, cmd->env, 1);
+			ft_var_env(rapid_set(str, ft_var_env(NULL), 1));
 		}
 		else if (ft_getenv(tmp[0], cmd->var) != NULL)
 		{
-			replace_elem(tmp[0], cmd->av[i], cmd->var, cmd);
-			replace_elem(tmp[0], cmd->av[i], cmd->env, cmd);
+			replace_elem(tmp[0], cmd->av[i], cmd->var);
+			replace_elem(tmp[0], cmd->av[i], ft_var_env(NULL));
 		}
 		ft_free_tab(tmp);
 	}
@@ -105,7 +105,7 @@ int		check_correct_arg(t_cmd *cmd, int i)
 	{
 		if (tab_2d_len(tmp) == 2)
 		{
-			nb = search_exec(&cmd->av[i], cmd, tmp, str);
+			nb = search_exec(&cmd->av[i], tmp, str);
 			if (nb == -1)
 				ft_putstr_fd("command not found", 2);
 		}

@@ -19,7 +19,7 @@ static inline int		ft_ret(t_cmd *cmd)
 	i = 0;
 	if (cmd->ac < 2)
 	{
-		ft_display_env(cmd->env);
+		ft_display_env(ft_var_env(NULL));
 		return (1);
 	}
 	else if (cmd->ac > 3)
@@ -103,10 +103,12 @@ char					**ft_setenv(char *name, char *value, char **env)
 void					ft_prepare_setenv(t_cmd *cmd)
 {
 	char **new_env;
+	char **tenv;
 
+	tenv = ft_var_env(NULL);
 	if (ft_ret(cmd))
 		return ;
-	new_env = ft_setenv(cmd->av[1], cmd->av[2], cmd->env);
-	free_tab_2d(cmd->env);
-	cmd->env = new_env;
+	new_env = ft_setenv(cmd->av[1], cmd->av[2], tenv);
+	free_tab_2d(tenv);
+	ft_var_env(new_env);
 }

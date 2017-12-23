@@ -4,9 +4,9 @@
 #include "../inc/globbing.h"
 #include "../inc/quote.h"
 
-void			free_shell(t_cmd *cmd, t_termc *tsh)
+void			free_shell(t_termc *tsh)
 {
-	free_tab_2d(cmd->env);
+	free_tab_2d(ft_var_env(NULL));
 	free(ft_var_pwd(NULL));
 	ft_free_all(tsh);
 }
@@ -63,14 +63,13 @@ int     main(int ac, char **av, char **env)
     (void)ac;
     (void)av;
 	tsh = NULL;
-	ft_fill_env(&sh, env);
-	tsh = init_termc(sh.env);
+	ft_fill_env(env);
+	tsh = init_termc(ft_var_env(NULL));
 	ft_ret_sh(&sh);
 	ft_ret_tsh(&tsh);
 	while (42)
 	{
 		signal(SIGINT, ft_handle_signal);
-		cmd.env = sh.env;
 		ft_fill_history(tsh);
 		ft_fill_line(tsh);
 		sh.line = ft_strdup(tsh->line_shell);
@@ -79,11 +78,10 @@ int     main(int ac, char **av, char **env)
 		cmd.line = ft_strdup(sh.line); // a changer plus tard
 		//while () plus tard while ligne de commande
 	    ft_line_edition(tsh, &cmd);
-		sh.env = cmd.env;
 		free(cmd.line);
 		free(sh.line);
 
 	}
-	free_shell(&cmd, tsh);
+	free_shell(tsh);
     return (0);
 }

@@ -40,13 +40,13 @@ void			ft_cmd(t_cmd *cmd)
 	else if (!ft_strcmp(cmd->av[0], "cd"))
 		ft_cd(cmd);
 	else if(!ft_strcmp(cmd->av[0], "help"))
-		ft_help(cmd);
+		ft_help();
 	else if(!ft_strcmp(cmd->av[0], "export"))
 		prepare_export(cmd);
 	else if (!ft_strcmp(cmd->av[0], "history")) //HISTORY OPTION FINIS, NO EXPANSION
 		history(cmd);
 	else if (cmd->av[0])
-		ft_exec(cmd->av, cmd->env);
+		ft_exec(cmd->av, ft_var_env(NULL));
 	//printf("{%d}\n", ft_singleton(0,0));
 }
 
