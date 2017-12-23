@@ -16,6 +16,6 @@ char	*ft_useless_norme(void)
 {
 	char *str;
 
-	str = "Input/output error. Some physical input or output error occurred.";
+	str = "Input/output error. Some physical input or output error occurred";
 	return (ft_strdup(str));
 }

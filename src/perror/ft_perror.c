@@ -49,5 +49,7 @@ void				ft_perror(char *str, int error, char *str2)
 		write(2, ": ", 2);
 		ft_putstr_fd(str2, 2);
 	}
+	else
+		write(2, ".", 1);
 	write(2, "\n", 1);
 }

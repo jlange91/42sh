@@ -87,8 +87,13 @@ void					ft_exec(char **av, char **env)
 		av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
 		if (ret != 0)
 		{
-			ft_putstr_fd("42sh: command not found: ", 2);
-			ft_putendl_fd(av[0], 2);
+			if (ret == 2)
+			{
+				ft_putstr_fd("shell: command not found: ", 2);
+				ft_putendl_fd(av[0], 2);
+			}
+			else
+				ft_perror("shell", errno, av[0]);
 			exit(1);
 		}
 	}
