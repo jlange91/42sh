@@ -32,9 +32,6 @@ static	void	ft_print_hour(void)
 
 static	int	ft_print_current_work()
 {
-	t_shell *sh;
-
-	sh = ft_ret_sh(NULL);
     ft_putstr(GREEN_FRONT);
 	ft_putendl(ft_var_pwd(NULL));
 	ft_putstr(RESET);

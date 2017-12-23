@@ -54,7 +54,6 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 	int         	i;
 	t_auto      	*tmp;
 	t_autocompl 	*begin;
-	t_shell	 		*sh;
 
 	if ((tmp = (t_auto *)malloc(sizeof(*tmp))) == NULL)
 		return (NULL);
@@ -62,7 +61,6 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 	tmp->end = NULL;
 	tmp->current = NULL;
 	begin = tsh->autoc->begin;
-	sh = ft_ret_sh(NULL);
 	i = 0;
 	if (begin)																					//CURRENT DIRECTORY
 	{

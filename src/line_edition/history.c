@@ -85,10 +85,8 @@ int		ft_find_history(t_termc *tsh)
 int		ft_fill_history(t_termc *tsh)
 {
     t_history   *hist;
-	t_shell		*sh;
 	static int 	count;
 
-	sh = ft_ret_sh(NULL);
     hist = NULL;
 	if (count++ < 1)
 		tsh->histfile->pwd = ft_strjoin(ft_var_pwd(NULL), NAME_HIST);
