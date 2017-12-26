@@ -54,11 +54,39 @@ char	*ft_var_pwd(char *arg)
 	return (pwd);
 }
 
+void	ft_exec_all_cmd(t_cmd *cmd, t_termc	*tsh)
+{
+	t_cmd	*tmp;
+	int		ret;
+	int		val;
+
+	ret = 0;
+	val = 1;
+	while (cmd)
+	{
+		if (val == 1)
+			ret = ft_line_edition(tsh, cmd);
+		tmp = cmd;
+		cmd = cmd->next;
+		free(tmp);
+		if (cmd)
+		{
+			if (cmd->l_op == 2)
+				val = (ret != 0) ? 0 : 1;
+			else if (cmd->l_op == 3)
+				val = (ret == 0) ? 0 : 1;
+			else
+				val = 1;
+		}
+	}
+
+}
+
 int     main(int ac, char **av, char **env)
 {
-	t_termc *tsh;
-	t_cmd cmd;
-	t_shell sh;
+	t_termc	*tsh;
+	t_cmd	*cmd;
+	t_shell	sh;
 
     (void)ac;
     (void)av;
@@ -74,13 +102,10 @@ int     main(int ac, char **av, char **env)
 		ft_fill_line(tsh);
 		sh.line = ft_strdup(tsh->line_shell);
 		ft_free_free(tsh);
-		ft_replace(&sh);
-		cmd.line = ft_strdup(sh.line); // a changer plus tard
-		//while () plus tard while ligne de commande
-	    ft_line_edition(tsh, &cmd);
-		free(cmd.line);
+		ft_replace(&sh);		
+		cmd = ft_fill_cmd(sh.line, 0, 0);
 		free(sh.line);
-
+		ft_exec_all_cmd(cmd, tsh);
 	}
 	free_shell(tsh);
     return (0);

@@ -173,7 +173,9 @@ typedef struct		s_cmd
 	char	**av;
 	int		ac;
 	int		load;
-	char	**var;
+    char	**var;
+    int     l_op;
+    int     r_op;
     struct s_cmd    *next;
 }					t_cmd;
 
@@ -258,6 +260,8 @@ int         ft_count_char_word(char *line);
 
 char	**ft_var_env(char **arg);
 char	*ft_var_pwd(char *arg);
+
+t_cmd	*ft_fill_cmd(char *line, int i, int j);
 
 
 #endif

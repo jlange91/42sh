@@ -52,18 +52,15 @@ void			ft_cmd(t_cmd *cmd)
 
 int	ft_line_edition(t_termc *tsh, t_cmd *cmd)
 {
-
-
-		ft_singleton(0, 1);
-		ft_redirection(cmd);
-		cmd->av = ft_fill_av(cmd->line);
-		cmd->ac = tab_2d_len(cmd->av);
-		if (cmd->av[0] && cmd->av[0][0])
-			ft_cmd(cmd);
-		ft_remove_redirection(cmd);
-		ft_end_term(tsh);
-		free_tab_2d(cmd->av);
-
-
+	ft_singleton(0, 1);
+	ft_redirection(cmd);
+	cmd->av = ft_fill_av(cmd->line);
+	cmd->ac = tab_2d_len(cmd->av);
+	if (cmd->av[0] && cmd->av[0][0])
+		ft_cmd(cmd);
+	ft_remove_redirection(cmd);
+	ft_end_term(tsh);
+	free_tab_2d(cmd->av);
+	free(cmd->line);
 	return (ft_singleton(0, 0));
 }

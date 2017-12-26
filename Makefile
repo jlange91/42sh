@@ -117,7 +117,8 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/redirection/fill_word.c							\
 	   src/redirection/ft_ret_word.c						\
 	   src/redirection/ft_redirection.c						\
-	   src/main.c
+	   src/main.c \
+	   src/ft_fill_cmd.c
 
 OBJ = $(SRCS:.c=.o)
 
