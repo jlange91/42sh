@@ -28,7 +28,7 @@ void    ft_autoMove(t_lineterm *end, t_termc *shell, int flag);
 
 /**************************************************************************************/
 /*TOOL_PRINT_AUTOCOMPLETION*/
-void    ft_display_autocompletion(t_termc *shell, int *down);
+void    ft_display_autocompletion(t_termc *shell);
 int     ft_init_value(t_termc *shell, t_auto *select);
 int     ft_max_len(t_auto *select);
 int     ft_count(t_auto *select);
@@ -47,7 +47,6 @@ void    ft_init_simple_autocompl(t_termc *shell);
 /*TOOL_AUTOCOMPLETION*/
 void    ft_fill_back_autocompl(t_auto *autocompl, char *file, int index);
 char    *ft_to_str(t_termc *shell);
-char    *ft_before_antislash(char *str, int ret);
 char    *ft_after_antislash(char *str, int *ret);
 
 /*******************************************************************************/

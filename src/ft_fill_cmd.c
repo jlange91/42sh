@@ -1,4 +1,5 @@
 # include "../inc/sh21.h"
+# include "../inc/quote.h"
 
 static int		backslash_word(char *line)
 {
@@ -21,7 +22,9 @@ t_cmd	*ft_create_cmd(char *line, int op)
 		ft_perror("malloc", errno, NULL);
 		exit(0);
 	}
-	ret->line = line;
+	ret->line = ft_strdup(line);
+	ret->av = ft_fill_av(line);
+	ret->ac = tab_2d_len(ret->av);
 	ret->r_op = op;
 	ret->l_op = 0;
 	ret->next = NULL;
@@ -74,7 +77,8 @@ t_cmd	*ft_fill_cmd(char *line, int i, int j)
         if ((op = is_end(&line[i])))
         {            
             cline = ft_strndup(&line[j], i - j);
-            ft_add_cmd(&cmd, cline, op - 1);
+			ft_add_cmd(&cmd, cline, op - 1);
+			free(cline);
             j = (op == 3 || op == 4) ? i + 2 : i + 1;
             i += (op == 3 || op == 4) ? 1 : 0;
             if (op == 1)

@@ -54,9 +54,8 @@ char	*ft_var_pwd(char *arg)
 	return (pwd);
 }
 
-void	ft_exec_all_cmd(t_cmd *cmd, t_termc	*tsh)
+void	ft_exec_all_cmd(t_cmd *cmd)
 {
-	t_cmd	*tmp;
 	int		ret;
 	int		val;
 
@@ -65,10 +64,8 @@ void	ft_exec_all_cmd(t_cmd *cmd, t_termc	*tsh)
 	while (cmd)
 	{
 		if (val == 1)
-			ret = ft_line_edition(tsh, cmd);
-		tmp = cmd;
+			ret = ft_line_edition(cmd);
 		cmd = cmd->next;
-		free(tmp);
 		if (cmd)
 		{
 			if (cmd->l_op == 2)
@@ -80,6 +77,20 @@ void	ft_exec_all_cmd(t_cmd *cmd, t_termc	*tsh)
 		}
 	}
 
+}
+
+void	ft_free_cmd(t_cmd *cmd)
+{
+	t_cmd *tmp;
+
+	while (cmd)
+	{
+		free_tab_2d(cmd->av);
+		free(cmd->line);
+		tmp = cmd;
+		cmd = cmd->next;		
+		free(tmp);
+	}
 }
 
 int     main(int ac, char **av, char **env)
@@ -105,7 +116,9 @@ int     main(int ac, char **av, char **env)
 		ft_replace(&sh);		
 		cmd = ft_fill_cmd(sh.line, 0, 0);
 		free(sh.line);
-		ft_exec_all_cmd(cmd, tsh);
+		ft_exec_all_cmd(cmd);
+		ft_end_term(tsh);
+		ft_free_cmd(cmd);
 	}
 	free_shell(tsh);
     return (0);

@@ -134,9 +134,6 @@ typedef struct          s_senti_auto
 
 typedef struct          s_termc
 {
-    char                *line_shell;
-	char				*pwd;
-    int                 ret_signal;
 	int					quotes;
     int                 key_tab;          //how time touch tab
     int                 auto_active;        //autocomple
@@ -144,6 +141,7 @@ typedef struct          s_termc
 	int					len_prompt;
 	int 				repl;
 	int 				sigint;
+	char                *line_shell;
     t_auto              *autoc;
     dlist         		*line;
 	dlist				*line_dup;
@@ -169,13 +167,13 @@ typedef struct		s_glob
 
 typedef struct		s_cmd
 {
-	char	*line;
-	char	**av;
-	int		ac;
-	int		load;
-    char	**var;
-    int     l_op;
-    int     r_op;
+	char	        *line;
+	char	        **av;
+	int		        ac;
+	int		        load;
+    char	        **var;
+    int             l_op;
+    int             r_op;
     struct s_cmd    *next;
 }					t_cmd;
 

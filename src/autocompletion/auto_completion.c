@@ -78,12 +78,12 @@ void	ft_autocompletion_bis(t_termc *tsh)
 {
 	char        *before;
 	char        *after;
-	int         limit;
+	int 		limit;
 	t_autocompl *begin;
 
 	limit = 0;
 	after = ft_after_antislash(tsh->autoc->str, &limit);
-	before = ft_before_antislash(tsh->autoc->str, limit);
+	before = ft_strndup(tsh->autoc->str, limit);
 	ft_addslash(tsh, &after, before);
 	begin = tsh->autoc->current;
 	while (begin)

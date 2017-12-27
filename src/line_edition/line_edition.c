@@ -15,11 +15,55 @@
 #include "../../inc/globbing.h"
 #include "../../inc/quote.h"
 
+
+// void					ft_pipe(t_cmd *cmd, char **av, char **env)
+// {
+// 	int		pipefd[2];
+
+// 	pipe(pipefd);
+
+
+
+// 	// int		status;
+// 	// pid_t	father;
+// 	// int		ret;
+
+// 	// father = fork();
+// 	// if (father > 0)
+// 	// {
+// 	// 	signal(SIGINT, SIG_IGN);
+// 	// 	wait(&status);
+// 	// 	ft_singleton(status, 1);
+// 	// 	signal(SIGINT, ft_handle_signal);
+// 	// }
+// 	// if (father == 0)
+// 	// {
+// 	// 	ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
+// 	// 	av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
+// 	// 	if (ret != 0)
+// 	// 	{
+// 	// 		if (ret == 2)
+// 	// 		{
+// 	// 			ft_putstr_fd("shell: command not found: ", 2);
+// 	// 			ft_putendl_fd(av[0], 2);
+// 	// 		}
+// 	// 		else
+// 	// 			ft_perror("shell", errno, av[0]);
+// 	// 		exit(1);
+// 	// 	}
+// 	// }	
+// }
+
 void			ft_cmd(t_cmd *cmd)
 {
 	t_termc *tsh;
 
 	tsh = ft_ret_tsh(NULL);
+	// if (cmd->r_op == 4)
+	// {
+	// 	ft_pipe(cmd, av, env);
+	// 	return ;
+	// }
 	if (!ft_strcmp(cmd->av[0], "exit"))
 	{
 		ft_add_file_history(tsh);
@@ -50,17 +94,13 @@ void			ft_cmd(t_cmd *cmd)
 	//printf("{%d}\n", ft_singleton(0,0));
 }
 
-int	ft_line_edition(t_termc *tsh, t_cmd *cmd)
+int	ft_line_edition(t_cmd *cmd)
 {
 	ft_singleton(0, 1);
 	ft_redirection(cmd);
-	cmd->av = ft_fill_av(cmd->line);
-	cmd->ac = tab_2d_len(cmd->av);
 	if (cmd->av[0] && cmd->av[0][0])
 		ft_cmd(cmd);
 	ft_remove_redirection(cmd);
-	ft_end_term(tsh);
-	free_tab_2d(cmd->av);
-	free(cmd->line);
+//	ft_end_term(tsh); déplacé dans le main
 	return (ft_singleton(0, 0));
 }

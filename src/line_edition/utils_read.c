@@ -15,9 +15,8 @@ size_t	get_columns(void)
     return (w.ws_col);
 }
 
-int     ft_reset_line(t_termc *tsh, int ret)
+int     ft_reset_line(t_termc *tsh)
 {
-    (void)ret;
 	ft_display(tsh, 1);
 	ft_putchar('\n');
 	tsh->autoc->finish = 1;

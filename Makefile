@@ -19,7 +19,7 @@ NAME = 42sh
 CC = gcc
 
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 
 LDFLAGS = -L libft
 

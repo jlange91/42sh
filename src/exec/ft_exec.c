@@ -81,7 +81,7 @@ void					ft_exec(char **av, char **env)
 		ft_singleton(status, 1);
 		signal(SIGINT, ft_handle_signal);
 	}
-	if (father == 0)
+	else if (father == 0)
 	{
 		ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
 		av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
@@ -97,4 +97,6 @@ void					ft_exec(char **av, char **env)
 			exit(1);
 		}
 	}
+	else
+		ft_perror("fork", errno, NULL);
 }

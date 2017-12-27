@@ -99,7 +99,7 @@ t_termc		        *ft_ret_tsh(t_termc **arg);
 
 /***************************************************************************************/
 /*UTILS_READ*/
-int                 ft_reset_line(t_termc *shell, int ret);
+int                 ft_reset_line(t_termc *shell);
 int                 ft_save_line(t_termc *tsh);
 int                 ft_inputstr(int c);
 size_t              get_columns();
@@ -115,7 +115,7 @@ int		            ft_count_dlnk(t_termc *shell);
 /**************************************************************************************/
 /*TOOL READLINE2*/
 int					ft_display_char(t_lineterm *begin, t_termc *shell);
-int                 ft_display(t_termc *shell, int close);
+void                ft_display(t_termc *shell, int close);
 
 /***************************************************************************************/
 /*PROMPT*/
@@ -171,12 +171,9 @@ t_lineterm			*ft_dontGetPrompt2(t_lineterm *tmp);
 /**************************************************************************************/
 /*SIGNAL*/
 void				ft_handle_signal(int signum);
-// void                ft_handle_signal2(int signum);
-void                ft_handle_signal2(int signum);
-void				ft_catch_sigwinch(int signum);
 
 /**************************************************************************************/
 /*FT_LINE_EDITION*/
-int                 ft_line_edition(t_termc *shell, t_cmd *cmd);
+int                 ft_line_edition(t_cmd *cmd);
 
 #endif

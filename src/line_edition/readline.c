@@ -58,10 +58,10 @@ static inline char  *ft_getstr(t_termc *tsh, t_lineterm *begin)
 	return (str);
 }
 
-static int    ft_key_and_char(t_termc *tsh, long c, int ret)
+static int    ft_key_and_char(t_termc *tsh, long c)
 {
 	if ((char)c == '\n' && !tsh->key_tab)
-		return (ft_reset_line(tsh, ret));
+		return (ft_reset_line(tsh));
 	if (c == CL && !tsh->auto_active && !tsh->multiauto_active)
 		return (ft_save_line(tsh));
 	if ((ft_is_key(tsh->line, tsh, c) == 0 && ft_isprint((char)c)))
@@ -122,20 +122,17 @@ static void	ft_line_input_split(t_termc *tsh)
 char    *ft_line_input(t_termc *tsh)
 {
 	long 	c;
-	int 	ret;
 
 	if (isatty(0))
 	{
 		c = 0;
-		ret = 0;
 		ft_line_input_split(tsh);
 		ft_clean_all_letter(-1, -1);
 		while (read(0, &c, sizeof(c)))
 		{
-			if (!ft_key_and_char(tsh, c, ret))
+			if (!ft_key_and_char(tsh, c))
 				break;
-			ret = ft_display(tsh, 0);
-			tsh->ret_signal = ret;
+			ft_display(tsh, 0);
 			c = 0;
 			tsh->keyflag->backspace = 0;
 			tsh->keyflag->underline = 0;

@@ -49,45 +49,6 @@ char	*ft_to_str(t_termc *tsh)
     return (str);
 }
 
-char	*ft_before_antislash(char *str, int ret)
-{
-    char	*tmp;
-    int		i;
-
-    i = 0;
-    if ((tmp = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1))) == NULL)
-    {
-        ft_putendl_fd("Error malloc", 2);
-        return (NULL);
-    }
-    while (str[i])
-    {
-        if (i == ret)
-            break;
-        tmp[i] = str[i];
-        i++;
-    }
-    tmp[i] = '\0';
-    return (tmp);
-}
-
-char    *ft_after_antislash_bis(char *str, int limit)
-{
-    char	*tmp;
-    int     j;
-
-    j = 0;
-    if ((tmp = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1))) == NULL)
-    {
-        ft_putendl_fd("Error malloc", 2);
-        return (NULL);
-    }
-    while (str[limit])
-        tmp[j++] = str[limit++];
-    tmp[j] = '\0';
-    return (tmp);
-}
-
 char	*ft_after_antislash(char *str, int *ret)
 {
     char	*tmp;
@@ -109,5 +70,6 @@ char	*ft_after_antislash(char *str, int *ret)
     *ret = i;
     if (!enter)
         return (tmp);
-    return (ft_after_antislash_bis(str, i));
+	tmp = ft_strdup(&str[i]);
+	return (tmp);
 }

@@ -10,10 +10,12 @@
  *
  * NO NORME
  * **********************************************************************************/
-static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh, int up)
+static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
 {
+	int 	up;
     size_t  last;
 
+	up = 0;
     if (!end)
         return (-1);
     while (end->s_pos == 0 && end->index != 0)
@@ -117,28 +119,24 @@ int    ft_display_char(t_lineterm *begin, t_termc *tsh)
  *	Explication : DISPLAY LOL ;)
  * NORME OK
  * **********************************************************************************/
-int    ft_display(t_termc *tsh, int reset)
+void    ft_display(t_termc *tsh, int reset)
 {
     static int  down;
-    static int  down2;
-    int         up;
 
     if (reset)
     {
         down = 0;
-        return (0);
+        return ;
     }
     tputs(tsh->term->vistr, 1, ft_inputstr);
     ft_del_line(tsh, down);
-    up = 0;
     ft_display_char(tsh->line->begin, tsh);
-    down = ft_cursor_pos(tsh->line->end, tsh, up);
+    down = ft_cursor_pos(tsh->line->end, tsh);
 	if ((tsh->auto_active || tsh->multiauto_active)\
 	&& tsh->console->total_line < 2 && !tsh->sigint)
-    {
-        ft_display_autocompletion(tsh, &down2);
-        return (down2);
-    }
+	{
+		ft_display_autocompletion(tsh);
+		return ;
+	}
     tputs(tsh->term->vestr, 1, ft_inputstr);
-    return (down);
 }

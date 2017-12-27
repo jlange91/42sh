@@ -84,7 +84,6 @@ int 		ft_replace_all(char *line, t_termc *tsh)
 	while (--i > 0)
 		if (line[i] == ' ')
 			break;
-	// after = ft_strtrim2(ft_strdup(&line[i]), ' ', '\t');
 	after = ft_strtrim2(&line[i], ' ', '\t');
 	before = ft_strndup(line, i + 1);
 	if (ft_strlen(before) == 1)
