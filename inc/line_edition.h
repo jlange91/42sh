@@ -82,7 +82,7 @@ int					ft_init_terminal_mode(t_termc *shell);
 void				ft_history(t_termc *shell, int c);
 int                 ft_count_history(char *path);
 int                 ft_fill_history(t_termc *shell);
-int                 ft_init_fill_history(hlist *histfile);
+int                 ft_init_fill_history(hlist *histlist);
 int                 ft_find_history(t_termc *shell);
 
 /***************************************************************************************/

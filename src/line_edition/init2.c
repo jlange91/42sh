@@ -104,9 +104,9 @@ void    ft_init_termc2(t_termc **tsh)
 	   ft_putendl_fd("Error init_lineterm", 2);
 	if (((*tsh)->line_dup = init_lineterm()) == NULL)
 	   ft_putendl_fd("Error init_lineterm", 2);
-	if (((*tsh)->history = init_history()) == NULL)
+	if (((*tsh)->histmp = init_history()) == NULL)
 	   ft_putendl_fd("Error init_history", 2);
-	if (((*tsh)->histfile = init_history()) == NULL)
+	if (((*tsh)->histlist = init_history()) == NULL)
 	   ft_putendl_fd("Error init_history", 2);
 	if (((*tsh)->console = init_console()) == NULL)
 	   ft_putendl_fd("Error init_console", 2);

@@ -58,24 +58,24 @@ int		ft_find_history(t_termc *tsh)
 
     hist = NULL;
     str = NULL;
-    hist = tsh->histfile->begin;
-    if (!hist || !tsh->histfile)
+    hist = tsh->histlist->begin;
+    if (!hist || !tsh->histlist)
         return (0);
     else
     {
-	    ft_free_history(tsh->history);
+	    ft_free_history(tsh->histmp);
         if ((str = ft_lnk_to_str(tsh->line->begin, tsh)) != NULL)
         {
             while (hist)
 		    {
 			    if (!ft_strncmp(str, &hist->data[ft_useless(hist->data)],\
 					ft_strlen(str)))
-				    push_backhist(tsh->history,\
+				    push_backhist(tsh->histmp,\
 					&hist->data[ft_useless(hist->data)], hist->index, hist->new);
                 hist = hist->next;
 		    }
-			push_backhist(tsh->history, "", -1, 0);
-			tsh->history->current = tsh->history->end;
+			push_backhist(tsh->histmp, "", -1, 0);
+			tsh->histmp->current = tsh->histmp->end;
 		    free(str);
 	    }
     }
@@ -89,27 +89,27 @@ int		ft_fill_history(t_termc *tsh)
 
     hist = NULL;
 	if (count++ < 1)
-		tsh->histfile->pwd = ft_strjoin(ft_var_pwd(NULL), NAME_HIST);
-    hist = tsh->histfile->begin;
-    if (!hist || !tsh->histfile)
+		tsh->histlist->pwd = ft_strjoin(ft_var_pwd(NULL), NAME_HIST);
+    hist = tsh->histlist->begin;
+    if (!hist || !tsh->histlist)
         return (0);
     else
     {
-		ft_free_history(tsh->history);
+		ft_free_history(tsh->histmp);
 		while (hist)
 		{
 			if (hist->print)
-				push_backhist(tsh->history, &hist->data[ft_useless(hist->data)],\
+				push_backhist(tsh->histmp, &hist->data[ft_useless(hist->data)],\
 				hist->index, hist->new);
 			hist = hist->next;
 		}
-		push_backhist(tsh->history, "", -1, 0);
-		tsh->history->current = tsh->history->end;
+		push_backhist(tsh->histmp, "", -1, 0);
+		tsh->histmp->current = tsh->histmp->end;
     }
 	return (1);
 }
 
-int    ft_init_fill_history(hlist *histfile)
+int    ft_init_fill_history(hlist *histlist)
 {
     char    *line;
     int     fd;
@@ -123,7 +123,7 @@ int    ft_init_fill_history(hlist *histfile)
 	line = NULL;
     while ((ret = get_next_line(fd, &line)) > 0)
 	{
-		push_backhist(histfile, &line[ft_useless(line)], ++i, 0);
+		push_backhist(histlist, &line[ft_useless(line)], ++i, 0);
 		free(line);
 	}
     close(fd);

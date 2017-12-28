@@ -43,7 +43,8 @@ int     ft_dynamique_autocompletion(long *c, t_termc *tsh)
 {
     static int compt;
 
-    if (tsh->key_tab && (tsh->auto_active || tsh->multiauto_active)&& *c == TAB)
+    if (tsh->keyflag->k_tab &&
+		(tsh->auto_active || tsh->multiauto_active)&& *c == TAB)
     {
         compt++;
         *c = NO_PRINT;
@@ -52,7 +53,7 @@ int     ft_dynamique_autocompletion(long *c, t_termc *tsh)
     if (*c == '\n' && (tsh->auto_active || tsh->multiauto_active))
     {
 		tsh->autoc->can_print = 14;
-        tsh->key_tab = 0;
+        tsh->keyflag->k_tab = 0;
         if (compt < 1)
         {
             tsh->auto_active = 0;

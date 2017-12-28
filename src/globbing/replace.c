@@ -31,7 +31,7 @@ void	ft_init_escape_tab(char *escape_tab)
 	escape_tab[24] = '\0';
 }
 
-void ft_cpy(char *line, t_termc *tsh)
+static inline void ft_cpy(char *line, t_termc *tsh)
 {
 	int i;
 
@@ -50,7 +50,7 @@ static inline void ft_get_result(char *after, t_termc *tsh, t_shell *sh)
 
 	if (ft_glob_here(after) && (glob = ft_glob(after)) != NULL)
 	{
-		tsh->key_tab = 0;
+		tsh->keyflag->k_tab = 0;
 		ft_cpy(glob, tsh);
 		free(glob);
 		tsh->repl = 1;

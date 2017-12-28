@@ -6,10 +6,10 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2017/12/18 16:31:54 by adebrito         ###   ########.fr        #
-#    Updated: 2017/12/12 19:30:14 by stvalett         ###   ########.fr        #
-#    Updated: 2017/12/12 15:10:10 by jlange           ###   ########.fr        #
+#    Updated: 2017/12/28 16:26:19 by jlange           ###   ########.fr        #
 #                                                                              #
+# **************************************************************************** #
+
 # **************************************************************************** #
 
 .PHONY : all clean fclean re
@@ -19,7 +19,7 @@ NAME = 42sh
 CC = gcc
 
 
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 LDFLAGS = -L libft
 
@@ -94,12 +94,15 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/builtins/tools_export.c							\
 	   src/builtins/history_b.c								\
 	   src/builtins/history_b2.c							\
+	   src/builtins/history_bcheck.c						\
 	   src/replace/ft_replace.c								\
+	   src/replace/replace_history.c						\
 	   src/replace/ft_replace_dollar.c						\
 	   src/replace/ft_replace_tilde.c						\
 	   src/replace/ft_replace_line.c						\
 	   src/replace/ft_add_escape.c							\
 	   src/exec/ft_exec.c									\
+	   src/exec/ft_exec_pipe.c								\
 	   src/other/charcat.c									\
 	   src/other/free_tab_2d.c								\
 	   src/other/tab_2d_len.c								\
@@ -117,8 +120,8 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/redirection/fill_word.c							\
 	   src/redirection/ft_ret_word.c						\
 	   src/redirection/ft_redirection.c						\
-	   src/main.c \
-	   src/ft_fill_cmd.c
+	   src/ft_fill_cmd.c									\
+	   src/main.c 											\
 
 OBJ = $(SRCS:.c=.o)
 

@@ -60,7 +60,7 @@ static inline char  *ft_getstr(t_termc *tsh, t_lineterm *begin)
 
 static int    ft_key_and_char(t_termc *tsh, long c)
 {
-	if ((char)c == '\n' && !tsh->key_tab)
+	if ((char)c == '\n' && !tsh->keyflag->k_tab)
 		return (ft_reset_line(tsh));
 	if (c == CL && !tsh->auto_active && !tsh->multiauto_active)
 		return (ft_save_line(tsh));
@@ -68,7 +68,7 @@ static int    ft_key_and_char(t_termc *tsh, long c)
 	{
 		tsh->auto_active = 0;
 		tsh->multiauto_active = 0;
-		tsh->key_tab = 0;
+		tsh->keyflag->k_tab = 0;
 		if (tsh->line->lnk_before)
 			ft_insert_dlnk(tsh->line->end, tsh, c, 1);
 		else

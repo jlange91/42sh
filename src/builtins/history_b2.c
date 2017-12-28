@@ -16,7 +16,7 @@ void ft_opt_a(char *av2, t_history *begin, hlist *hist)
         i = 0;
         while (begin)
         {
-            if (begin->new)
+            if (begin->new && begin->new != 104)
             {
                 write(fd, begin->data, ft_strlen(begin->data));
                 write(fd, "\n", 1);
@@ -37,9 +37,9 @@ void ft_opt_r(char *av2, t_history *begin, hlist *hist)
         push_backhist(hist, av2, hist->end->index + 1, 1);
     else
     {
-        while ((ret = get_next_line(fd, &line)) > 0)
+        while ((ret = get_next_line(fd, &line)) > 0)							// CHECK IF LINE IS ONLY SPACE OR TAB, DON'T PUT IN HISTLIST
         {
-            push_backhist(hist, line, -1, 1);
+            push_backhist(hist, line, hist->end->index + 1, 104);
             free(line);
         }
     }

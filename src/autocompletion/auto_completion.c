@@ -20,7 +20,7 @@ void    ft_ajuste_and_fill_line(t_termc *tsh, char *data, char *before, int ret)
 
 	free(tsh->autoc->str);
 	ft_clean_line(tsh);
-	tsh->key_tab = 0;
+	tsh->keyflag->k_tab = 0;
 	tsh->autoc->str = ft_strdup(data);
 	i = -1;
 	if (ret)

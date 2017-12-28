@@ -1,7 +1,7 @@
 #include "../../inc/quote.h"
 #include "../../inc/line_edition.h"
 
-static t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
+static inline t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
 {
 	while (tmp)
 	{
@@ -16,7 +16,7 @@ static t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
 	return (tmp);
 }
 
-static inline char  *ft_getstr2(t_termc *tsh, t_lineterm *begin)
+static inline char  *ft_getstr(t_termc *tsh, t_lineterm *begin)
 {
 	t_lineterm *tmp;
 	char        *str;
@@ -42,7 +42,7 @@ static inline char  *ft_getstr2(t_termc *tsh, t_lineterm *begin)
 	return (str);
 }
 
-static int		ft_fill_prompt_quotes(dlist *line, int ret)
+static inline int		ft_fill_prompt_quotes(dlist *line, int ret)
 {
     char	*str;
     int		i;
@@ -67,29 +67,47 @@ static int		ft_fill_prompt_quotes(dlist *line, int ret)
     return (0);
 }
 
-char	*ft_line_input_quotes(t_termc *sh, int ret)
+static inline void ft_display_prompt_quotes(t_termc *tsh, int ret)
+{
+	int 		i;
+
+	tsh->line->lnk_before = 0;
+	ft_free_dlist(&tsh->line);
+	ft_fill_prompt_quotes(tsh->line, ret);
+	i = 0;
+	while (i < (int)tsh->console->total_line)
+	{
+		tputs(tsh->term->dostr, 1, ft_inputstr);
+		i++;
+	}
+	ft_display(tsh, 0);
+}
+
+char	*ft_line_input_quotes(t_termc *t, int ret)
 {
 	long	c;
 
+	if (t->sigint)
+		return (NULL);
 	c = 0;
-	sh->line->lnk_before = 0;
-	ft_free_dlist(&sh->line);
-	ft_fill_prompt_quotes(sh->line, ret);
+	ft_display_prompt_quotes(t, ret);
 	while (read(0, &c, sizeof(c)))
 	{
 		if (c == '\n')
-			break;
-		if ((ft_is_key(sh->line, sh, c) == 0 && ft_isprint((char)c)))
+			break ;
+		if ((ft_is_key(t->line, t, c) == 0 && ft_isprint((char)c)))
 		{
-			(sh->line->lnk_before) ? ft_insert_dlnk(sh->line->end, sh, c, 1) :
-			push_backdlst(sh->line, c, 1);
+			(t->line->lnk_before) ? ft_insert_dlnk(t->line->end, t, c, 1) :
+			push_backdlst(t->line, c, 1);
 		}
 		else
-			sh->line->lnk_before = 1;
-		if (sh->line->last)
-			sh->line->lnk_before = 0;
+			t->line->lnk_before = 1;
+		if (t->line->last)
+			t->line->lnk_before = 0;
 		c = 0;
-		ft_display(sh, 0);
+		ft_display(t, 0);
 	}
-	return (ft_getstr2(sh, sh->line->begin));
+	if (t->console->total_line < 1)
+		ft_putchar('\n');
+	return (ft_getstr(t, t->line->begin));
 }

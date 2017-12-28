@@ -1,19 +1,8 @@
 #include "../../inc/quote.h"
 #include "../../inc/line_edition.h"
+#include "../../inc/autocompletion.h"
 
-static void	display_missing_quote(int opt)
-{
-	if (opt == -1)
-		ft_putstr("\ndquote > ");
-	else if (opt == -2)
-		ft_putstr("\nquote > ");
-	else if (opt == -3)
-		ft_putstr("\nbquote > ");
-	else if (opt == -4)
-		ft_putstr("\n> ");
-}
-
-static char	*ft_new_line(char *str)
+static inline char	*ft_new_line(char *str)
 {
 	int nb;
 	char *ret;
@@ -33,32 +22,33 @@ static char	*ft_new_line(char *str)
 	return (ret);
 }
 
-char 	*ft_get_line(t_termc *tsh, char *tmp, int ret)
+static inline void ft_get_line(t_termc *tsh, char *tmp, int ret, char **line)
 {
-	char 	*line;
 	int 	opt;
 
 	opt = 1;
-	while (1)
+	while (tsh->quotes)
 	{
-		line = ft_line_input_quotes(tsh, ret);
+		*line = ft_line_input_quotes(tsh, ret);
 		if (opt == 1)
 		{
 			opt = 0;
-			line = ft_free_join(tmp, line, 'B');
+			*line = ft_free_join(tmp, *line, 'B');
 		}
-		ret = ft_check_quote(line);
-		if (ret == 0)
+		if ((ret = ft_check_quote(*line)) == 0)
+		{
+			ft_putchar('\n');
 			break;
+		}
 		else
 		{
-			tmp = ft_new_line(line);
-			display_missing_quote(ret);
-			free(line);
+			tmp = ft_new_line(*line);
+			free(*line);
 			opt = 1;
 		}
 	}
-	return (line);
+	if (tmp && !tsh->quotes)
+		free(tmp);
 }
 
 void	ft_fill_line(t_termc *tsh)
@@ -69,15 +59,18 @@ void	ft_fill_line(t_termc *tsh)
 
 	ret = 0;
 	line = ft_line_input(tsh);
-	ft_end_term(tsh);
 	if ((ret = ft_check_quote(line)) != 0)
 	{
 		tsh->quotes = 1;
-		tmp = ft_strjoin(line, "\n");
-		display_missing_quote(ret);
-		ft_init_terminal_mode(tsh);
-		free(line);
-		line = ft_get_line(tsh, tmp, ret);
+		tmp = ft_free_join(line, "\n", 'L');
+		tsh->console->total_line = 0;
+		ft_get_line(tsh, tmp, ret, &line);
+		if (tsh->sigint)
+		{
+			tsh->line_shell = ft_to_str(tsh);
+			ft_putchar('\n');
+			return ;
+		}
 	}
 	tsh->line_shell = ft_strdup(line);
 	free(line);

@@ -91,6 +91,7 @@ typedef struct          s_key
     int                 mleft;
     int                 mright;
     int                 cl;
+	int                 k_tab;          //how time touch tab
 }                       t_keyflag;
 
 typedef struct          s_var_auto
@@ -135,7 +136,6 @@ typedef struct          s_senti_auto
 typedef struct          s_termc
 {
 	int					quotes;
-    int                 key_tab;          //how time touch tab
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
 	int					len_prompt;
@@ -145,8 +145,8 @@ typedef struct          s_termc
     t_auto              *autoc;
     dlist         		*line;
 	dlist				*line_dup;
-	hlist				*history;
-    hlist               *histfile;
+	hlist				*histmp;
+    hlist               *histlist;
     t_term              *term;
     t_console           *console;
     t_keyflag           *keyflag;
@@ -197,6 +197,7 @@ void		ft_perror(char *str, int error, char *str2);
 /********************************/
 
 void		ft_replace(t_shell *sh);
+void 		ft_replace_exp_hist(t_termc *tsh);
 void		ft_replace_dollar(t_shell *sh, int save);
 void		ft_replace_tilde(t_shell *sh, int save);
 char		*ft_replace_line(char *str1, char *value, char *str2);
@@ -207,6 +208,7 @@ char        *ft_add_escape(char *str);
 /********************************/
 
 void		ft_exec(char **av, char **env);
+void		ft_exec_pipe(char **av, char **env);
 
 /********************************/
 /*            other             */
@@ -261,5 +263,8 @@ char	*ft_var_pwd(char *arg);
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j);
 
+int			ft_backup_stdin(int nb);
+int			ft_backup_stdout(int nb);
+int			ft_backup_stderr(int nb);
 
 #endif

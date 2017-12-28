@@ -20,8 +20,8 @@ static inline void 	ft_reset_var(t_termc *tsh, int flag)
 	{
 		if (ft_count_dlnk(tsh) == 0)
 		{
-			tsh->autoc->finish = 1;
 			ft_init_simple_autocompl(tsh);
+			tsh->autoc->finish = 1;
 			tsh->line->last = 1;
 		}
 		ft_fill_history(tsh);
@@ -29,7 +29,7 @@ static inline void 	ft_reset_var(t_termc *tsh, int flag)
 	if (flag == 2  || flag == 3)
 	{
 		tsh->autoc->can_print = 0;
-		tsh->key_tab = 0;
+		tsh->keyflag->k_tab = 0;
 		tsh->auto_active = 0;
 		tsh->multiauto_active = 0;
 	}
@@ -114,8 +114,10 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
 	tmp = find_cursor(line->end, 0);
 	if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3)
 		return (1);
+	if (c == ' ')
+		ft_replace_exp_hist(tsh);
     if (c == TAB && !tsh->quotes)
-		tsh->key_tab = 1;
+		tsh->keyflag->k_tab = 1;
     if (c == '\n' && !tsh->quotes)
 		ft_reset_var(tsh, 2);
 	if (c == BACKSPACE)
@@ -125,9 +127,9 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
 			return (0);
 	}
     else if (c == UP && !tsh->quotes)
-		ft_move_history(tsh, &tsh->history->current, 2);
+		ft_move_history(tsh, &tsh->histmp->current, 2);
 	else if (c == DOWN && !tsh->quotes)
-		ft_move_history(tsh, &tsh->history->current, 1);
+		ft_move_history(tsh, &tsh->histmp->current, 1);
 	else if (!ft_other_key(tmp, tsh, c))
 		return (0);
 	return (1);

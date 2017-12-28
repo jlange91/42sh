@@ -39,4 +39,10 @@ void        ft_opt_r(char *av2, t_history *begin, hlist *hist);
 int         ft_opt_p(char **av, hlist *hist);
 int         ft_opt_s(char **av, hlist *hist);
 
+/*
+* * HISTORY_BCHECK
+*/
+int 		ft_check_option(char *av1, char *av2);
+int 		ft_error_history(char *av, int flag);
+
 #endif

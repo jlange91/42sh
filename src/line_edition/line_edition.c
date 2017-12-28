@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2017/12/20 18:04:28 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/28 18:26:53 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 // 	// 			ft_perror("shell", errno, av[0]);
 // 	// 		exit(1);
 // 	// 	}
-// 	// }	
+// 	// }
 // }
 
 void			ft_cmd(t_cmd *cmd)
@@ -59,11 +59,6 @@ void			ft_cmd(t_cmd *cmd)
 	t_termc *tsh;
 
 	tsh = ft_ret_tsh(NULL);
-	// if (cmd->r_op == 4)
-	// {
-	// 	ft_pipe(cmd, av, env);
-	// 	return ;
-	// }
 	if (!ft_strcmp(cmd->av[0], "exit"))
 	{
 		ft_add_file_history(tsh);
@@ -87,20 +82,101 @@ void			ft_cmd(t_cmd *cmd)
 		ft_help();
 	else if(!ft_strcmp(cmd->av[0], "export"))
 		prepare_export(cmd);
-	else if (!ft_strcmp(cmd->av[0], "history")) //HISTORY OPTION FINIS, NO EXPANSION
+	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N 
 		history(cmd);
 	else if (cmd->av[0])
 		ft_exec(cmd->av, ft_var_env(NULL));
 	//printf("{%d}\n", ft_singleton(0,0));
 }
 
+void			ft_cmd_pipe(t_cmd *cmd)
+{
+	t_termc *tsh;
+
+	tsh = ft_ret_tsh(NULL);
+	if (!ft_strcmp(cmd->av[0], "exit"))
+	{
+		ft_add_file_history(tsh);
+		ft_putstr("exit\n");
+		exit(0);
+	}
+	else if (!ft_strcmp(cmd->av[0], "echo"))
+		ft_echo(cmd->av);
+	else if (!ft_strcmp(cmd->av[0], "pwd"))
+		ft_pwd(cmd->av);
+	else if (!ft_strcmp(cmd->av[0], "setenv"))
+		ft_prepare_setenv(cmd);
+	else if (!ft_strcmp(cmd->av[0], "unsetenv") ||
+			!ft_strcmp(cmd->av[0], "unset"))
+		ft_prepare_unsetenv(cmd);
+	else if (!ft_strcmp(cmd->av[0], "env"))
+		ft_env(cmd);
+	else if (!ft_strcmp(cmd->av[0], "cd"))
+		ft_cd(cmd);
+	else if(!ft_strcmp(cmd->av[0], "help"))
+		ft_help();
+	else if(!ft_strcmp(cmd->av[0], "export"))
+		prepare_export(cmd);
+	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N 
+		history(cmd);
+	else if (cmd->av[0])
+		ft_exec_pipe(cmd->av, ft_var_env(NULL));
+	if (cmd->av[0])
+		exit(ft_singleton(0,0));
+	//printf("{%d}\n", ft_singleton(0,0));
+}
+
+void			ft_pipe(t_cmd *cmd)
+{
+	int const	READ_END = 0;
+	int const	WRITE_END = 1;
+	pid_t		child = -1;
+	int			pdes[2];
+
+	pipe(pdes);
+	child = fork();
+	if (child == -1)
+	{
+		close(pdes[0]);
+		close(pdes[1]);
+		ft_perror("fork", errno, NULL);
+	}
+	else if (child == 0)
+	{
+		dup2(pdes[WRITE_END], STDOUT_FILENO);
+		close(pdes[READ_END]);
+		ft_cmd_pipe(cmd);
+	}
+	else
+	{
+		dup2(pdes[READ_END], STDIN_FILENO);
+		close(pdes[WRITE_END]);
+		wait(NULL);
+		ft_line_edition(cmd->next);
+	}
+}
+
+
 int	ft_line_edition(t_cmd *cmd)
 {
+		pid_t		child = -1;
+
 	ft_singleton(0, 1);
-	ft_redirection(cmd);
-	if (cmd->av[0] && cmd->av[0][0])
+	//ft_redirection(cmd);
+
+	if (cmd->r_op == 4)
+	{
+		child = fork();
+		if (child == 0) 
+			ft_pipe(cmd);
+		if (child == 1)
+			wait(NULL);
+		return (0);
+	}
+	if (cmd->av[0] && cmd->av[0][0] && cmd->l_op != 4)
 		ft_cmd(cmd);
-	ft_remove_redirection(cmd);
-//	ft_end_term(tsh); déplacé dans le main
+	else if (cmd->av[0] && cmd->av[0][0])
+		ft_cmd_pipe(cmd);
+	//ft_remove_redirection(cmd);
 	return (ft_singleton(0, 0));
 }

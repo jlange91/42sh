@@ -33,7 +33,7 @@ static void  ft_free_free(t_termc *sh)
 {
 	free(sh->line_shell);
 	ft_free_dlist(&sh->line);
-	ft_free_history(sh->history);
+	ft_free_history(sh->histmp);
 }
 
 char	**ft_var_env(char **arg)
@@ -63,7 +63,7 @@ void	ft_exec_all_cmd(t_cmd *cmd)
 	val = 1;
 	while (cmd)
 	{
-		if (val == 1)
+		if (val == 1 && cmd->l_op != 4)
 			ret = ft_line_edition(cmd);
 		cmd = cmd->next;
 		if (cmd)
@@ -76,7 +76,6 @@ void	ft_exec_all_cmd(t_cmd *cmd)
 				val = 1;
 		}
 	}
-
 }
 
 void	ft_free_cmd(t_cmd *cmd)
@@ -88,7 +87,7 @@ void	ft_free_cmd(t_cmd *cmd)
 		free_tab_2d(cmd->av);
 		free(cmd->line);
 		tmp = cmd;
-		cmd = cmd->next;		
+		cmd = cmd->next;
 		free(tmp);
 	}
 }
@@ -113,12 +112,12 @@ int     main(int ac, char **av, char **env)
 		ft_fill_line(tsh);
 		sh.line = ft_strdup(tsh->line_shell);
 		ft_free_free(tsh);
-		ft_replace(&sh);		
+		ft_replace(&sh);
 		cmd = ft_fill_cmd(sh.line, 0, 0);
 		free(sh.line);
 		ft_exec_all_cmd(cmd);
-		ft_end_term(tsh);
 		ft_free_cmd(cmd);
+		ft_end_term(tsh);
 	}
 	free_shell(tsh);
     return (0);

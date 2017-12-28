@@ -28,11 +28,11 @@ static inline void		ft_option_history(char *opt_tab)
 	opt_tab[9] = '\0';
 }
 
-int						ft_display_history(hlist *histfile)
+int						ft_display_history(hlist *histlist)
 {
 	t_history *begin;
 
-	begin = histfile->begin;
+	begin = histlist->begin;
 	if (!begin)
 		return (1);
 	while (begin)
@@ -53,7 +53,7 @@ int						history(t_cmd *cmd)
 	tsh = ft_ret_tsh(NULL);
 	ft_option_history(opt);
 	if (cmd->av[1] == NULL)
-		return (ft_display_history(tsh->histfile));
+		return (ft_display_history(tsh->histlist));
 	// else
 	//     opt = ft_get_option(cmd);
 	return (0);

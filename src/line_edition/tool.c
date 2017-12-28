@@ -91,10 +91,10 @@ void    ft_free_all(t_termc *tsh)
 	ft_free_dlist(&tsh->line_dup);
 	free(tsh->line_dup);
     free(tsh->console);
-	free(tsh->history);
-    ft_free_history(tsh->histfile);
-    free(tsh->histfile->pwd);
-    free(tsh->histfile);
+	free(tsh->histmp);
+    ft_free_history(tsh->histlist);
+    free(tsh->histlist->pwd);
+    free(tsh->histlist);
     if (tsh->autoc->str)
         free(tsh->autoc->str);
     ft_free_autocompletion(&tsh->autoc);

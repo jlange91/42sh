@@ -14,7 +14,13 @@
 #include "../../inc/autocompletion.h"
 #include "../../inc/quote.h"
 
-void 	ft_sigint(t_termc *tsh)
+static inline void 	ft_sigwinch(t_termc *tsh)
+{
+	(void)tsh;
+	;
+}
+
+static inline void 	ft_sigint(t_termc *tsh)
 {
 	tsh->sigint = 1;
 	ft_display(tsh, 0);
@@ -22,15 +28,18 @@ void 	ft_sigint(t_termc *tsh)
 		tputs(tsh->term->cdstr, 1, ft_inputstr);
 	else
 	{
+		if (tsh->quotes)
+			tsh->quotes = 0;
 		ft_free_dlist(&tsh->line);
 		ft_init_console(tsh, tsh->line);
 		ft_display(tsh, 0);
 	}
 	ft_init_simple_autocompl(tsh);
+	ft_fill_history(tsh);
 	tsh->autoc->updaterow = 0;
 	tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
 	tsh->autoc->arrow = 0;
-	tsh->key_tab = 0;
+	tsh->keyflag->k_tab = 0;
 	ft_clean_all_letter(-1, -1);
 	tsh->auto_active = 0;
 	tsh->multiauto_active = 0;
@@ -44,4 +53,6 @@ void	ft_handle_signal(int signum)
 	tsh = ft_ret_tsh(NULL);
 	if (signum == SIGINT)
 		ft_sigint(tsh);
+	if (signum == SIGWINCH)
+		ft_sigwinch(tsh);
 }
