@@ -3,7 +3,7 @@
 
 /************************************************************************************
  * FUNCTION REPLACE CURSOR
- * ALL VARIBLE			last ===> to replace cursor right term
+ * ALL VARIBLE
  * 						up ===> up for how time cursor jump
  *
  * 	Explication : This function to place correctly
@@ -13,7 +13,6 @@
 static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
 {
 	int 	up;
-    size_t  last;
 
 	up = 0;
     if (!end)
@@ -24,10 +23,8 @@ static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
         {
             tputs(tsh->term->upstr, 1, ft_inputstr);
             tsh->console->char_pos = get_columns() - 1;
-            last = get_columns() - 1;
-            while (last--)
-                tputs(tsh->term->ndstr, 1, ft_inputstr);
-            up++;
+			tputs(tparm(tsh->term->ristr, get_columns() -1), 1, ft_inputstr);
+			up++;
         }
         tputs(tsh->term->lestr, 1, ft_inputstr);
         tsh->console->char_pos--;
@@ -48,17 +45,17 @@ static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
  *
  * NO NORME
  * **********************************************************************************/
-static inline void    ft_del_line(t_termc *tsh, int down)
+static inline void    ft_del_line(t_termc *t)
 {
-    size_t  len;
+	int 	down;
 
-    len = tsh->console->char_pos;
-    while (down--)
-        tputs(tsh->term->dostr, 1, ft_inputstr);
-    while (tsh->console->total_line-- > 1)
-        tputs(tsh->term->upstr, 1, ft_inputstr);
-    while (len--)
-        tputs(tsh->term->lestr, 1, ft_inputstr);
+	down = ft_singleton_down(-1);
+	while (down-- > 0)
+		tputs(t->term->dostr, 1, ft_inputstr);
+	t->console->total_line--;
+	if (t->console->total_line > 0)
+		tputs(tparm(t->term->upstru, t->console->total_line), 1, ft_inputstr);
+	tputs(tparm(t->term->lestru, t->console->char_pos), 1, ft_inputstr);
 }
 
 /************************************************************************************
@@ -109,7 +106,7 @@ int    ft_display_char(t_lineterm *begin, t_termc *tsh)
     return (0);
 }
 
-/************************************************************************************
+/******************************************************************************
  * FUNCTION ALL_DISPLAY (AFTER CHECK KEY AND INSERT CARACTERE)
  * ALL VARIABLE			reset ====> Just reset static int up
  * 						down ====> for function del_line and how time cursor must down
@@ -118,22 +115,29 @@ int    ft_display_char(t_lineterm *begin, t_termc *tsh)
  *
  *	Explication : DISPLAY LOL ;)
  * NORME OK
- * **********************************************************************************/
-void    ft_display(t_termc *tsh, int reset)
-{
-    static int  down;
+ * ****************************************************************************/
 
-    if (reset)
-    {
-        down = 0;
-        return ;
-    }
-    tputs(tsh->term->vistr, 1, ft_inputstr);
-    ft_del_line(tsh, down);
+int 	ft_singleton_down(int len)
+{
+	static int  down;
+
+	if (len == 0)
+		down = 0;
+	else if (len == -1)
+		return (down);
+	else if (down != len)
+		down = len;
+	return (down);
+}
+
+void    ft_display(t_termc *tsh)
+{
+	tputs(tsh->term->vistr, 1, ft_inputstr);
+    ft_del_line(tsh);
     ft_display_char(tsh->line->begin, tsh);
-    down = ft_cursor_pos(tsh->line->end, tsh);
+    ft_singleton_down(ft_cursor_pos(tsh->line->end, tsh));
 	if ((tsh->auto_active || tsh->multiauto_active)\
-	&& tsh->console->total_line < 2 && !tsh->sigint)
+		&& tsh->console->total_line < 2 && !tsh->sigint)
 	{
 		ft_display_autocompletion(tsh);
 		return ;

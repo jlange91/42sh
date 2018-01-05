@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/05 11:52:04 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/05 13:56:36 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,44 +15,17 @@
 #include "../../inc/globbing.h"
 #include "../../inc/quote.h"
 
+int		cd_fast(char *cmd)
+{
+	DIR		*dir;
 
-// void					ft_pipe(t_cmd *cmd, char **av, char **env)
-// {
-// 	int		pipefd[2];
-
-// 	pipe(pipefd);
-
-
-
-// 	// int		status;
-// 	// pid_t	father;
-// 	// int		ret;
-
-// 	// father = fork();
-// 	// if (father > 0)
-// 	// {
-// 	// 	signal(SIGINT, SIG_IGN);
-// 	// 	wait(&status);
-// 	// 	ft_singleton(status, 1);
-// 	// 	signal(SIGINT, ft_handle_signal);
-// 	// }
-// 	// if (father == 0)
-// 	// {
-// 	// 	ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
-// 	// 	av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
-// 	// 	if (ret != 0)
-// 	// 	{
-// 	// 		if (ret == 2)
-// 	// 		{
-// 	// 			ft_putstr_fd("shell: command not found: ", 2);
-// 	// 			ft_putendl_fd(av[0], 2);
-// 	// 		}
-// 	// 		else
-// 	// 			ft_perror("shell", errno, av[0]);
-// 	// 		exit(1);
-// 	// 	}
-// 	// }
-// }
+	if ((dir = opendir(cmd)))
+	{
+		closedir(dir);
+		return (1);
+	}
+	return (0);
+}
 
 void			ft_cmd(t_cmd *cmd)
 {
@@ -61,6 +34,11 @@ void			ft_cmd(t_cmd *cmd)
 	if (!cmd->av[0] || !cmd->av[0][0])
 		return ;
 	tsh = ft_ret_tsh(NULL);
+	if (cd_fast(cmd->av[0]) == 1)
+	{
+		ft_cd(cmd, 1);
+		return ;
+	}
 	if (!ft_strcmp(cmd->av[0], "exit"))
 	{
 		ft_add_file_history(tsh);
@@ -79,12 +57,12 @@ void			ft_cmd(t_cmd *cmd)
 	else if (!ft_strcmp(cmd->av[0], "env"))
 		ft_env(cmd);
 	else if (!ft_strcmp(cmd->av[0], "cd"))
-		ft_cd(cmd);
+		ft_cd(cmd, 0);
 	else if(!ft_strcmp(cmd->av[0], "help"))
 		ft_help();
 	else if(!ft_strcmp(cmd->av[0], "export"))
 		prepare_export(cmd);
-	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N 
+	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N
 		history(cmd);
 	else if (cmd->av[0])
 		ft_exec(cmd->av, ft_var_env(NULL));
@@ -98,6 +76,11 @@ void			ft_cmd_pipe(t_cmd *cmd)
 	if (!cmd->av[0] || !cmd->av[0][0])
 		exit(0);
 	tsh = ft_ret_tsh(NULL);
+	if (cd_fast(cmd->av[0]) == 1)
+	{
+		ft_cd(cmd, 1);
+		exit(ft_singleton(0,0));
+	}
 	if (!ft_strcmp(cmd->av[0], "exit"))
 	{
 		ft_add_file_history(tsh);
@@ -116,12 +99,12 @@ void			ft_cmd_pipe(t_cmd *cmd)
 	else if (!ft_strcmp(cmd->av[0], "env"))
 		ft_env(cmd);
 	else if (!ft_strcmp(cmd->av[0], "cd"))
-		ft_cd(cmd);
+		ft_cd(cmd, 0);
 	else if(!ft_strcmp(cmd->av[0], "help"))
 		ft_help();
 	else if(!ft_strcmp(cmd->av[0], "export"))
 		prepare_export(cmd);
-	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N 
+	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N
 		history(cmd);
 	else if (cmd->av[0])
 		ft_exec_pipe(cmd->av, ft_var_env(NULL));
@@ -144,7 +127,7 @@ void	ft_multi_pipe(t_cmd *cmd, int opt)
 	}
 	else
 	{
-		ft_redirection(cmd);		
+		ft_redirection(cmd);
 		ft_cmd_pipe(cmd);
 	}
 }
@@ -185,10 +168,9 @@ void			ft_pipe(t_cmd *cmd)
 
 int	ft_line_edition(t_cmd *cmd)
 {
-		pid_t		child = -1;
+	pid_t		child = -1;
 
 	ft_singleton(0, 1);
-
 	if (cmd->r_op == 4)
 	{
 		child = fork();
@@ -197,12 +179,12 @@ int	ft_line_edition(t_cmd *cmd)
 			ft_perror("fork", errno, NULL);
 			exit(1);
 		}
-		else if (child == 0) 
+		else if (child == 0)
 			ft_pipe(cmd);
 		wait(NULL);
-		return (ft_singleton(0,0));		
+		return (ft_singleton(0,0));
 	}
-	ft_redirection(cmd);	
+	ft_redirection(cmd);
 	ft_cmd(cmd);
 	ft_remove_redirection(cmd);
 	return (ft_singleton(0, 0));

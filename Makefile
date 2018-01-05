@@ -6,7 +6,7 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2017/12/28 16:26:19 by jlange           ###   ########.fr        #
+#    Updated: 2018/01/05 15:19:39 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,7 +74,6 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/globbing/match_chunk.c							\
 	   src/globbing/match.c									\
 	   src/globbing/tool_match_and_chunk.c					\
-	   src/globbing/replace.c								\
 	   src/perror/ft_perror.c								\
 	   src/perror/error.c									\
 	   src/perror/ft_useless_norme.c						\
@@ -95,8 +94,13 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/builtins/history_b.c								\
 	   src/builtins/history_b2.c							\
 	   src/builtins/history_bcheck.c						\
+	   src/replace/replace_to_line.c						\
 	   src/replace/ft_replace.c								\
+	   src/replace/replace_globbing.c						\
 	   src/replace/replace_history.c						\
+	   src/replace/tools_replace.c							\
+	   src/replace/tools_replace2.c							\
+	   src/replace/research_hist.c							\
 	   src/replace/ft_replace_dollar.c						\
 	   src/replace/ft_replace_tilde.c						\
 	   src/replace/ft_replace_line.c						\
@@ -120,6 +124,10 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/redirection/fill_word.c							\
 	   src/redirection/ft_ret_word.c						\
 	   src/redirection/ft_redirection.c						\
+	   src/redirection/backup.c								\
+	   src/redirection/ft_remove_redirection.c				\
+	   src/redirection/type_redir.c							\
+	   src/redirection/ft_redirr_type.c						\
 	   src/ft_fill_cmd.c									\
 	   src/main.c 											\
 

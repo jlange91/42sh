@@ -68,9 +68,9 @@ int     ft_dynamique_autocompletion(long *c, t_termc *tsh)
 
 static int  ft_exec_key(t_termc *tsh, long c, t_lineterm *end)
 {
-    int     i;
-    static int count;
-    static long    keycode[15];
+    int     		i;
+    static int 		count;
+    static long    	keycode[15];
     static t_k		funct[15];
 
     if (count++ < 1)

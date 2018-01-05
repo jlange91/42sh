@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:41 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:11:00 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/04 16:00:30 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,15 @@ char				**ft_unsetenv(char *name, char **env)
 void				ft_prepare_unsetenv(t_cmd *cmd)
 {
 	char	**tenv;
+	char	**tvar;
 	int		i;
-
+	
 	i = 0;
 	if (ft_ret(cmd))
 		return ;
 	while (cmd->av[++i])
 	{
-		tenv = ft_var_env(NULL);	
+		tenv = ft_var_env(NULL);
 		if (ft_getenv(cmd->av[i], tenv) == NULL)
 			continue ;
 		ft_var_env(ft_replace_env(ft_unsetenv(cmd->av[i], tenv), tenv));
@@ -78,9 +79,10 @@ void				ft_prepare_unsetenv(t_cmd *cmd)
 		i = 0;
 		while (cmd->av[++i])
 		{
-			if (ft_getenv(cmd->av[i], cmd->var) == NULL)
+			tvar = ft_var_var(NULL);
+			if (ft_getenv(cmd->av[i], tvar) == NULL)
 				continue ;
-			cmd->var = ft_replace_env(ft_unsetenv(cmd->av[i], cmd->var), cmd->var);
+			ft_var_var(ft_replace_env(ft_unsetenv(cmd->av[i], tvar), tvar));
 		}
 	}
 }

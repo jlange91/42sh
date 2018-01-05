@@ -64,7 +64,13 @@ static inline t_glob	*ft_firstinitglob(char *word, int star)
 			glob[i] = ft_fillglob(res[i], word);
 		if (i == 0)
 		{
-			ft_freeall_glob(NULL, res, s_tab, glob);
+			ft_freeall_glob(NULL, res, s_tab, NULL);
+			while (i < len)
+			{
+				free(glob[i].path);
+				i++;
+			}
+			free(glob);
 			return (NULL);
 		}
 	}

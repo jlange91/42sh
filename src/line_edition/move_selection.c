@@ -19,8 +19,10 @@
 
 void	ft_move_right(t_lineterm *end, t_termc *tsh)
 {
-    if (tsh->auto_active || tsh->multiauto_active)
+    if ((tsh->auto_active || tsh->multiauto_active))
     {
+		if (tsh->console->total_line > 1)
+			return ;
         ft_autoMove(end, tsh, 1);
         return ;
     }
@@ -43,6 +45,8 @@ void    ft_move_left(t_lineterm *end, t_termc *tsh)
 {
     if (tsh->auto_active || tsh->multiauto_active)
     {
+		if (tsh->console->total_line > 1)
+			return ;
         ft_autoMove(end, tsh, 0);
         return ;
     }

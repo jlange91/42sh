@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/04 12:14:09 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/22 13:17:46 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/05 14:56:43 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void				ft_putnbr(int n);
 void				ft_putnbr_fd(int n, int fd);
 void				ft_striter(char *s, void (*f)(char *));
 void				ft_striteri(char *s, void (*f)(unsigned int, char *s));
+void 				ft_swap(char *a, char *b);
 int     			ft_count_from_file(char *path);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
 int					ft_strcmp(const char *s1, const char *s2);
@@ -70,6 +71,7 @@ void				ft_putstr(char *str);
 void				ft_putstr_fd(char const *s, int fd);
 void				ft_putchar(char c);
 void				ft_putchar_fd(char c, int fd);
+char 				*ft_reverse(char *str);
 char				**ft_strsplit(char const *s, char c);
 char				**ft_strsplit2(char const *s);
 char				*ft_itoa(int n);
@@ -96,6 +98,7 @@ int					ft_sqrt(int nb);
 int					ft_abs(int value);
 void				ft_rot13(char *str, int n);
 //void				ft_sort_int_tab(int *tab, int n);
+int 				ft_count_opendir(char *str);
 void				ft_push_back(t_list **alst, t_list *elem);
 void				ft_strcapitalize(char *str);
 void                ft_free_tab(char **str);
@@ -108,4 +111,5 @@ char				*ft_strndup(const char *s1, int n);
 size_t				ft_tablen(char **n_tab);
 char				**ft_tabdup(char **n_tab);
 void				free_tab(void **tab, int len);
+int					ft_intlen(int nb);
 #endif

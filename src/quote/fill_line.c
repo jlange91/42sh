@@ -27,9 +27,13 @@ static inline void ft_get_line(t_termc *tsh, char *tmp, int ret, char **line)
 	int 	opt;
 
 	opt = 1;
-	while (tsh->quotes)
+	while ((*line = ft_readline_quotes(tsh, ret)) != NULL)
 	{
-		*line = ft_line_input_quotes(tsh, ret);
+		if (tmp && !tsh->quotes)
+		{
+			free(tmp);
+			break ;
+		}
 		if (opt == 1)
 		{
 			opt = 0;
@@ -38,7 +42,7 @@ static inline void ft_get_line(t_termc *tsh, char *tmp, int ret, char **line)
 		if ((ret = ft_check_quote(*line)) == 0)
 		{
 			ft_putchar('\n');
-			break;
+			break ;
 		}
 		else
 		{
@@ -47,8 +51,6 @@ static inline void ft_get_line(t_termc *tsh, char *tmp, int ret, char **line)
 			opt = 1;
 		}
 	}
-	if (tmp && !tsh->quotes)
-		free(tmp);
 }
 
 void	ft_fill_line(t_termc *tsh)
@@ -58,16 +60,19 @@ void	ft_fill_line(t_termc *tsh)
 	char 	*line;
 
 	ret = 0;
-	line = ft_line_input(tsh);
+	line = ft_readline(tsh);
 	if ((ret = ft_check_quote(line)) != 0)
 	{
 		tsh->quotes = 1;
-		tmp = ft_free_join(line, "\n", 'L');
 		tsh->console->total_line = 0;
+		tmp = NULL;
+		tmp = ft_free_join(line, "\n", 'L');
 		ft_get_line(tsh, tmp, ret, &line);
 		if (tsh->sigint)
 		{
-			tsh->line_shell = ft_to_str(tsh);
+			tsh->line_shell = ft_to_str(tsh, 0);
+			if (line)
+				free(line);
 			ft_putchar('\n');
 			return ;
 		}

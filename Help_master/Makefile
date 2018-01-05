@@ -6,11 +6,11 @@
 #    By: adebrito <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/24 14:18:08 by adebrito          #+#    #+#              #
-#    Updated: 2017/12/20 17:21:21 by jlange           ###   ########.fr        #
+#    Updated: 2018/01/03 13:02:27 by adebrito         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = builtin_help
+NAME = /tmp/builtin_help
 
 FLAGS = -Wall -Wextra -Werror
 

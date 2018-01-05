@@ -114,16 +114,13 @@ void	ft_autocompletion_bis(t_termc *tsh)
 
 void    ft_autocompletion(t_lineterm *end, t_termc *tsh)
 {
-	(void)end;
 	tsh->autoc->arrow = 0;
 	if (ft_reset(tsh))
 		return ;
 	else
 	{
-		tsh->autoc->str = ft_to_str(tsh);
-		ft_replace_all(tsh->autoc->str, tsh);
-		free(tsh->autoc->str);
-		tsh->autoc->str = ft_to_str(tsh);
+		ft_replace_globbling_and_expansion(tsh, end);
+		tsh->autoc->str = ft_to_str(tsh, 0);
 		ft_check_is_dir(tsh);
 		tsh->auto_active = ft_init_autocompl(tsh, tsh->autoc->str);
 		tsh->multiauto_active = ft_fill_same_word(tsh);

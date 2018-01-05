@@ -6,7 +6,6 @@
 # include <pwd.h>
 # include <assert.h>
 # include <termios.h>
-# include <dirent.h>
 # include "../libft/include/libft.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -24,11 +23,14 @@ typedef struct          s_term
     char                *clrstr;											//Clean all screen and put cursor on the top left
     char                *cmstr;												//Move cursor %1 line , %1 col
     char                *cbstr;												//Clean begin line until end cursor
-    char                *lestr;												//Move cursor one caractere to left
+    char                *lestr;
+	char                *lestru;												//Move cursor one caractere to left
+	char 				*ristr;
     char                *ndstr;												//Move cursor one caractere to right
     char                *dlstr;												//Clean the line
-    char                *dostr;												//Down cursor one line
+    char                *dostr;
     char                *upstr;												//Up cursor one line
+	char                *upstru;												//Up cursor one line
     char                *cdstr;												//Clean all screen until end
     char                *vistr;												//Cursor invisible
     char                *vestr;												//Cursor visible
@@ -61,7 +63,6 @@ typedef struct			hlist
 typedef struct          s_console
 {
     size_t              total_line;
-    size_t              line_pos;
     size_t              char_pos;
 }                       t_console;
 
@@ -77,7 +78,6 @@ typedef struct          s_lineterm
 
 typedef	struct			tlist
 {
-	size_t				lenght;
     int                 lnk_before;
     int                 last;
 	t_lineterm			*begin;
@@ -105,8 +105,6 @@ typedef struct          s_var_auto
 typedef struct          s_autocompl
 {
     char                *data;
-    int                 pos;
-    int                 last;
     int                 index;
     struct s_autocompl  *next;
     struct s_autocompl  *prev;
@@ -192,16 +190,44 @@ typedef struct      s_redir
 
 void		ft_perror(char *str, int error, char *str2);
 
+/******************************************************************************/
 /********************************/
 /*            replace           */
 /********************************/
 
+void 		ft_result_replace(t_shell *sh);
 void		ft_replace(t_shell *sh);
-void 		ft_replace_exp_hist(t_termc *tsh);
 void		ft_replace_dollar(t_shell *sh, int save);
 void		ft_replace_tilde(t_shell *sh, int save);
 char		*ft_replace_line(char *str1, char *value, char *str2);
 char        *ft_add_escape(char *str);
+/*********************************/
+/*			REPLACE_HIST 		 */
+/*********************************/
+void 		ft_replace_exp_hist(t_termc *tsh);
+void 		*ft_skip(t_lineterm *tmp, int len);
+int 		ft_find3(t_termc *tsh, t_lineterm *begin, int *count);
+int 		ft_find2(t_termc *tsh, t_lineterm *begin, int *count);
+int 		ft_find(t_termc *tsh, t_lineterm *begin, int *count);
+/*********************************/
+/*			TOOL_REPLACE 		 */
+/*********************************/
+void 		ft_cpy_to_line(char *data, t_termc *tsh);
+void 		ft_dupdlnk(dlist *line, dlist *tmp);
+void 		ft_freedlnk(dlist *line);
+void 		push_dupdlst(dlist *line, int c, int pos, int index);
+int 		ft_word_here(t_lineterm *begin, char *word);
+/*********************************/
+/*			TOOL_REPLACE2 		 */
+/*********************************/
+void 		ft_join_all(char *word, char **line_tmp, int ret);
+void 		ft_add_space(char **line, char *s_line, char *word);
+/*********************************/
+/*			REPLACE_GLOB 		 */
+/*********************************/
+void 		ft_replace_globbling_and_expansion(t_termc *tsh, t_lineterm *end);
+
+/******************************************************************************/
 
 /********************************/
 /*            exec              */
@@ -244,6 +270,7 @@ int		    ft_singleton(int nb, int opt);
 int			ft_skip_quote(char *str);
 int			ft_skip_dquote(char *str);
 t_shell    	*ft_ret_sh(t_shell *arg);
+char		**ft_var_var(char **arg);
 
 /********************************/
 /*         redirection          */
@@ -254,6 +281,13 @@ void        ft_fill_word(char *line, char *word);
 int 		ft_redirection(t_cmd *cmd);
 void		ft_remove_redirection();
 int         ft_count_char_word(char *line);
+int			ft_backup_stdin(int nb);
+int			ft_backup_stdout(int nb);
+int			ft_backup_stderr(int nb);
+t_redir     *type_redir(char *str, int index);
+void		ft_redirr_type8(t_redir *red);
+void		ft_redirr_type1(t_redir *red);
+void		ft_redirr_type2(t_redir *red);
 
 
 
@@ -263,8 +297,5 @@ char	*ft_var_pwd(char *arg);
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j);
 
-int			ft_backup_stdin(int nb);
-int			ft_backup_stdout(int nb);
-int			ft_backup_stderr(int nb);
 
 #endif

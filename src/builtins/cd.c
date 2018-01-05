@@ -73,13 +73,18 @@ void					go_home(int opt)
 		ft_cd_l(&home[5]);
 }
 
-void					ft_cd(t_cmd *cmd)
+void					ft_cd(t_cmd *cmd, int fast)
 {
 	int		opt;
 	int		i;
 
 	opt = 0;
 	i = init_flags(cmd->av, &opt, 0);
+	if (fast == 1)
+	{
+		ft_cd_l(cmd->av[0]);
+		return ;
+	}
 	if (!cmd->av[i])
 		go_home(opt);
 	else if (!ft_strcmp(cmd->av[i], "-"))

@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:10:40 by adebrito          #+#    #+#             */
-/*   Updated: 2017/12/20 17:05:12 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/04 15:52:36 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,10 @@ void	export_process(t_cmd *cmd)
 
 void	prepare_export(t_cmd *cmd)
 {
+	char	**tmp;
+	
+	tmp = ft_var_var(NULL);
+	cmd->var = load_env(ft_var_var(NULL));
 	if (find_flagp_not1(cmd, 0, 0) == 1)
 	{
 		if (cmd->av[1] == NULL)
@@ -110,4 +114,7 @@ void	prepare_export(t_cmd *cmd)
 		else
 			export_process(cmd);
 	}
+	ft_free_tab(tmp);
+	ft_var_var(load_env(cmd->var));
+	ft_free_tab(cmd->var);
 }

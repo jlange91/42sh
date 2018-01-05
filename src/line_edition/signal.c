@@ -20,22 +20,34 @@ static inline void 	ft_sigwinch(t_termc *tsh)
 	;
 }
 
+static inline void 	ft_sigint2(t_termc *tsh)
+{
+	int len;
+
+	if (tsh->quotes)
+	{
+		tsh->quotes = 0;
+		ft_fill_history(tsh);
+	}
+	ft_free_dlist(&tsh->line);
+	len = ft_singleton_down(-1);
+	if (len != 0)
+		while (len--)
+			tputs(tsh->term->dostr, 1, ft_inputstr);
+	ft_singleton_down(0);
+	ft_init_console(tsh, tsh->line);
+	ft_display(tsh);
+}
+
 static inline void 	ft_sigint(t_termc *tsh)
 {
 	tsh->sigint = 1;
-	ft_display(tsh, 0);
+	ft_display(tsh);
 	if (tsh->auto_active || tsh->multiauto_active)
 		tputs(tsh->term->cdstr, 1, ft_inputstr);
 	else
-	{
-		if (tsh->quotes)
-			tsh->quotes = 0;
-		ft_free_dlist(&tsh->line);
-		ft_init_console(tsh, tsh->line);
-		ft_display(tsh, 0);
-	}
+		ft_sigint2(tsh);
 	ft_init_simple_autocompl(tsh);
-	ft_fill_history(tsh);
 	tsh->autoc->updaterow = 0;
 	tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
 	tsh->autoc->arrow = 0;

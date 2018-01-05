@@ -11,8 +11,6 @@ void    ft_fill_back_autocompl(t_auto *autoc, char *file, int index)
         exit(0);
     }
     new->data = ft_strdup(file);
-    new->pos = 0;
-    new->last = 0;
     new->index = index;
     new->next = NULL;
     new->prev = autoc->end;
@@ -21,32 +19,6 @@ void    ft_fill_back_autocompl(t_auto *autoc, char *file, int index)
     else
         autoc->begin = new;
     autoc->end = new;
-}
-
-char	*ft_to_str(t_termc *tsh)
-{
-    char	*str;
-    int		i;
-    t_lineterm  *tmp;
-
-    if ((str = (char *)malloc(sizeof(*str) * (ft_count_dlnk(tsh) + 1)))
-            == NULL)
-    {
-        ft_putendl_fd("Error malloc", 2);
-        return (NULL);
-    }
-    tmp = tsh->line->begin;
-    i = 0;
-    if (tmp->next)
-        tmp = ft_dontGetPrompt2(tmp);
-    while (tmp)
-    {
-        str[i] = tmp->c;
-        i++;
-        tmp = tmp->next;
-    }
-    str[i] = '\0';
-    return (str);
 }
 
 char	*ft_after_antislash(char *str, int *ret)

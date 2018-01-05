@@ -1,0 +1,16 @@
+NAME
+        CUT_L   - - CUT LINE
+        PAST_L  - - PASTE LINE
+
+SYNOPSIS
+        AUCUN
+
+DESCRIPTION
+
+        Placez votre curseur ou vous voulez sur la ligne de commande en vous deplaçant avec la fleche de gauche ou de droite.
+
+        Shift + fleche de droite || fleche de gauche   : Selectionner la partie que vous voulez copier.
+
+        Option + X                                     : Couper et copier.
+
+        Option + V                                     : Coller.

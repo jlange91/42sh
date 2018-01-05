@@ -24,7 +24,7 @@ char	*ft_lnk_to_str(t_lineterm *begin, t_termc *tsh) // TOOLS PR TOUT
 	if (tmp)
 	{
 		if ((str = (char *)malloc(sizeof(char) *
-						ft_count_dlnk(tsh) + 1)) == NULL)
+						ft_count_dlnk(tsh, 0) + 1)) == NULL)
 			return (NULL);
 		if (tmp->next)
             tmp = ft_dontGetPrompt2(tmp);

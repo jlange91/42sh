@@ -1,0 +1,16 @@
+NAME
+
+SYNOPSIS
+
+DESCRIPTION
+        Fleche de gauche          : Se deplace vers la gauche.
+
+        Fleche de droite          : Se deplacer vers la droite.
+
+        Option + fleche de gauche : Se deplacer de mot en mot vers la gauche.
+
+        Option + fleche de droite : Se deplacer de mot en mot vers la droite.
+
+        Home                      : Met le curseur au début de la ligne.
+
+        End                       : Met le curseur à la fin de la ligne.

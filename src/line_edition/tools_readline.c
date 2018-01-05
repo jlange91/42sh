@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
+#include "../../inc/quote.h"
 
 void    push_backdlst(dlist *line, int c, int i)
 {
@@ -28,9 +29,7 @@ void    push_backdlst(dlist *line, int c, int i)
 	if (line->end)
 		line->end->next = new;
     else
-    {
         line->begin = new;
-    }
 	line->end = new;
 }
 
@@ -74,14 +73,13 @@ t_lineterm *find_cursor(t_lineterm *end, int flag)
 	}
 }
 
-int		ft_count_dlnk(t_termc *tsh)
+int		ft_count_dlnk(t_termc *tsh, int f)
 {
 	t_lineterm *tmp;
 	int			i;
 
 	tmp = tsh->line->begin;
-	if (tmp->next)
-		tmp = ft_dontGetPrompt2(tmp);
+	tmp = (tmp->next && f) ? ft_dont_get_prompt(tmp) : ft_dontGetPrompt2(tmp);
 	i = 0;
 	while (tmp)
 	{
@@ -113,5 +111,4 @@ void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 	new->prev = end->prev;
 	end->prev->next = new;
 	end->prev = new;
-	tsh->line->lenght += 1;
 }

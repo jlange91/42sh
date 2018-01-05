@@ -45,6 +45,7 @@ void				ft_cd_l(char *path)
 		ft_singleton(1, 1);
 		return ;
 	}
+
 	ft_var_pwd(ft_replace_str(curpath, ft_var_pwd(NULL)));
 	replace_pwd();
 }

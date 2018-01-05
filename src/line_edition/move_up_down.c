@@ -100,7 +100,7 @@ void	ft_move_history(t_termc *tsh, t_history **current, int flag)
     if (!(*current) || !ft_passed_or_not(tsh) ||
         !ft_move_history_split(current, flag) )
         return ;
-    if (ft_count_dlnk(tsh) >= 1)
+    if (ft_count_dlnk(tsh, 0) >= 1)
         ft_clean_line(tsh);
     i = -1;
     while ((*current)->data[++i])

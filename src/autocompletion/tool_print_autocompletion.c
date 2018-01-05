@@ -2,11 +2,12 @@
 
 int ft_cursor_update(void)
 {
-    int         fd, row;
+    int         fd;
+	int 		row;
 
     fd = ft_current_tty();
     if (fd == -1)
-        return 1;
+        return (1);
     row = 0;
     ft_cursor_position(fd, &row);
     close(fd);

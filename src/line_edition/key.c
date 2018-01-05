@@ -18,7 +18,7 @@ static inline void 	ft_reset_var(t_termc *tsh, int flag)
 {
 	if (flag == 1)
 	{
-		if (ft_count_dlnk(tsh) == 0)
+		if (ft_count_dlnk(tsh, 0) == 0)
 		{
 			ft_init_simple_autocompl(tsh);
 			tsh->autoc->finish = 1;
@@ -112,9 +112,9 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
 
     tmp = NULL;
 	tmp = find_cursor(line->end, 0);
-	if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3)
-		return (1);
-	if (c == ' ')
+	// if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3) // WORK SIGNAL SIGWINCH TONIGHT
+		// return (1);
+	if (c == ' ' && !tsh->quotes)
 		ft_replace_exp_hist(tsh);
     if (c == TAB && !tsh->quotes)
 		tsh->keyflag->k_tab = 1;

@@ -11,7 +11,6 @@
 /*FT_AUTO_COMPLETION*/
 
 void    ft_autocompletion(t_lineterm *end, t_termc *shell);
-char    *ft_to_str(t_termc *shell);
 int     curs();
 
 /**************************************************************************************/
@@ -46,7 +45,6 @@ void    ft_init_simple_autocompl(t_termc *shell);
 /*******************************************************************************/
 /*TOOL_AUTOCOMPLETION*/
 void    ft_fill_back_autocompl(t_auto *autocompl, char *file, int index);
-char    *ft_to_str(t_termc *shell);
 char    *ft_after_antislash(char *str, int *ret);
 
 /*******************************************************************************/

@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   term.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:08 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/05 08:26:38 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/16 12:14:13 by stvalett         ###   ########.fr       */
+/*   Updated: 2017/10/18 18:46:52 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
@@ -57,13 +57,12 @@ int		ft_fill_prompt(dlist *line)
 
 void    ft_init_console(t_termc *tsh, dlist *line)
 {
-    tsh->console->total_line = 1;
-    tsh->console->line_pos = 1;
-    tsh->console->char_pos = 0;
+	tsh->console->total_line = 1;
+	tsh->console->char_pos = 0;
     ft_fill_prompt(line);
     if (!tsh->auto_active && !tsh->multiauto_active)
         ft_init_terminal_mode(tsh);
-    ft_display_prompt(tsh);
+	ft_display_prompt(tsh);
 }
 
 void    ft_end_term(t_termc *tsh)

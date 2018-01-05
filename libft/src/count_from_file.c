@@ -10,7 +10,7 @@ int     ft_count_from_file(char *path)
 
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
-		return (0);
+		return (-1);
 	line = NULL;
     count = 0;
     while ((ret = get_next_line(fd, &line)) > 0)

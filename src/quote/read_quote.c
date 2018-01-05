@@ -1,7 +1,7 @@
 #include "../../inc/quote.h"
 #include "../../inc/line_edition.h"
 
-static inline t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
+t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
 {
 	while (tmp)
 	{
@@ -14,32 +14,6 @@ static inline t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
     }
     tmp = tmp->next;
 	return (tmp);
-}
-
-static inline char  *ft_getstr(t_termc *tsh, t_lineterm *begin)
-{
-	t_lineterm *tmp;
-	char        *str;
-	int         i;
-
-	tmp = begin;
-	i = 0;
-	str = NULL;
-	if (!tmp)
-		return (NULL);
-	else if (tmp->next)
-		tmp = ft_dont_get_prompt(tmp);
-	str = (char *)malloc(sizeof(char) * (ft_count_dlnk(tsh) + 2));
-	if (!str)
-		return (NULL);
-	while (tmp)
-	{
-		str[i] = tmp->c;
-		tmp = tmp->next;
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
 }
 
 static inline int		ft_fill_prompt_quotes(dlist *line, int ret)
@@ -80,15 +54,13 @@ static inline void ft_display_prompt_quotes(t_termc *tsh, int ret)
 		tputs(tsh->term->dostr, 1, ft_inputstr);
 		i++;
 	}
-	ft_display(tsh, 0);
+	ft_display(tsh);
 }
 
-char	*ft_line_input_quotes(t_termc *t, int ret)
+char	*ft_readline_quotes(t_termc *t, int ret)
 {
 	long	c;
 
-	if (t->sigint)
-		return (NULL);
 	c = 0;
 	ft_display_prompt_quotes(t, ret);
 	while (read(0, &c, sizeof(c)))
@@ -105,9 +77,9 @@ char	*ft_line_input_quotes(t_termc *t, int ret)
 		if (t->line->last)
 			t->line->lnk_before = 0;
 		c = 0;
-		ft_display(t, 0);
+		ft_display(t);
 	}
 	if (t->console->total_line < 1)
 		ft_putchar('\n');
-	return (ft_getstr(t, t->line->begin));
+	return (ft_to_str(t, 1));
 }

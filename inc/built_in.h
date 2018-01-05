@@ -8,7 +8,7 @@
 /********************************/
 
 void		ft_echo(char **av);
-void		ft_cd(t_cmd *cmd);
+void		ft_cd(t_cmd *cmd, int fast);
 void		ft_cd_l(char *path);
 void		ft_cd_p(char *path);
 void		ft_env(t_cmd *cmd);

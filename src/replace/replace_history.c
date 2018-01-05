@@ -3,121 +3,96 @@
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 
-// static inline char *ft_hist_to_repl(char *word, int flag, hlist *hist)
-// {
-// 	int 	i;
-// 	int 	ret;
-// 	char 	*tmp;
-// 	t_history *end;
-//
-// 	end = hist->end;
-// 	if (!flag || flag == 1)
-// 	{
-// 		i = 0;
-// 		while (word[i] && ft_isdigit(word[i]))
-// 			i++;
-// 		tmp = ft_strndup(word, i);
-// 		ret = ft_atoi(tmp);
-// 		free(tmp);
-// 	}
-// 	if (flag == 2)
-// 	{
-// 		i = 0;
-// 		while (word[i])
-// 		{
-// 			if (word[i] == ' ')
-// 				break ;
-// 			i++;
-// 		}
-// 		tmp = ft_strndup(word, i);
-// 	}
-// 	while (end)
-// 	{
-// 		if (!flag && ret-- == 1)
-// 			return (end->data);
-// 		else if (flag && ret == end->index)
-// 			return (end->data);
-// 		else if (flag == 2 && !ft_strncmp(tmp, end->data, ft_strlen(tmp)))
-// 			return (end->data);
-// 		end = end->prev;
-// 	}
-// 	if (flag == 2)
-// 		free(tmp);
-// 	return (NULL);
-// }
+static inline void *ft_result(t_termc *tsh, dlist *tmp, int flag, int i)
+{
+	t_lineterm *begin;
 
-static inline void ft_cpy(char *line, t_termc *tsh)
+	begin = ft_skip(tmp->begin, i);
+	if (flag == 1 && begin && ft_isdigit(begin->c) && ft_find(tsh, begin, &i))
+	{
+		tmp->begin = ft_skip(tmp->begin, i);
+		return ((dlist *)tmp);
+	}
+	else if (flag == 2 && ft_find2(tsh, begin, &i))
+	{
+		tmp->begin = ft_skip(tmp->begin, i);
+		return ((dlist *)tmp);
+	}
+	else if (flag == 3 && ft_find3(tsh, begin, &i))
+	{
+		tmp->begin = ft_skip(tmp->begin, i);
+		return ((dlist *)tmp);
+	}
+	return (NULL);
+}
+
+static inline int ft_replace_pattern(dlist *tmp, t_termc *tsh)
+{
+	if (tmp->begin->c == '\\' || !tmp->begin->next || tmp->begin->c != '!')
+		return (0);
+	if (tmp->begin->next->c != '\\' && tmp->begin->next->c == '!')
+	{
+		tmp->begin = ft_skip(tmp->begin, 2);
+		ft_cpy_to_line(tsh->histlist->end->data, tsh);
+		return (1);
+	}
+	else if (tmp->begin->next->c != '\\' && tmp->begin->next->c == '-')
+	{
+		if ((tmp = ft_result(tsh, tmp, 1, 2)) != NULL)
+			return (1);
+	}
+	else if (ft_isdigit(tmp->begin->next->c) || ft_isalpha(tmp->begin->next->c)\
+ 		|| tmp->begin->next->c == '\\')
+	{
+			if ((tmp = ft_result(tsh, tmp, 2, 1)) != NULL)
+				return (1);
+	}
+	else if (tmp->begin->next->c == '?')
+	{
+		if ((tmp = ft_result(tsh, tmp, 3, 2)) != NULL)
+			return (1);
+	}
+	return (0);
+}
+
+void 		*ft_skip(t_lineterm *tmp, int len)
 {
 	int i;
 
-	i = 0;
-	// tsh->autoc->updaterow = 0;
-	while (line[i])
+	if (tmp != NULL && len <= 2)
 	{
-		push_backdlst(tsh->line, line[i], 1);
-		i++;
+		i = -1;
+		while (tmp && ++i < len)
+			tmp = tmp->next;
+		return ((t_lineterm*)tmp);
 	}
-}
-
-static inline int 	ft_find_prev(char *word, int i, t_termc *tsh)
-{
-	int 		ret;
-	char 		*tmp;
-	t_history 	*end;
-
-	if (word[i] == '!')
-		ft_cpy(tsh->histlist->end->data, tsh);
-	else if (word[i] == '-')
+	else if (tmp != NULL && len > 2)
 	{
-		end = tsh->histlist->end;
-		ret = 0;
-		if (!ft_isdigit(word[i + 1]))
-			tmp = ft_strdup(&word[i - 1]);
-		if ((ret = ft_atoi(tmp)))
-		{
-			while (end)
-			{
-				if (ret-- == 1)
-					break ;
-				end = end->prev;
-			}
-			ft_cpy(end->data, tsh);
-		}
-		else
-			ft_cpy(tmp, tsh);
-		free(tmp);
+		while (tmp && len-- > 0)
+			tmp = tmp->next;
+		return ((t_lineterm *)tmp);
 	}
-	return (++i);
-}
-
-static inline int 	ft_replace_pattern(char *word, int i, t_termc *tsh)
-{
-	if (word[i] == '!' || word[i] == '-')
-			return (ft_find_prev(word, i, tsh));
-	else
-		push_backdlst(tsh->line, word[i - 1], 1);
-	return (i);
+	return (NULL);
 }
 
 void 			ft_replace_exp_hist(t_termc *tsh)
 {
-	char		*line;
-	int 		i;
+	dlist 		tmp;
 
-	if ((line = ft_to_str(tsh)) != NULL)
+	if (!tsh->histlist->end || !tsh->histlist->begin)
+		return ;
+	tmp.begin = NULL;
+	tmp.end = NULL;
+	ft_dupdlnk(tsh->line, &tmp);
+	ft_clean_line(tsh);
+	while (tmp.begin)
 	{
-		ft_clean_line(tsh);
-		i = 0;
-		while (line[i])
+		if (!ft_replace_pattern(&tmp, tsh))
 		{
-			if (line[i] == '!')
-				i = ft_replace_pattern(line, ++i, tsh);
-			else
-			{
-				push_backdlst(tsh->line, line[i], 1);
-				i++;
-			}
+			push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
+				tmp.begin->index);
+			tmp.begin = tmp.begin->next;
 		}
-		free (line);
 	}
+	ft_freedlnk(&tmp);
 }

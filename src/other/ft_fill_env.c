@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:42:28 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 18:55:04 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/04 14:49:24 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void				ft_fill_env(char **env)
 
 	ft_var_env(up_sh_lvl(env, tab_2d_len(env)));
 	tenv = ft_var_env(NULL);
+	ft_var_var(load_env(tenv));
 	if ((pwd2 = ft_getenv("PWD", env)) == NULL)
 	{
 		getcwd(pwd, sizeof(pwd));
@@ -69,7 +70,7 @@ void				ft_fill_env(char **env)
 	else
 	{
 		ft_var_env(ft_replace_env(ft_setenv("PWD", &pwd2[4], tenv), tenv));
-		ft_var_pwd(ft_strdup(&pwd2[4]));		
+		ft_var_pwd(ft_strdup(&pwd2[4]));
 	}
-	//sh->var = load_env(sh->env);
+//	cmd->var = load_env(env);
 }

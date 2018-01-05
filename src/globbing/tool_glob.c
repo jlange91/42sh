@@ -1,19 +1,32 @@
 #include "../../inc/globbing.h"
 
-int  ft_count_file(char *str)
+static inline void	ft_init_escape_tab(char *escape_tab)
 {
-	int             count;
-	DIR             *path;
-	struct dirent   *file;
-
-	count = 0;
-	if ((path = opendir(str)) != NULL)
-	{
-		while ((file = readdir(path)) != NULL)
-			count++;
-		closedir(path);
-	}
-	return (count);
+	escape_tab[0] = '!';
+	escape_tab[1] = '"';
+	escape_tab[2] = '$';
+	escape_tab[3] = '&';
+	escape_tab[4] = '\'';
+	escape_tab[5] = '(';
+	escape_tab[6] = ')';
+	escape_tab[7] = '*';
+	escape_tab[8] = ',';
+	escape_tab[9] = ':';
+	escape_tab[10] = ';';
+	escape_tab[11] = '<';
+	escape_tab[12] = '=';
+	escape_tab[13] = '>';
+	escape_tab[14] = '?';
+	escape_tab[15] = '@';
+	escape_tab[16] = '[';
+	escape_tab[17] = '\\';
+	escape_tab[18] = ']';
+	escape_tab[19] = '^';
+	escape_tab[20] = '`';
+	escape_tab[21] = '{';
+	escape_tab[22] = '|';
+	escape_tab[23] = '}';
+	escape_tab[24] = '\0';
 }
 
 void	ft_save_word(t_glob *glob, char **str, int len)
@@ -48,7 +61,8 @@ void	ft_freeall_glob(char *pwd, char **res, char **s_tab, t_glob *glob)
         i = 0;
         while (i < glob->len)
         {
-            free(glob[i].path);
+			if (glob[i].path)
+            	free(glob[i].path);
             i++;
         }
         free(glob);

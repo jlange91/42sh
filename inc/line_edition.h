@@ -3,7 +3,6 @@
 
 # include "sh21.h"
 # include <sys/ioctl.h>
-# include <termios.h>
 # include <term.h>
 # include <time.h>
 # include <signal.h>
@@ -76,6 +75,7 @@ void				ft_init_console(t_termc *shell, dlist *line);
 void                ft_end_term(t_termc *shell);
 int					ft_insert_lnk_void(dlist *line);
 int					ft_init_terminal_mode(t_termc *shell);
+int					ft_fill_prompt(dlist *line);
 
 /***************************************************************************************/
 /*HISTORY*/
@@ -94,7 +94,7 @@ int                 ft_add_file_history_no_flag(t_termc *shell);
 
 /***************************************************************************************/
 /*READLINE*/
-char				*ft_line_input(t_termc *shell);
+char				*ft_readline(t_termc *shell);
 t_termc		        *ft_ret_tsh(t_termc **arg);
 
 /***************************************************************************************/
@@ -103,19 +103,20 @@ int                 ft_reset_line(t_termc *shell);
 int                 ft_save_line(t_termc *tsh);
 int                 ft_inputstr(int c);
 size_t              get_columns();
-t_lineterm          *find_cursor(t_lineterm *end, int flag);
+char 				*ft_to_str(t_termc *tsh, int flag);
 
 /**************************************************************************************/
 /*TOOL READLINE*/
 void                push_backdlst(dlist *line, int c, int i);
 void				push_backhist(hlist *line, const char *str, int index, int);
 void                ft_insert_dlnk(t_lineterm *end, t_termc *shell, int c, int i);
-int		            ft_count_dlnk(t_termc *shell);
+int		            ft_count_dlnk(t_termc *shell, int flag);
+t_lineterm          *find_cursor(t_lineterm *end, int flag);
 
 /**************************************************************************************/
 /*TOOL READLINE2*/
 int					ft_display_char(t_lineterm *begin, t_termc *shell);
-void                ft_display(t_termc *shell, int close);
+void                ft_display(t_termc *shell);
 
 /***************************************************************************************/
 /*PROMPT*/
@@ -123,6 +124,7 @@ void                ft_display_prompt(t_termc *shell);
 
 /***************************************************************************************/
 /*DISPLAY*/
+int 				ft_singleton_down(int len);
 void				ft_display_dlnk(dlist *line, t_lineterm *current, t_termc *shell);
 
 /***************************************************************************************/

@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
+#    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: stvalett <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 15:47:13 by stvalett          #+#    #+#              #
-#    Updated: 2017/11/22 12:28:26 by adebrito         ###   ########.fr        #
+#    Updated: 2018/01/05 14:57:02 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -100,6 +100,10 @@ SRCS = src/ft_memset.c\
 	   src/free_tab.c \
 	   src/ft_countword.c \
 	   src/ft_return.c \
+	   src/ft_count_opendir.c\
+	   src/ft_swap.c\
+	   src/ft_reverse.c\
+	   src/ft_intlen.c\
 
 OBJ = $(SRCS:.c=.o)
 

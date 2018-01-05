@@ -29,7 +29,7 @@ static inline char    **ft_fill_tab2(char *pat, int star, DIR *path)
 	i = -1;
 	tmp_tab = NULL;
 	if ((tmp_tab = (char **)malloc(sizeof(char *) *
-					(ft_count_file((".")) + 1))) == NULL)
+					(ft_count_opendir((".")) + 1))) == NULL)
 		return (NULL);
 	while ((file = readdir(path)) != NULL)
 	{
@@ -53,7 +53,7 @@ static inline char	**ft_fill_tab1(char *pwd, char *pat, int star, DIR *path)
 
 	i = -1;
 	if ((tmp_tab = (char **)malloc(sizeof(char *)
-            * (ft_count_file(pwd) + 1))) == NULL)
+            * (ft_count_opendir(pwd) + 1))) == NULL)
 		return (NULL);
 	while ((file = readdir(path)) != NULL)
 	{

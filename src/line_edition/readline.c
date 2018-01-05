@@ -23,46 +23,11 @@ t_termc		*ft_ret_tsh(t_termc **arg)
 	return (tsh);
 }
 
-/*******************************************************************************
- * FUNCTION GETSTR
- * ALL VARIABLE				nbr ==> for good malloc
- *
- *	EXPLICATION : this function transform double linked to string
- *
- * NO NORME
- ******************************************************************************/
-
-static inline char  *ft_getstr(t_termc *tsh, t_lineterm *begin)
-{
-	t_lineterm *tmp;
-	char        *str;
-	int         i;
-
-	tmp = begin;
-	i = 0;
-	str = NULL;
-	if (!tmp)
-		return (NULL);
-	else if (tmp->next)
-		tmp = ft_dontGetPrompt2(tmp);
-	if ((str = (char *)malloc(sizeof(char) * ft_count_dlnk(tsh) + 1)) == NULL)
-		return (NULL);
-	while (tmp)
-	{
-		str[i++] = tmp->c;
-		tmp = tmp->next;
-	}
-	str[i] = '\0';
-	if (ft_strlen(str) >= 1)
-		ft_add_tmp_history(tsh, str);
-	return (str);
-}
-
 static int    ft_key_and_char(t_termc *tsh, long c)
 {
 	if ((char)c == '\n' && !tsh->keyflag->k_tab)
 		return (ft_reset_line(tsh));
-	if (c == CL && !tsh->auto_active && !tsh->multiauto_active)
+	if (c == CL && !tsh->auto_active && !tsh->multiauto_active) 			// BOUCLE INFINI CHECK WHY !!!!!
 		return (ft_save_line(tsh));
 	if ((ft_is_key(tsh->line, tsh, c) == 0 && ft_isprint((char)c)))
 	{
@@ -84,7 +49,7 @@ static int    ft_key_and_char(t_termc *tsh, long c)
 	return (1);
 }
 
-static void	ft_line_input_split(t_termc *tsh)
+static void	ft_init_readline(t_termc *tsh)
 {
 	t_lineterm *tmp;
 
@@ -105,7 +70,7 @@ static void	ft_line_input_split(t_termc *tsh)
 			push_backdlst(tsh->line, tmp->c, 1);
 			tmp = tmp->next;
 		}
-		ft_display(tsh, 0);
+		ft_display(tsh);
 	}
 }
 
@@ -119,20 +84,21 @@ static void	ft_line_input_split(t_termc *tsh)
  *
  * 	NO NORME
  * 	***************************************************************************/
-char    *ft_line_input(t_termc *tsh)
+char    *ft_readline(t_termc *tsh)
 {
 	long 	c;
 
 	if (isatty(0))
 	{
 		c = 0;
-		ft_line_input_split(tsh);
+		ft_init_readline(tsh);
 		ft_clean_all_letter(-1, -1);
+		ft_singleton_down(0);
 		while (read(0, &c, sizeof(c)))
 		{
 			if (!ft_key_and_char(tsh, c))
 				break;
-			ft_display(tsh, 0);
+			ft_display(tsh);
 			c = 0;
 			tsh->keyflag->backspace = 0;
 			tsh->keyflag->underline = 0;
@@ -140,7 +106,7 @@ char    *ft_line_input(t_termc *tsh)
 			tsh->repl = 0;
 			tsh->sigint = 0;
 		}
-		return (ft_getstr(tsh, tsh->line->begin));
+		return (ft_to_str(tsh, 0));
 	}
 	return (NULL);
 }

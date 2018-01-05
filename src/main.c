@@ -29,11 +29,11 @@ t_shell		*ft_ret_sh(t_shell *arg)
 	return (sh);
 }
 
-static void  ft_free_free(t_termc *sh)
+static void  ft_free_free(t_termc *tsh)
 {
-	free(sh->line_shell);
-	ft_free_dlist(&sh->line);
-	ft_free_history(sh->histmp);
+	free(tsh->line_shell);
+	ft_free_dlist(&tsh->line);
+	ft_free_history(tsh->histmp);
 }
 
 char	**ft_var_env(char **arg)
@@ -43,6 +43,15 @@ char	**ft_var_env(char **arg)
 	if (arg)
 		env = arg;
 	return (env);
+}
+
+char	**ft_var_var(char **arg)
+{
+	static	char **var = NULL;
+
+	if (arg)
+		var = arg;
+	return (var);
 }
 
 char	*ft_var_pwd(char *arg)
@@ -112,7 +121,9 @@ int     main(int ac, char **av, char **env)
 		ft_fill_line(tsh);
 		sh.line = ft_strdup(tsh->line_shell);
 		ft_free_free(tsh);
-		ft_replace(&sh);
+		ft_result_replace(&sh);
+		if (!sh.line)
+			continue ;
 		cmd = ft_fill_cmd(sh.line, 0, 0);
 		free(sh.line);
 		ft_exec_all_cmd(cmd);

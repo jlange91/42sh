@@ -11,7 +11,6 @@ static	inline	t_console	*init_console(void)
 		return (NULL);
 	}
 	console->total_line = 0;
-	console->line_pos = 1;
 	console->char_pos = 0;
 	return (console);
 }
@@ -90,7 +89,6 @@ static	inline	dlist		*init_lineterm(void)
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
 	}
-	line->lenght = 0;
 	line->lnk_before = 0;
 	line->last = 0;
 	line->begin = NULL;

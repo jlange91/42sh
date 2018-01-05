@@ -58,11 +58,7 @@ static void ft_clean_screen(t_auto *select, t_termc *tsh, int *ecrase, int *e_s)
 
     tputs(tgoto(tgetstr("cm", NULL), 0, select->row + 4), 1, ft_inputstr);
     row = select->row + 4;
-    while (row)
-    {
-        tputs(tsh->term->upstr, 1, ft_inputstr);
-        row--;
-    }
+	tputs(tparm(tsh->term->upstru, row), 1, ft_inputstr);
     what_pages(tsh, select, ecrase, e_s);
 }
 

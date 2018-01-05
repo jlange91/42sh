@@ -13,7 +13,7 @@ void    ft_check_is_dir(t_termc *tsh)
     char        *tmp;
     struct stat info;
 
-    tmp = ft_to_str(tsh);
+    tmp = ft_to_str(tsh, 0);
     tab_word = ft_strsplit2(tmp);
     free(tmp);
     i = ft_count_dtab(tab_word) - 1;
@@ -59,7 +59,7 @@ int    ft_reset(t_termc *tsh)
     tsh->line->last = 1;
     if (tsh->autoc->finish == 1)
         tsh->autoc->finish = 0;
-    if (ft_count_dlnk(tsh) == 0)
+    if (ft_count_dlnk(tsh, 0) == 0)
     {
         ft_init_simple_autocompl(tsh);
         return (1);
