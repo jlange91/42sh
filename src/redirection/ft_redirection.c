@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../inc/sh21.h"
+# include "../../inc/quote.h"
 
 static int		backslash_word(char *line)
 {
@@ -213,6 +214,9 @@ int			ft_redirection(t_cmd *cmd)
 			i++;
 		i++;
 	}
+	free_tab_2d(cmd->av);
+	cmd->av = ft_fill_av(cmd->line);
+	cmd->ac = tab_2d_len(cmd->av);
 	return (0);
 }
 

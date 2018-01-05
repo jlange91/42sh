@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   term.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:08 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/16 12:14:13 by stvalett         ###   ########.fr       */
-/*   Updated: 2017/10/18 18:46:52 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/05 08:26:38 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
