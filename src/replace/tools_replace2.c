@@ -2,29 +2,30 @@
 #include "../../inc/sh21.h"
 #include "../../inc/line_edition.h"
 
-void 	ft_add_space(char **line, char *s_line, char *word)
+void 	ft_add_space(char **line, char **s_line, char *word)
 {
-	int 	count;
 	int 	i;
+	long  	c;
 	char 	*str;
 
-	count = 0;
-	str = ft_strstr(s_line, word);
+	if (!(*line) || !(*s_line) || !word)
+		return ;
+	str = ft_strstr(*s_line, word);
 	if (str != NULL)
 	{
 		i = 0;
-		while (str[i] && str[i] != ' ')
+		c = 0;
+		while (str[i] && str[i] != ' ' && str[i] != '\n')
 			i++;
-		while (str[i] && str[i] == ' ')
+		while (str[i] && (str[i] == ' ' || str[i] == '\n'))
 		{
-			count++;
+			c = (long)str[i];
+			*line = ft_free_join(*line, (char *)&c, 'L');
 			i++;
 		}
-	}
-	while (count > 0)
-	{
-		*line = ft_free_join(*line, " ", 'L');
-		count--;
+		ft_strdel(&(*s_line));
+		if (str[i] != 0)
+			*s_line = ft_strdup(&str[i]);
 	}
 }
 

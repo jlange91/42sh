@@ -79,7 +79,7 @@ void 			ft_replace_exp_hist(t_termc *tsh)
 {
 	dlist 		tmp;
 
-	if (!tsh->histlist->end || !tsh->histlist->begin)
+	if (!tsh->histlist && !tsh->histlist->end)
 		return ;
 	tmp.begin = NULL;
 	tmp.end = NULL;

@@ -114,11 +114,11 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
 	tmp = find_cursor(line->end, 0);
 	// if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3) // WORK SIGNAL SIGWINCH TONIGHT
 		// return (1);
-	if (c == ' ' && !tsh->quotes)
+	if (c == ' ' && !tsh->quotes && !tsh->hdoc) 				//ATTENTION ENLEVE LA SELECTION CHECK
 		ft_replace_exp_hist(tsh);
-    if (c == TAB && !tsh->quotes)
+    if (c == TAB && !tsh->quotes && !tsh->hdoc)
 		tsh->keyflag->k_tab = 1;
-    if (c == '\n' && !tsh->quotes)
+    if (c == '\n' && !tsh->quotes && !tsh->hdoc)
 		ft_reset_var(tsh, 2);
 	if (c == BACKSPACE)
 	{
@@ -126,9 +126,9 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
 		if (!ft_del_caractere(tmp, tsh))
 			return (0);
 	}
-    else if (c == UP && !tsh->quotes)
+    else if (c == UP && !tsh->quotes && !tsh->hdoc)
 		ft_move_history(tsh, &tsh->histmp->current, 2);
-	else if (c == DOWN && !tsh->quotes)
+	else if (c == DOWN && !tsh->quotes && !tsh->hdoc)
 		ft_move_history(tsh, &tsh->histmp->current, 1);
 	else if (!ft_other_key(tmp, tsh, c))
 		return (0);

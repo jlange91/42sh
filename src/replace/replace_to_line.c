@@ -3,19 +3,6 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-static inline int ft_only_space(char *line, char c)
-{
-	int i;
-
-	i = 0;
-	while (line[i] && line[i] == c)
-		i++;
-	if (line[i] == 0)
-		return (1);
-	else
-		return (0);
-}
-
 static inline void ft_get_hist(char *word, char **line_tmp)
 {
 	int 	i;
@@ -34,6 +21,8 @@ static inline void ft_get_hist(char *word, char **line_tmp)
 	str = ft_to_str(tsh, 0);
 	(!str) ? ft_join_all(word, line_tmp, 0) : ft_join_all(str, line_tmp, 1);
 	ft_free_dlist(&tsh->line);
+	if (str)
+		tsh->repl = 1;
 }
 
 static inline void ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
@@ -44,8 +33,7 @@ static inline void ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
 	{
 		sh->line = ft_strdup(word);
 		ft_replace(sh);
-		(ft_strcmp(sh->line, word) && !ft_only_space(sh->line, ' ')) ?
-		ft_join_all(sh->line, line_tmp, 1) : ft_join_all(word, line_tmp, 0);
+		ft_join_all(sh->line, line_tmp, 1);
 	}
 	else if (flag == 1)
 	{
@@ -56,7 +44,7 @@ static inline void ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
 		ft_get_hist(word, line_tmp);
 }
 
-static inline char *ft_split_res(char *save_line, t_shell *sh, char **new_tab)
+static inline char *ft_split_res(char **save_line, t_shell *sh, char **new_tab)
 {
 	char 	*line_tmp;
 	int 	i;
@@ -86,13 +74,22 @@ void 	ft_result_replace(t_shell *sh)
 	char 	**new_tab;
 	t_termc *tsh;
 
+	if (!sh->line)
+		return ;
 	tsh = ft_ret_tsh(NULL);
 	new_tab = ft_strsplit2(sh->line);
 	save_line = ft_strdup(sh->line);
+	if (tsh->save_line != NULL)
+		free(tsh->save_line);
+	tsh->save_line = ft_strdup(sh->line);
 	free(sh->line);
-	sh->line = ft_split_res(save_line, sh, new_tab);
-	if (ft_strlen(sh->line) >= 1)
-		ft_add_tmp_history(tsh, sh->line);
+	sh->line = ft_split_res(&save_line, sh, new_tab);
+	if (tsh->repl)
+	{
+		tsh->replace = ft_strdup(sh->line);
+		free(sh->line);
+	}
+	if (save_line)
+		free(save_line);
 	ft_free_tab(new_tab);
-	free(save_line);
 }

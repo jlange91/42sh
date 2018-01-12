@@ -6,7 +6,10 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2018/01/05 15:19:39 by jlange           ###   ########.fr        #
+#    Updated: 2018/01/09 16:16:40 by jlange           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 #                                                                              #
 # **************************************************************************** #
 
@@ -120,6 +123,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/other/ft_chdir_error.c							\
 	   src/other/ft_skip_useless.c							\
 	   src/other/ft_skip_quote.c							\
+	   src/other/singleton.c								\
 	   src/redirection/count.c								\
 	   src/redirection/fill_word.c							\
 	   src/redirection/ft_ret_word.c						\
@@ -129,7 +133,13 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/redirection/type_redir.c							\
 	   src/redirection/ft_redirr_type.c						\
 	   src/ft_fill_cmd.c									\
+	   src/heredoc/read_heredoc.c							\
 	   src/main.c 											\
+	   src/builtins/ft_theme.c \
+	   src/builtins/ft_theme2.c \
+	   src/line_edition/init3.c \
+	   src/check/ft_check_cmd.c \
+	   src/check/ft_check_redir.c \
 
 OBJ = $(SRCS:.c=.o)
 

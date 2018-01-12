@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/12 15:31:52 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/09 19:26:54 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/sh21.h"
 #include "../../inc/line_edition.h"
+#include "../../inc/built_in.h"
 
 static inline char		**fill_path(char **env)
 {
@@ -67,7 +68,18 @@ static inline int		exec_av(char **av, char **env)
 	return (ret);
 }
 
-void					ft_exec(char **av, char **env)
+int		cd_or_error(t_cmd *cmd, int status)
+{
+
+	if (status == 0)
+		return (0);
+	else if (status != 10752)
+		return (1);		
+	ft_cd(cmd, 1);
+	return (0);
+}
+
+void					ft_exec(t_cmd *cmd, char **av, char **env)
 {
 	int		status;
 	pid_t	father;
@@ -78,7 +90,8 @@ void					ft_exec(char **av, char **env)
 	{
 		signal(SIGINT, SIG_IGN);
 		wait(&status);
-		ft_singleton(status, 1);
+		if (cd_or_error(cmd, status) == 1)
+			ft_singleton(status, 1);
 		signal(SIGINT, ft_handle_signal);
 	}
 	else if (father == 0)
@@ -87,6 +100,9 @@ void					ft_exec(char **av, char **env)
 		av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
 		if (ret != 0)
 		{
+			DIR		*dir;
+			if ((dir = opendir(cmd->av[0])))
+				exit(42);
 			if (ret == 2)
 			{
 				ft_putstr_fd("shell: command not found: ", 2);

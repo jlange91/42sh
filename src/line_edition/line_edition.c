@@ -6,26 +6,15 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/05 13:56:36 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/11 15:12:12 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../../inc/line_edition.h"
 #include "../../inc/built_in.h"
 #include "../../inc/globbing.h"
 #include "../../inc/quote.h"
-
-int		cd_fast(char *cmd)
-{
-	DIR		*dir;
-
-	if ((dir = opendir(cmd)))
-	{
-		closedir(dir);
-		return (1);
-	}
-	return (0);
-}
 
 void			ft_cmd(t_cmd *cmd)
 {
@@ -34,11 +23,6 @@ void			ft_cmd(t_cmd *cmd)
 	if (!cmd->av[0] || !cmd->av[0][0])
 		return ;
 	tsh = ft_ret_tsh(NULL);
-	if (cd_fast(cmd->av[0]) == 1)
-	{
-		ft_cd(cmd, 1);
-		return ;
-	}
 	if (!ft_strcmp(cmd->av[0], "exit"))
 	{
 		ft_add_file_history(tsh);
@@ -62,10 +46,12 @@ void			ft_cmd(t_cmd *cmd)
 		ft_help();
 	else if(!ft_strcmp(cmd->av[0], "export"))
 		prepare_export(cmd);
+	else if (!ft_strncmp(cmd->av[0], "theme", 5))
+		ft_theme(cmd, tsh);
 	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N
 		history(cmd);
 	else if (cmd->av[0])
-		ft_exec(cmd->av, ft_var_env(NULL));
+		ft_exec(cmd, cmd->av, ft_var_env(NULL));
 	//printf("{%d}\n", ft_singleton(0,0));
 }
 
@@ -76,11 +62,6 @@ void			ft_cmd_pipe(t_cmd *cmd)
 	if (!cmd->av[0] || !cmd->av[0][0])
 		exit(0);
 	tsh = ft_ret_tsh(NULL);
-	if (cd_fast(cmd->av[0]) == 1)
-	{
-		ft_cd(cmd, 1);
-		exit(ft_singleton(0,0));
-	}
 	if (!ft_strcmp(cmd->av[0], "exit"))
 	{
 		ft_add_file_history(tsh);
@@ -160,7 +141,8 @@ void			ft_pipe(t_cmd *cmd)
 	{
 		dup2(pdes[READ_END], STDIN_FILENO);
 		close(pdes[WRITE_END]);
-		wait(NULL);
+		if (cmd->r_op != 4)
+			wait(NULL);
 		ft_multi_pipe(cmd->next, 1);
 	}
 }

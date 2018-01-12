@@ -23,63 +23,73 @@ static inline int		ft_fill_prompt_quotes(dlist *line, int ret)
 
     str = NULL;
 	if (ret == -1)
-    	str = ft_strdup("dquote > ");
+		str = "dquote > ";
 	else if (ret == -2)
-    	str = ft_strdup("quote > ");
+    	str = "quote > ";
 	else if (ret == -3)
-    	str = ft_strdup("bquote > ");
+    	str = "bquote > ";
 	else if (ret == -4)
-    	str = ft_strdup("> ");
+    	str = "> ";
     if (str)
     {
         i = -1;
         while (str[++i])
             push_backdlst(line, str[i], 0);
-        free(str);
         return (1);
     }
     return (0);
 }
 
-static inline void ft_display_prompt_quotes(t_termc *tsh, int ret)
+char 		*ft_skel_quote(char **wrd, int flag)
 {
-	int 		i;
+	static char *new;
 
-	tsh->line->lnk_before = 0;
-	ft_free_dlist(&tsh->line);
-	ft_fill_prompt_quotes(tsh->line, ret);
-	i = 0;
-	while (i < (int)tsh->console->total_line)
+	if (flag)
 	{
-		tputs(tsh->term->dostr, 1, ft_inputstr);
-		i++;
+		ft_strdel(&new);
+		return (NULL);
 	}
-	ft_display(tsh);
+	if (!wrd || !(*wrd))
+		return (new);
+	*wrd = ft_free_join(*wrd, "\n", 'L');
+	ft_join_all(*wrd, &new, 1);
+	return (new);
 }
 
-char	*ft_readline_quotes(t_termc *t, int ret)
+int ft_line_quotes(t_termc *t) 				// LEAKS ==> MUST FREE TMP
 {
-	long	c;
+	char 		*tmp;
+	static int  ret;
+	int 		i;
 
-	c = 0;
-	ft_display_prompt_quotes(t, ret);
-	while (read(0, &c, sizeof(c)))
+	if (!t->quotes)
 	{
-		if (c == '\n')
-			break ;
-		if ((ft_is_key(t->line, t, c) == 0 && ft_isprint((char)c)))
+		tmp = ft_to_str(t, 0);
+		ret = ft_check_quote(tmp);
+	}
+	if (ret != 1)
+	{
+		t->quotes = 1;
+		i = 0;
+		tmp = ft_to_str(t, 1);
+		while (i < (int)t->console->total_line)
 		{
-			(t->line->lnk_before) ? ft_insert_dlnk(t->line->end, t, c, 1) :
-			push_backdlst(t->line, c, 1);
+			tputs(t->term->dostr, 1, ft_inputstr);
+			i++;
+		}
+		tmp = ft_skel_quote(&tmp, 0);
+		ret = ft_check_quote(tmp);
+		if (ret == 0)
+		{
+			tputs(t->term->upstr, 1, ft_inputstr);
+			return (0);
 		}
 		else
-			t->line->lnk_before = 1;
-		if (t->line->last)
-			t->line->lnk_before = 0;
-		c = 0;
-		ft_display(t);
+		{
+			ft_free_dlist(&t->line);
+			ft_fill_prompt_quotes(t->line, ret);
+			return (1);
+		}
 	}
-	if (t->console->total_line < 1)
-		ft_putchar('\n');
-	return (ft_to_str(t, 1));
+	return (0);
 }

@@ -17,7 +17,6 @@
 static inline void 	ft_sigwinch(t_termc *tsh)
 {
 	(void)tsh;
-	;
 }
 
 static inline void 	ft_sigint2(t_termc *tsh)
@@ -27,8 +26,10 @@ static inline void 	ft_sigint2(t_termc *tsh)
 	if (tsh->quotes)
 	{
 		tsh->quotes = 0;
-		ft_fill_history(tsh);
+		ft_skel_quote(NULL, 1);
 	}
+	if (tsh->hdoc)
+		tsh->hdoc = 0;
 	ft_free_dlist(&tsh->line);
 	len = ft_singleton_down(-1);
 	if (len != 0)
@@ -48,6 +49,7 @@ static inline void 	ft_sigint(t_termc *tsh)
 	else
 		ft_sigint2(tsh);
 	ft_init_simple_autocompl(tsh);
+	ft_fill_history(tsh);
 	tsh->autoc->updaterow = 0;
 	tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
 	tsh->autoc->arrow = 0;
@@ -56,6 +58,17 @@ static inline void 	ft_sigint(t_termc *tsh)
 	tsh->auto_active = 0;
 	tsh->multiauto_active = 0;
 	tputs(tsh->term->vestr, 1, ft_inputstr);
+}
+
+static void				ft_suspended(t_termc *tsh)
+{
+	char		cp[2];
+
+	ft_end_term(tsh);
+	signal(SIGTSTP, SIG_DFL);
+	cp[0] = tsh->term->term.c_cc[VSUSP];
+	cp[1] = 0;
+	ioctl(0, TIOCSTI, cp);
 }
 
 void	ft_handle_signal(int signum)
@@ -67,4 +80,18 @@ void	ft_handle_signal(int signum)
 		ft_sigint(tsh);
 	if (signum == SIGWINCH)
 		ft_sigwinch(tsh);
+	if (signum == SIGCONT)
+		ft_init_terminal_mode(tsh);
+	if (signum == SIGTSTP)
+		ft_suspended(tsh);
+}
+
+void 	ft_init_signal(void)
+{
+	if (signal(SIGINT, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGINT\n", 2);
+	if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGQUIT", 2);
+	// if (signal (SIGTSTP, SIG_IGN) == SIG_ERR)
+		// ft_putstr_fd("\nCan't catch SIGSTP", 2);
 }

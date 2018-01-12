@@ -109,23 +109,78 @@ int		ft_fill_history(t_termc *tsh)
 	return (1);
 }
 
-int    ft_init_fill_history(hlist *histlist)
+t_history *ft_concat_string(t_history *begin, hlist *histlist, int i)
 {
-    char    *line;
+	char *tmp;
+
+	tmp = NULL;
+	ft_join_all(begin->data, &tmp, 0);
+	tmp = ft_free_join(tmp, "\n", 'L');
+	begin = begin->next;
+	while (begin)
+	{
+		if (ft_strchr(begin->data, '"'))
+		{
+			ft_join_all(begin->data, &tmp, 0);
+			push_backhist(histlist, tmp, ++i, 0);
+			begin = begin->next;
+			break;
+		}
+		else
+		{
+			ft_join_all(begin->data, &tmp, 0);
+			tmp = ft_free_join(tmp, "\n", 'L');
+		}
+		begin = begin->next;
+	}
+	free(tmp);
+	return (begin);
+}
+
+void 	ft_format_string(hlist *tmp, hlist *histlist)
+{
+	int 	i;
+
+	i = 0;
+	while (tmp->begin)
+	{
+		if (ft_strchr(tmp->begin->data, '"') != NULL)
+			tmp->begin = ft_concat_string(tmp->begin, histlist, i);
+		else
+		{
+			push_backhist(histlist, tmp->begin->data, ++i, 0);
+			tmp->begin = tmp->begin->next;
+		}
+	}
+}
+
+int    	ft_init_fill_history(hlist *histlist)
+{
     int     fd;
     int     i;
     int     ret;
+	char    *line;
+	hlist 	*tmp;
 
-    i = 0;
+	tmp = NULL;
+	if ((tmp = (hlist *)malloc(sizeof(hlist))) == NULL)
+		exit (1);
+	tmp->begin = NULL;
+	tmp->current = NULL;
+	tmp->end = NULL;
+	i = 0;
 	fd = open(&NAME_HIST[1], O_RDONLY);
 	if (fd < 0)
 		return (0);
 	line = NULL;
     while ((ret = get_next_line(fd, &line)) > 0)
 	{
-		push_backhist(histlist, &line[ft_useless(line)], ++i, 0);
+		push_backhist(tmp, &line[ft_useless(line)], ++i, 0);
 		free(line);
 	}
+	ft_format_string(tmp, histlist);
+	ft_free_history(tmp);
+	free(tmp);
     close(fd);
     return (1);
 }

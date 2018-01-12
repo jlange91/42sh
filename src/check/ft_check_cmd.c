@@ -1,5 +1,5 @@
-#include "../inc/sh21.h"
-#include "../inc/quote.h"
+#include "../../inc/sh21.h"
+#include "../../inc/quote.h"
 
 static int		backslash_word(char *line)
 {
@@ -33,9 +33,10 @@ static int      check_next_token(char *line)
 	i += ft_skip_useless(line);
 	ret = (line[i] == '\n' || line[i] == 0) ? 1 : ret;
 	ret = (line[i] == ';') ? 2 : ret;
-	ret = (line[i] == '&' && line[i] == '&') ? 3 : ret;
-	ret = (line[i] == '|') ? 5 : ret;
-	ret = (ret == 5 && line[i] == '|') ? 4 : ret;
+	ret = (line[i] == '|') ? 3 : ret;
+	ret = (line[i] == '&') ? 4 : ret;
+	ret = (line[i] == '&' && line[i + 1] == '&') ? 5 : ret;
+	ret = (line[i] == '|' && line[i + 1] == '|') ? 6 : ret;
 	return (ret);
 }
 
@@ -47,11 +48,13 @@ static void      print_error(int token)
 	else if (token == 2)
 		write(2, ";", 1);
 	else if (token == 3)
-		write(2, "&&", 2);
+		write(2, "|", 2);
 	else if (token == 4)
-		write(2, "||", 2);
+		write(2, "&", 1);
 	else if (token == 5)
-		write(2, "|", 1);
+		write(2, "&&", 2);
+	else if (token == 6)
+		write(2, "||", 2);
 	write(2, "'\n", 2);
 }
 

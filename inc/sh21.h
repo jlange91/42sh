@@ -134,12 +134,21 @@ typedef struct          s_senti_auto
 typedef struct          s_termc
 {
 	int					quotes;
+	int 				hdoc;
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
 	int					len_prompt;
 	int 				repl;
 	int 				sigint;
+	int         		hour;
+	int         		path;
+	int         		prompt;
+	int         		host;
+	int					linep;
 	char                *line_shell;
+	char 				*save_line;
+	char				**color;
+	char 				*replace;
     t_auto              *autoc;
     dlist         		*line;
 	dlist				*line_dup;
@@ -221,7 +230,7 @@ int 		ft_word_here(t_lineterm *begin, char *word);
 /*			TOOL_REPLACE2 		 */
 /*********************************/
 void 		ft_join_all(char *word, char **line_tmp, int ret);
-void 		ft_add_space(char **line, char *s_line, char *word);
+void 		ft_add_space(char **line, char **s_line, char *word);
 /*********************************/
 /*			REPLACE_GLOB 		 */
 /*********************************/
@@ -233,8 +242,18 @@ void 		ft_replace_globbling_and_expansion(t_termc *tsh, t_lineterm *end);
 /*            exec              */
 /********************************/
 
-void		ft_exec(char **av, char **env);
+void		ft_exec(t_cmd *cmd, char **av, char **env);
 void		ft_exec_pipe(char **av, char **env);
+
+/********************************/
+/*          singleton           */
+/********************************/
+
+char	    **ft_var_env(char **arg);
+char	    **ft_var_var(char **arg);
+char	    *ft_var_pwd(char *arg);
+int		    ft_singleton(int nb, int opt);
+t_shell		*ft_ret_sh(t_shell *arg);
 
 /********************************/
 /*            other             */
@@ -263,14 +282,19 @@ void		export_flag_b(t_cmd *cmd, int i);
 int			only_p(t_cmd *cmd);
 int			check_pattern(char *str);
 void		ft_display_export(char	**var);
-
 int		    ft_skip_useless(char *line);
 void		ft_cmd(t_cmd *cmd);
-int		    ft_singleton(int nb, int opt);
 int			ft_skip_quote(char *str);
 int			ft_skip_dquote(char *str);
 t_shell    	*ft_ret_sh(t_shell *arg);
 char		**ft_var_var(char **arg);
+void		ft_theme(t_cmd *cmd, t_termc *tsh);
+void		ft_theme_hour(char *str, t_termc *tsh);
+void		ft_theme_host(char *str, t_termc *tsh);
+void		ft_theme_prompt(char *str, t_termc *tsh);
+void		ft_theme_path(char *str, t_termc *tsh);
+void		ft_theme_global(char *str, t_termc *tsh);
+void		change_all_color(t_termc *tsh, int color);
 
 /********************************/
 /*         redirection          */
@@ -291,9 +315,8 @@ void		ft_redirr_type2(t_redir *red);
 
 
 
-
-char	**ft_var_env(char **arg);
-char	*ft_var_pwd(char *arg);
+int	ft_check_cmd(t_shell *sh);
+int	ft_check_redir(t_shell *sh);
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j);
 

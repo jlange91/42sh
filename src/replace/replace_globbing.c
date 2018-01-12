@@ -118,6 +118,10 @@ void 		ft_replace_globbling_and_expansion(t_termc *tsh, t_lineterm *end)
 
 	tmp.begin = NULL;
 	tmp.end = NULL;
+	if (!end->next)
+		tsh->line->last = 1;
+	else
+		tsh->line->last = 0;
 	if ((word = ft_get_word(tsh, end)) == NULL)
 		return ;
 	ft_dupdlnk(tsh->line, &tmp);

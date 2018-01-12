@@ -25,7 +25,8 @@ int			ft_return(char c);
 
 /******************************************************************************/
 /*READ_QUOTE*/
-char	*ft_readline_quotes(t_termc *sh, int ret);
-t_lineterm *ft_dont_get_prompt(t_lineterm *tmp);
+int 		ft_line_quotes(t_termc *sh);
+char 		*ft_skel_quote(char **wrd, int flag);
+t_lineterm 	*ft_dont_get_prompt(t_lineterm *tmp);
 
 #endif

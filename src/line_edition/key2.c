@@ -82,7 +82,7 @@ static int  ft_exec_key(t_termc *tsh, long c, t_lineterm *end)
     while (++i < 15)
         if (keycode[i] == c)
         {
-			if (tsh->quotes && i > 1)
+			if ((tsh->quotes || tsh->hdoc) && i > 1)
 				return (1);
 			else if (tsh->autoc->can_print < 2 && i == 13)
                 return (1);

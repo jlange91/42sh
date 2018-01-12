@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:10:40 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/04 15:52:36 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/08 14:52:14 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ int		find_flagp_not1(t_cmd *cmd, int indicator, int i)
 	i = 0;
 	while (cmd->av[++i])
 	{
-		if (i != 1 && !ft_strcmp(cmd->av[i], "-p") && ft_strcmp(cmd->av[1], "-p"))
+		if (i != 1 && !ft_strcmp(cmd->av[i], "-p") && \
+				ft_strcmp(cmd->av[1], "-p"))
 			indicator = 1;
 	}
 	if (indicator == 1)
@@ -96,7 +97,7 @@ void	export_process(t_cmd *cmd)
 void	prepare_export(t_cmd *cmd)
 {
 	char	**tmp;
-	
+
 	tmp = ft_var_var(NULL);
 	cmd->var = load_env(ft_var_var(NULL));
 	if (find_flagp_not1(cmd, 0, 0) == 1)

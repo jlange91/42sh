@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:20 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/16 19:33:43 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/04 16:54:06 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,16 @@ t_termc						*init_termc(char **env)
     if ((tsh->term = init_term(env)) == NULL)
 		ft_putendl_fd("Error init_term", 2);
 	ft_init_termc2(&tsh);
-    ft_init_fill_history(tsh->histlist);
-    tsh->auto_active = 0;
+    ft_init_termc3(tsh);
+	ft_init_fill_history(tsh->histlist);
+	tsh->replace = NULL;
+	tsh->save_line = NULL;
+	tsh->auto_active = 0;
     tsh->multiauto_active = 0;
     tsh->keyflag->k_tab = 0;
     tsh->len_prompt = 0;
 	tsh->quotes = 0;
+	tsh->hdoc = 0;
 	tsh->repl = 0;
 	tsh->sigint = 0;
 	return (tsh);

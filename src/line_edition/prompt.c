@@ -32,7 +32,6 @@ static	void	ft_print_hour(void)
 
 static	int	ft_print_current_work()
 {
-    ft_putstr(GREEN_FRONT);
 	ft_putendl(ft_var_pwd(NULL));
 	ft_putstr(RESET);
 	return (ft_strlen(ft_var_pwd(NULL)));
@@ -47,16 +46,15 @@ void			ft_display_prompt(t_termc *tsh)
 	gethostname(host, sizeof(host));
 	len += ft_strlen(host);
 	ft_putendl("");
-	ft_putstr(YELLOW);
+	ft_putstr(tsh->color[tsh->hour]);
 	if (ft_singleton(0,0))
 		ft_putstr("😡");
 	else
 		ft_putstr("😃");
 	ft_print_hour();
-	ft_putstr(RESET);
-	ft_putstr(PINK);
+	ft_putstr(tsh->color[tsh->host]);
 	ft_putstr(host);
-	ft_putstr(RESET);
+	ft_putstr(tsh->color[tsh->path]);
 	ft_putchar(' ');
 	len += ft_print_current_work();
 	tsh->len_prompt = len + 3;

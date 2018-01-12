@@ -12,11 +12,6 @@
 
 /*  KEYCODE*/
 
-# define UP_AUTO    'A'
-# define DOWN_AUTO  'B'
-# define LEFT_AUTO  'D'
-# define RIGTH_AUTO 'C'
-
 # define	UP			4283163
 # define	LEFT		4479771
 # define	RIGHT		4414235
@@ -30,7 +25,6 @@
 # define  	END			4610843
 # define  	OPT_F		1146821403
 # define  	OPT_B		1130044187
-# define  	CW			23
 # define  	CL			12
 # define  	OPT_C		42947
 # define  	OPT_X		8948194
@@ -39,24 +33,24 @@
 # define    TAB         9
 # define  	MAJ_RIGHT	73883020516123
 # define  	MAJ_LEFT	74982532143899
-
+# define 	EOT 		4
 /*COLORS PROMPT*/
 
 # define RED		"\x1B[31m"
 # define RESET		"\033[0m"
-# define BLUE		"\x1B[34m"
+# define BLUE   "\x1B[36m"
 # define YELLOW		"\033[33m"
 # define PINK		"\x1B[38;5;9m"
 # define ORANGE_FRONT "\033[38;5;20m"
 # define PURPLE_BACK "\033[48;5;9m"
 # define GREEN_FRONT "\033[38;5;33m"
+# define GREEN "\x1B[32m"
 
 /*HISTORY*/
 
 # define NAME_HIST    "/.21sh_history"
 
 typedef void(*t_k) (t_lineterm *end, t_termc *shell);
-
 /**************************************/
 /*DEBUG*/
 /*#define free(aa) {printf("[%s][ligne %d] Liberation bloc %s a %p\n",__FILE__,__LINE__,#aa,aa);free(aa);}*/
@@ -68,6 +62,9 @@ t_termc             *init_termc(char **env);
 /******************************************************************************/
 /*INIT2*/
 void                ft_init_termc2(t_termc **tsh);
+
+/*INIT3*/
+void				ft_init_termc3(t_termc *tsh);
 
 /**************************************************************************************/
 /*TERM*/
@@ -173,9 +170,14 @@ t_lineterm			*ft_dontGetPrompt2(t_lineterm *tmp);
 /**************************************************************************************/
 /*SIGNAL*/
 void				ft_handle_signal(int signum);
+void 				ft_init_signal(void);
 
 /**************************************************************************************/
 /*FT_LINE_EDITION*/
 int                 ft_line_edition(t_cmd *cmd);
+
+/*HEREDOCS*/
+char 				*ft_line_hdoc(char *end);
+char				*ft_readline_simple(char *prompt);
 
 #endif

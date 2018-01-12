@@ -13,17 +13,34 @@
 static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
 {
 	int 	up;
+	int i;
+	t_lineterm *tmp;
 
 	up = 0;
     if (!end)
         return (-1);
     while (end->s_pos == 0 && end->index != 0)
     {
-        if (tsh->console->char_pos == 0 && end->prev)
+        if ((tsh->console->char_pos == 0  || end->c == '\n') && end->prev)
         {
             tputs(tsh->term->upstr, 1, ft_inputstr);
             tsh->console->char_pos = get_columns() - 1;
-			tputs(tparm(tsh->term->ristr, get_columns() -1), 1, ft_inputstr);
+			if (end->c == '\n')
+			{
+				i = 0;
+				tmp = end;
+				while(tmp && (tmp = tmp->prev) && tmp->c != '\n')
+					i++;
+				if (i > (int)tsh->console->char_pos)
+				{
+					tputs(tparm(tsh->term->ristr, i - tsh->console->char_pos + 2), 1, ft_inputstr);
+					tsh->console->char_pos = i - tsh->console->char_pos + 2;
+				}
+				else
+					tputs(tparm(tsh->term->ristr, i + 1), 1, ft_inputstr);
+			}
+			else
+				tputs(tparm(tsh->term->ristr, get_columns() - 1), 1, ft_inputstr);
 			up++;
         }
         tputs(tsh->term->lestr, 1, ft_inputstr);
@@ -73,18 +90,22 @@ static void		ft_display_char_split(t_lineterm *begin, t_termc *tsh)
 
     col = get_columns() - 1;
     if (begin->index == 0 && !tsh->quotes)
-        ft_putstr(BLUE);
+        ft_putstr(tsh->color[tsh->prompt]);
     else
         ft_putstr(RESET);
-    if (tsh->console->char_pos == col)
+    if (tsh->console->char_pos == col ||begin->c == '\n')
     {
+		if (begin->c == '\n')
+			tputs(tsh->term->cestr, 1, ft_inputstr);
         tputs(tsh->term->dostr, 1, ft_inputstr);
         tsh->console->total_line++;
         tsh->console->char_pos = 0;
     }
     if (begin->under)
-        ft_putstr(RED);
-    if (begin->c != '\t')
+        ft_putstr(tsh->color[tsh->linep]);
+	if (begin->c != '\t' && begin->index != 0)
+        ;
+    if (begin->c != '\t' && begin->c != '\n')
         ft_putchar(begin->c);
     tsh->console->char_pos++;
     ft_putstr(RESET);

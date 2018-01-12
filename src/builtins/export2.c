@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:13:58 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/04 15:49:41 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/08 14:52:51 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,11 @@ void	export_no_eq(t_cmd *cmd, int i)
 			ft_getenv(cmd->av[i], ft_var_env(NULL)) == NULL)
 	{
 		if (ft_strchr(ft_getenv(cmd->av[i], cmd->var), '\''))
-			ft_var_env(rapid_set(ft_strjoin(cmd->av[i], "="), ft_var_env(NULL), 1));
+			ft_var_env(rapid_set(ft_strjoin(cmd->av[i], "="), \
+						ft_var_env(NULL), 1));
 		else
-			ft_var_env(rapid_set(ft_getenv(cmd->av[i], cmd->var), ft_var_env(NULL), 0));
+			ft_var_env(rapid_set(ft_getenv(cmd->av[i], cmd->var), \
+						ft_var_env(NULL), 0));
 	}
 }
 

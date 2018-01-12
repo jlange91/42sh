@@ -21,7 +21,11 @@ int				ft_skip_dquote(char *str)
 	if (str[0] == '"')
 	{
 		while (str[i] != '"')
+		{
+			if (str[i] == '\\')
+				i++;
 			i++;
+		}
 		return (i);
 	}
 	else

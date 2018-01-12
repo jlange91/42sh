@@ -11,56 +11,11 @@ void			free_shell(t_termc *tsh)
 	ft_free_all(tsh);
 }
 
-int		ft_singleton(int nb, int opt)
-{
-	static int ret = 0;
-
-	if (opt == 1)
-		ret = nb;
-	return (ret);
-}
-
-t_shell		*ft_ret_sh(t_shell *arg)
-{
-	static t_shell *sh = NULL;
-
-	if (arg)
-		sh = arg;
-	return (sh);
-}
-
 static void  ft_free_free(t_termc *tsh)
 {
 	free(tsh->line_shell);
 	ft_free_dlist(&tsh->line);
 	ft_free_history(tsh->histmp);
-}
-
-char	**ft_var_env(char **arg)
-{
-	static char **env = NULL;
-
-	if (arg)
-		env = arg;
-	return (env);
-}
-
-char	**ft_var_var(char **arg)
-{
-	static	char **var = NULL;
-
-	if (arg)
-		var = arg;
-	return (var);
-}
-
-char	*ft_var_pwd(char *arg)
-{
-	static char *pwd = NULL;
-
-	if (arg)
-		pwd = arg;
-	return (pwd);
 }
 
 void	ft_exec_all_cmd(t_cmd *cmd)
@@ -114,6 +69,7 @@ int     main(int ac, char **av, char **env)
 	tsh = init_termc(ft_var_env(NULL));
 	ft_ret_sh(&sh);
 	ft_ret_tsh(&tsh);
+	// ft_init_signal(); 			//NEW GESTIONNAIRE SIGNAL
 	while (42)
 	{
 		signal(SIGINT, ft_handle_signal);
@@ -122,13 +78,20 @@ int     main(int ac, char **av, char **env)
 		sh.line = ft_strdup(tsh->line_shell);
 		ft_free_free(tsh);
 		ft_result_replace(&sh);
-		if (!sh.line)
+		if (sh.line == NULL || tsh->repl)
 			continue ;
+		if (ft_check_cmd(&sh) || ft_check_redir(&sh))
+		{
+			free(sh.line);
+			continue ;
+		}
+		if (tsh->save_line && ft_strlen(tsh->save_line) > 1)
+			ft_add_tmp_history(tsh, tsh->save_line);
+		ft_strdel(&tsh->save_line);
 		cmd = ft_fill_cmd(sh.line, 0, 0);
 		free(sh.line);
 		ft_exec_all_cmd(cmd);
 		ft_free_cmd(cmd);
-		ft_end_term(tsh);
 	}
 	free_shell(tsh);
     return (0);

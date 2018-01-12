@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_help.c                                          :+:      :+:    :+:   */
+/*   hash.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vmartins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/19 12:15:15 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/03 13:01:16 by adebrito         ###   ########.fr       */
+/*   Created: 2017/12/19 12:02:59 by vmartins          #+#    #+#             */
+/*   Updated: 2017/12/19 12:03:07 by vmartins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/sh21.h"
+#ifndef HASH_H
+# define HASH_H
+# include "../libft/libft.h"
 
-void	ft_help(void)
+typedef struct  s_hash
 {
-	char	**arg;
-	pid_t	father;
+    char            *cmd;
+    char            *path;
+    struct s_hash   *next;
+}               t_hash;
 
-	signal(SIGINT, SIG_IGN);
-	arg = NULL;
-	father = fork();
-	if (father == 0)
-		execve("/tmp/./builtin_help", arg, ft_var_env(NULL));
-	else
-		wait(0);
-}
+int     hash_table(char *cmd, t_hash *hash);
+
+#endif

@@ -13,6 +13,7 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 #include "../../inc/globbing.h"
+#include "../../inc/quote.h"
 
 t_termc		*ft_ret_tsh(t_termc **arg)
 {
@@ -23,10 +24,39 @@ t_termc		*ft_ret_tsh(t_termc **arg)
 	return (tsh);
 }
 
-static int    ft_key_and_char(t_termc *tsh, long c)
+static void 	ft_ctr_d(t_termc *tsh)
+{
+	t_lineterm *end;
+
+	if (tsh->auto_active || tsh->multiauto_active)
+		return ;
+	if (ft_count_dlnk(tsh, 0) >= 1)
+	{
+		end = find_cursor(tsh->line->end, 0);
+		if (end && end->next)
+		{
+			end->next->under = 1;
+			ft_cut_line(end, tsh);
+		}
+	}
+	else
+	{
+		ft_putchar('\n');
+		ft_end_term(tsh);
+		exit(1);
+	}
+}
+
+static int    	ft_key_and_char(t_termc *tsh, long c)
 {
 	if ((char)c == '\n' && !tsh->keyflag->k_tab)
-		return (ft_reset_line(tsh));
+	{
+		if (!ft_line_quotes(tsh))
+			return (ft_reset_line(tsh));
+		return (1);
+	}
+	if ((char)c == EOT)
+		ft_ctr_d(tsh);
 	if (c == CL && !tsh->auto_active && !tsh->multiauto_active) 			// BOUCLE INFINI CHECK WHY !!!!!
 		return (ft_save_line(tsh));
 	if ((ft_is_key(tsh->line, tsh, c) == 0 && ft_isprint((char)c)))
@@ -51,14 +81,25 @@ static int    ft_key_and_char(t_termc *tsh, long c)
 
 static void	ft_init_readline(t_termc *tsh)
 {
-	t_lineterm *tmp;
+	t_lineterm 	*tmp;
+	int 		i;
 
 	tsh->line->lnk_before = 0;
 	tsh->autoc->jump = 0;
-	tsh->quotes = 0;
 	tsh->autoc->updaterow = 0;
 	ft_init_console(tsh, tsh->line);
 	ft_init_simple_autocompl(tsh);
+	if (tsh->repl)
+	{
+		i = 0;
+		while (tsh->replace[i])
+		{
+			push_backdlst(tsh->line, tsh->replace[i], 1);
+			i++;
+		}
+		tsh->repl = 0;
+		ft_strdel(&tsh->replace);
+	}
 	ft_display_char(tsh->line->begin, tsh);
 	if (tsh->keyflag->cl)
 	{
@@ -84,22 +125,72 @@ static void	ft_init_readline(t_termc *tsh)
  *
  * 	NO NORME
  * 	***************************************************************************/
+
+static void 	ft_split_arrow(long *c, int *stp, char k)
+{
+	*c = (k == 68 && *stp == 1) ? LEFT : *c;
+	*c = (k == 67 && *stp == 1) ? RIGHT : *c;
+	*c = (k == 65 && *stp == 1) ? UP : *c;
+	*c = (k == 66 && *stp == 1) ? DOWN : *c;
+	*c = (k == -102 && *stp == 3) ? OPT_V : *c;
+	*c = (k == -89 && *stp == 1) ? OPT_C : *c;
+	*c = (k == -120 && *stp == 3) ? OPT_X : *c;
+	*c = (k == 72 && *stp == 1) ? HOME : *c;
+	*c = (k == 70 && *stp == 1) ? END : *c;
+	*c = (k == 68 && *stp == 2) ? OPT_F : *c;
+	*c = (k == 67 && *stp == 2) ? OPT_B : *c;
+	*c = (k == 65 && *stp == 2) ? OPT_UP : *c;
+	*c = (k == 66 && *stp == 2) ? OPT_DOWN : *c;
+	*c = (k == 68 && *stp == 4) ? MAJ_LEFT : *c;
+	*c = (k == 67 && *stp == 4) ? MAJ_RIGHT : *c;
+	*stp = 0;
+
+}
+
+int 	ft_what_arrow(long *c, int *stp, char k)
+{
+	if (k == 27 || k == -30 || k == -61)
+	{
+		return ((*stp = *stp + 1));
+		return (1);
+	}
+	if (k == 91 || (k == -119 && *stp != 3) || (k == -120 && *stp != 3))
+	{
+		if (k == -120 || k == -119)
+			*stp = 3;
+		return (*stp);
+	}
+	if (*stp && (k == 49 || k == 59 || k == 50))
+	{
+		return ((*stp = 4));
+		return (1);
+	}
+	if (*stp && (k == 68 || k == 67 || k == 65 || k == 66 || k == -102\
+		|| k == 72 || k == 70 || k == -120 || k == -89))
+		ft_split_arrow(c, stp, k);
+	else
+		*c = k;
+	return (0);
+}
+
 char    *ft_readline(t_termc *tsh)
 {
+	char 	k;
 	long 	c;
+	static int stop;
 
 	if (isatty(0))
 	{
-		c = 0;
 		ft_init_readline(tsh);
 		ft_clean_all_letter(-1, -1);
 		ft_singleton_down(0);
-		while (read(0, &c, sizeof(c)))
+		while (read(0, &k, sizeof(k)))
 		{
+			if (ft_what_arrow(&c, &stop, k))
+				continue ;
 			if (!ft_key_and_char(tsh, c))
 				break;
 			ft_display(tsh);
-			c = 0;
 			tsh->keyflag->backspace = 0;
 			tsh->keyflag->underline = 0;
 			tsh->keyflag->mleft = 0;

@@ -79,12 +79,12 @@ void					ft_cd(t_cmd *cmd, int fast)
 	int		i;
 
 	opt = 0;
-	i = init_flags(cmd->av, &opt, 0);
 	if (fast == 1)
 	{
 		ft_cd_l(cmd->av[0]);
 		return ;
 	}
+	i = init_flags(cmd->av, &opt, 0);
 	if (!cmd->av[i])
 		go_home(opt);
 	else if (!ft_strcmp(cmd->av[i], "-"))
