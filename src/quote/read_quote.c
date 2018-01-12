@@ -5,39 +5,39 @@ t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
 {
 	while (tmp)
 	{
-        if (tmp->c == '>')
-        {
-            tmp = tmp->next;
-            break;
-        }
+		if (tmp->c == '>')
+		{
+			tmp = tmp->next;
+			break;
+		}
 		tmp = tmp->next;
-    }
-    tmp = tmp->next;
+	}
+	tmp = tmp->next;
 	return (tmp);
 }
 
 static inline int		ft_fill_prompt_quotes(dlist *line, int ret)
 {
-    char	*str;
-    int		i;
+	char	*str;
+	int		i;
 
-    str = NULL;
+	str = NULL;
 	if (ret == -1)
 		str = "dquote > ";
 	else if (ret == -2)
-    	str = "quote > ";
+		str = "quote > ";
 	else if (ret == -3)
-    	str = "bquote > ";
+		str = "bquote > ";
 	else if (ret == -4)
-    	str = "> ";
-    if (str)
-    {
-        i = -1;
-        while (str[++i])
-            push_backdlst(line, str[i], 0);
-        return (1);
-    }
-    return (0);
+		str = "> ";
+	if (str)
+	{
+		i = -1;
+		while (str[++i])
+			push_backdlst(line, str[i], 0);
+		return (1);
+	}
+	return (0);
 }
 
 char 		*ft_skel_quote(char **wrd, int flag)

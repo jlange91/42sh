@@ -2,21 +2,21 @@
 
 static inline char    *ft_find_glob(char *pattern, char *file)
 {
-    char	*tmp_pattern;
+	char	*tmp_pattern;
 
-    if (pattern[ft_strlen(pattern) - 1] == '/')
-    {
-        tmp_pattern = ft_strtrim2(pattern, '/', '/');
-        if (ft_match(tmp_pattern, file))
-        {
-            free(tmp_pattern);
-            return (file);
-        }
+	if (pattern[ft_strlen(pattern) - 1] == '/')
+	{
+		tmp_pattern = ft_strtrim2(pattern, '/', '/');
+		if (ft_match(tmp_pattern, file))
+		{
+			free(tmp_pattern);
+			return (file);
+		}
 		free(tmp_pattern);
-    }
-    if (ft_match(pattern, file))
-        return (file);
-    return (NULL);
+	}
+	if (ft_match(pattern, file))
+		return (file);
+	return (NULL);
 }
 
 static inline char    **ft_fill_tab2(char *pat, int star, DIR *path)
@@ -35,9 +35,9 @@ static inline char    **ft_fill_tab2(char *pat, int star, DIR *path)
 	{
 		ft_memset(&info, 0, sizeof(info));
 		stat(file->d_name, &info);
-        if (file->d_name[0] != '.' && (ft_find_glob(pat, file->d_name) || star)
-            && (pat[ft_strlen(pat) - 1] != '/' || S_ISDIR(info.st_mode)))
-            tmp_tab[++i] = ft_strdup(file->d_name);
+		if (file->d_name[0] != '.' && (ft_find_glob(pat, file->d_name) || star)
+				&& (pat[ft_strlen(pat) - 1] != '/' || S_ISDIR(info.st_mode)))
+			tmp_tab[++i] = ft_strdup(file->d_name);
 	}
 	tmp_tab[++i] = NULL;
 	return (tmp_tab);
@@ -53,7 +53,7 @@ static inline char	**ft_fill_tab1(char *pwd, char *pat, int star, DIR *path)
 
 	i = -1;
 	if ((tmp_tab = (char **)malloc(sizeof(char *)
-            * (ft_count_opendir(pwd) + 1))) == NULL)
+					* (ft_count_opendir(pwd) + 1))) == NULL)
 		return (NULL);
 	while ((file = readdir(path)) != NULL)
 	{
@@ -61,8 +61,8 @@ static inline char	**ft_fill_tab1(char *pwd, char *pat, int star, DIR *path)
 		stat((tmp = ft_strjoin(pwd, file->d_name)), &info);
 		free(tmp);
 		if (file->d_name[0] != '.' && (ft_find_glob(pat, file->d_name) || star)
-            && (pat[ft_strlen(pat) - 1] != '/' || S_ISDIR(info.st_mode)))
-            tmp_tab[++i] = ft_free_join(pwd, ft_add_b_slash(file->d_name), 'R');
+				&& (pat[ft_strlen(pat) - 1] != '/' || S_ISDIR(info.st_mode)))
+			tmp_tab[++i] = ft_free_join(pwd, ft_add_b_slash(file->d_name), 'R');
 	}
 	tmp_tab[++i] = NULL;
 	return (tmp_tab);

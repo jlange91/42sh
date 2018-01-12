@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/28 18:11:34 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:43 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,17 @@ void					ft_exec_pipe(char **av, char **env)
 {
 	int		ret;
 
-    ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
-    av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
-    if (ret != 0)
-    {
-        if (ret == 2)
-        {
-            ft_putstr_fd("shell: command not found: ", 2);
-            ft_putendl_fd(av[0], 2);
-        }
-        else
-            ft_perror("shell", errno, av[0]);
-        exit(1);
-    }
+	ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
+					av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
+	if (ret != 0)
+	{
+		if (ret == 2)
+		{
+			ft_putstr_fd("shell: command not found: ", 2);
+			ft_putendl_fd(av[0], 2);
+		}
+		else
+			ft_perror("shell", errno, av[0]);
+		exit(1);
+	}
 }

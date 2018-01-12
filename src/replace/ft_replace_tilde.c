@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:22:40 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 18:11:21 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:57 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static char		*get_value(void)
 {
-    char *value;
+	char *value;
 
 	value = ft_getenv("HOME", ft_var_env(NULL));
 	if (value)
@@ -34,9 +34,9 @@ void			ft_replace_tilde(t_shell *sh, int i)
 
 	str1 = ft_strndup(sh->line, i);
 	value = get_value();
-    str2 = ft_strdup(&sh->line[i + 1]);
+	str2 = ft_strdup(&sh->line[i + 1]);
 	free(sh->line);
-    sh->line = ft_replace_line(str1, value, str2);
+	sh->line = ft_replace_line(str1, value, str2);
 	free(str1);
-    free(str2);
+	free(str2);
 }

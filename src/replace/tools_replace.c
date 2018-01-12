@@ -25,22 +25,22 @@ void    push_dupdlst(dlist *line, int c, int pos, int index)
 
 void    ft_freedlnk(dlist *line)
 {
-    t_lineterm  *del;
-    t_lineterm  *elem;
+	t_lineterm  *del;
+	t_lineterm  *elem;
 
-    elem = line->end;
-    if (elem != NULL)
-    {
-        while (elem)
-        {
-            del = elem;
-            elem = elem->prev;
-            free(del);
-        }
-        line->begin = NULL;
-        line->end = NULL;
-        return ;
-    }
+	elem = line->end;
+	if (elem != NULL)
+	{
+		while (elem)
+		{
+			del = elem;
+			elem = elem->prev;
+			free(del);
+		}
+		line->begin = NULL;
+		line->end = NULL;
+		return ;
+	}
 }
 
 void ft_dupdlnk(dlist *line, dlist *tmp)

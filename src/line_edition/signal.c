@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/13 13:16:48 by stvalett          #+#    #+#             */
-/*   Updated: 2017/12/19 13:47:51 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:47 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,27 @@
 
 static inline void 	ft_sigwinch(t_termc *tsh)
 {
-	(void)tsh;
+	char *save;
+
+	if (tsh->quotes || tsh->hdoc)
+		return ;
+	if (tsh->auto_active || tsh->multiauto_active)
+	{
+		tputs(tsh->term->clrstr, 1 , ft_inputstr);
+		ft_display_prompt(tsh);
+		tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
+		ft_display(tsh);
+	}
+	else
+	{
+		tputs(tsh->term->clrstr, 1 , ft_inputstr);
+		save = ft_to_str(tsh, 0);
+		ft_free_dlist(&tsh->line);
+		ft_init_console(tsh, tsh->line);
+		ft_cpy_to_line(save, tsh);
+		free(save);
+		ft_display(tsh);
+	}
 }
 
 static inline void 	ft_sigint2(t_termc *tsh)
@@ -81,7 +101,10 @@ void	ft_handle_signal(int signum)
 	if (signum == SIGWINCH)
 		ft_sigwinch(tsh);
 	if (signum == SIGCONT)
+	{
+		ft_display_prompt(tsh);
 		ft_init_terminal_mode(tsh);
+	}
 	if (signum == SIGTSTP)
 		ft_suspended(tsh);
 }
@@ -90,8 +113,12 @@ void 	ft_init_signal(void)
 {
 	if (signal(SIGINT, ft_handle_signal) == SIG_ERR)
 		ft_putstr_fd("\nCan't catch SIGINT\n", 2);
+	if (signal(SIGWINCH, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGWINCH", 2);
 	if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
 		ft_putstr_fd("\nCan't catch SIGQUIT", 2);
-	// if (signal (SIGTSTP, SIG_IGN) == SIG_ERR)
-		// ft_putstr_fd("\nCan't catch SIGSTP", 2);
+	// if (signal(SIGTSTP, ft_handle_signal) == SIG_ERR)
+	// ft_putstr_fd("\nCan't catch SIGTSTP", 2);
+	if (signal (SIGCONT, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGCONT", 2);
 }

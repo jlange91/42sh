@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/11 15:12:12 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:46 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,7 @@ void			ft_pipe(t_cmd *cmd)
 int	ft_line_edition(t_cmd *cmd)
 {
 	pid_t		child = -1;
+	int			status;
 
 	ft_singleton(0, 1);
 	if (cmd->r_op == 4)
@@ -163,8 +164,10 @@ int	ft_line_edition(t_cmd *cmd)
 		}
 		else if (child == 0)
 			ft_pipe(cmd);
-		wait(NULL);
-		return (ft_singleton(0,0));
+		wait(&status);
+		if (status)
+			ft_singleton(status, 1);
+		return (ft_singleton(0, 0));
 	}
 	ft_redirection(cmd);
 	ft_cmd(cmd);

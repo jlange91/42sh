@@ -54,19 +54,19 @@ void	ft_save_word(t_glob *glob, char **str, int len)
 
 void	ft_freeall_glob(char *pwd, char **res, char **s_tab, t_glob *glob)
 {
-    int i;
+	int i;
 
-    if (glob != NULL)
-    {
-        i = 0;
-        while (i < glob->len)
-        {
+	if (glob != NULL)
+	{
+		i = 0;
+		while (i < glob->len)
+		{
 			if (glob[i].path)
-            	free(glob[i].path);
-            i++;
-        }
-        free(glob);
-    }
+				free(glob[i].path);
+			i++;
+		}
+		free(glob);
+	}
 	if (pwd != NULL)
 		free(pwd);
 	if (res != NULL)
@@ -109,7 +109,7 @@ char	**ft_add_slash(char *path, char c)
 	char	**slash_tmp;
 
 	len = (path[0] == '/') ? ft_count_word(path, '/') + 1 :
-        ft_count_word(path, '/');
+		ft_count_word(path, '/');
 	if ((s_tab = (char **)malloc(sizeof(char *) * (len + 1))) == NULL)
 		return (NULL);
 	slash_tmp = ft_strsplit(path, '/');
@@ -119,9 +119,9 @@ char	**ft_add_slash(char *path, char c)
 		s_tab[++j] = ft_strdup("/");
 	while (slash_tmp[++i])
 	{
-        s_tab[++j] = ((c != '/' && i == len - 1) ||
-            (path[0] == '/' && i == len - 2 && c != '/')) ?
-            ft_strdup(slash_tmp[i]) : ft_strjoin(slash_tmp[i], "/");
+		s_tab[++j] = ((c != '/' && i == len - 1) ||
+				(path[0] == '/' && i == len - 2 && c != '/')) ?
+			ft_strdup(slash_tmp[i]) : ft_strjoin(slash_tmp[i], "/");
 	}
 	s_tab[++j] = NULL;
 	ft_free_tab(slash_tmp);

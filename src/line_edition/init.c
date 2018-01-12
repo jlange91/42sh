@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:20 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/04 16:54:06 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:45 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,15 @@ static 	inline 	char 		*ft_find_terminfo(void)
 static	inline	t_term		*init_term(char **env)
 {
 	t_term	*term;
-    char    *str;
+	char    *str;
 	int		ret;
 
 	term = NULL;
-    str = NULL;
+	str = NULL;
 	ret = 0;
 	if ((term = (t_term *)malloc(sizeof(t_term))) == NULL)
 		return (NULL);
-    str = ft_getenv("TERM", env);
+	str = ft_getenv("TERM", env);
 	if (str == NULL || !str[5] || ft_strcmp(&str[5], "xterm-256color") != 0)
 	{
 		str = ft_find_terminfo();
@@ -93,17 +93,17 @@ t_termc						*init_termc(char **env)
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
 	}
-    if ((tsh->term = init_term(env)) == NULL)
+	if ((tsh->term = init_term(env)) == NULL)
 		ft_putendl_fd("Error init_term", 2);
 	ft_init_termc2(&tsh);
-    ft_init_termc3(tsh);
+	ft_init_termc3(tsh);
 	ft_init_fill_history(tsh->histlist);
 	tsh->replace = NULL;
 	tsh->save_line = NULL;
 	tsh->auto_active = 0;
-    tsh->multiauto_active = 0;
-    tsh->keyflag->k_tab = 0;
-    tsh->len_prompt = 0;
+	tsh->multiauto_active = 0;
+	tsh->keyflag->k_tab = 0;
+	tsh->len_prompt = 0;
 	tsh->quotes = 0;
 	tsh->hdoc = 0;
 	tsh->repl = 0;

@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:16 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:04:26 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 15:52:20 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static inline void	replace_pwd(void)
 	ft_var_env(ft_replace_env(ft_setenv("PWD", ft_var_pwd(NULL), tenv), tenv));
 }
 
-void				ft_cd_l(char *path)
+int				ft_cd_l(char *path, int opt)
 {
 	char *curpath;
 
@@ -41,26 +41,37 @@ void				ft_cd_l(char *path)
 	if (chdir(curpath) == -1)
 	{
 		free(curpath);
-		ft_chdir_error(path);
-		ft_singleton(1, 1);
-		return ;
+		if (opt == 1)
+		{
+			ft_chdir_error(path);
+			ft_singleton(1, 1);
+		}
+		return (1);
 	}
-
+	if (opt == 0)
+		ft_putendl(curpath);
 	ft_var_pwd(ft_replace_str(curpath, ft_var_pwd(NULL)));
 	replace_pwd();
+	return (0);
 }
 
-void				ft_cd_p(char *path)
+int				ft_cd_p(char *path, int opt)
 {
 	char curpath[PATH_MAX];
 
 	if (chdir(path) == -1)
 	{
-		ft_chdir_error(path);
-		ft_singleton(1, 1);
-		return ;
+		if (opt == 1)
+		{
+			ft_chdir_error(path);
+			ft_singleton(1, 1);
+		}
+		return (1);
 	}
+	if (opt == 0)
+		ft_putendl(path);
 	getcwd(curpath, PATH_MAX);
 	ft_var_pwd(ft_replace_str(ft_strdup(curpath), ft_var_pwd(NULL)));
 	replace_pwd();
+	return (0);
 }

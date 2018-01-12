@@ -17,14 +17,14 @@ static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
 	t_lineterm *tmp;
 
 	up = 0;
-    if (!end)
-        return (-1);
-    while (end->s_pos == 0 && end->index != 0)
-    {
-        if ((tsh->console->char_pos == 0  || end->c == '\n') && end->prev)
-        {
-            tputs(tsh->term->upstr, 1, ft_inputstr);
-            tsh->console->char_pos = get_columns() - 1;
+	if (!end)
+		return (-1);
+	while (end->s_pos == 0 && end->index != 0)
+	{
+		if ((tsh->console->char_pos == 0  || end->c == '\n') && end->prev)
+		{
+			tputs(tsh->term->upstr, 1, ft_inputstr);
+			tsh->console->char_pos = get_columns() - 1;
 			if (end->c == '\n')
 			{
 				i = 0;
@@ -42,15 +42,15 @@ static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
 			else
 				tputs(tparm(tsh->term->ristr, get_columns() - 1), 1, ft_inputstr);
 			up++;
-        }
-        tputs(tsh->term->lestr, 1, ft_inputstr);
-        tsh->console->char_pos--;
-        end = end->prev;
-    }
-    if (tsh->keyflag->mright && tsh->keyflag->underline
-            && end->prev->index != 0)
-        tputs(tsh->term->lestr, 1, ft_inputstr);
-    return (up);
+		}
+		tputs(tsh->term->lestr, 1, ft_inputstr);
+		tsh->console->char_pos--;
+		end = end->prev;
+	}
+	if (tsh->keyflag->mright && tsh->keyflag->underline
+			&& end->prev->index != 0)
+		tputs(tsh->term->lestr, 1, ft_inputstr);
+	return (up);
 }
 
 /************************************************************************************
@@ -86,45 +86,45 @@ static inline void    ft_del_line(t_termc *t)
  * *********************************************************************************/
 static void		ft_display_char_split(t_lineterm *begin, t_termc *tsh)
 {
-    size_t  	col;
+	size_t  	col;
 
-    col = get_columns() - 1;
-    if (begin->index == 0 && !tsh->quotes)
-        ft_putstr(tsh->color[tsh->prompt]);
-    else
-        ft_putstr(RESET);
-    if (tsh->console->char_pos == col ||begin->c == '\n')
-    {
+	col = get_columns() - 1;
+	if (begin->index == 0 && !tsh->quotes)
+		ft_putstr(tsh->color[tsh->prompt]);
+	else
+		ft_putstr(RESET);
+	if (tsh->console->char_pos == col ||begin->c == '\n')
+	{
 		if (begin->c == '\n')
 			tputs(tsh->term->cestr, 1, ft_inputstr);
-        tputs(tsh->term->dostr, 1, ft_inputstr);
-        tsh->console->total_line++;
-        tsh->console->char_pos = 0;
-    }
-    if (begin->under)
-        ft_putstr(tsh->color[tsh->linep]);
+		tputs(tsh->term->dostr, 1, ft_inputstr);
+		tsh->console->total_line++;
+		tsh->console->char_pos = 0;
+	}
+	if (begin->under)
+		ft_putstr(tsh->color[tsh->linep]);
 	if (begin->c != '\t' && begin->index != 0)
-        ;
-    if (begin->c != '\t' && begin->c != '\n')
-        ft_putchar(begin->c);
-    tsh->console->char_pos++;
-    ft_putstr(RESET);
+		;
+	if (begin->c != '\t' && begin->c != '\n')
+		ft_putchar(begin->c);
+	tsh->console->char_pos++;
+	ft_putstr(RESET);
 }
 
 int    ft_display_char(t_lineterm *begin, t_termc *tsh)
 {
-    tsh->console->char_pos = 0;
-    tsh->console->total_line = 1;
-    while (begin)
-    {
-        ft_display_char_split(begin ,tsh);
-        begin = begin->next;
-    }
-    if (tsh->auto_active || tsh->multiauto_active)
-        tputs(tsh->term->cestr, 1, ft_inputstr);
-    else
-        tputs(tsh->term->cdstr, 1, ft_inputstr);
-    return (0);
+	tsh->console->char_pos = 0;
+	tsh->console->total_line = 1;
+	while (begin)
+	{
+		ft_display_char_split(begin ,tsh);
+		begin = begin->next;
+	}
+	if (tsh->auto_active || tsh->multiauto_active)
+		tputs(tsh->term->cestr, 1, ft_inputstr);
+	else
+		tputs(tsh->term->cdstr, 1, ft_inputstr);
+	return (0);
 }
 
 /******************************************************************************
@@ -154,14 +154,14 @@ int 	ft_singleton_down(int len)
 void    ft_display(t_termc *tsh)
 {
 	tputs(tsh->term->vistr, 1, ft_inputstr);
-    ft_del_line(tsh);
-    ft_display_char(tsh->line->begin, tsh);
-    ft_singleton_down(ft_cursor_pos(tsh->line->end, tsh));
+	ft_del_line(tsh);
+	ft_display_char(tsh->line->begin, tsh);
+	ft_singleton_down(ft_cursor_pos(tsh->line->end, tsh));
 	if ((tsh->auto_active || tsh->multiauto_active)\
-		&& tsh->console->total_line < 2 && !tsh->sigint)
+			&& tsh->console->total_line < 2 && !tsh->sigint)
 	{
 		ft_display_autocompletion(tsh);
 		return ;
 	}
-    tputs(tsh->term->vestr, 1, ft_inputstr);
+	tputs(tsh->term->vestr, 1, ft_inputstr);
 }

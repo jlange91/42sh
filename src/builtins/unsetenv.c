@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:41 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/04 16:07:36 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:43 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void				ft_prepare_unsetenv(t_cmd *cmd)
 	char	**tenv;
 	char	**tvar;
 	int		i;
-	
+
 	i = 0;
 	if (ft_ret(cmd))
 		return ;

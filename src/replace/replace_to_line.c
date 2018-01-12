@@ -38,7 +38,7 @@ static inline void ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
 	else if (flag == 1)
 	{
 		((glob = ft_glob(word)) != NULL) ? ft_join_all(glob, line_tmp, 1) :
-		ft_join_all(word, line_tmp, 0);
+			ft_join_all(word, line_tmp, 0);
 	}
 	else if (flag == 2)
 		ft_get_hist(word, line_tmp);
@@ -54,7 +54,7 @@ static inline char *ft_split_res(char **save_line, t_shell *sh, char **new_tab)
 	while (new_tab[i])
 	{
 		if ((ft_strchr(new_tab[i], '$') || ft_strchr(new_tab[i], '~')) &&\
-			!ft_glob_here(new_tab[i]))
+				!ft_glob_here(new_tab[i]))
 			ft_findok(new_tab[i], sh, &line_tmp, 0);
 		else if (ft_glob_here(new_tab[i]))
 			ft_findok(new_tab[i], sh, &line_tmp, 1);

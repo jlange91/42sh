@@ -62,17 +62,16 @@ int     main(int ac, char **av, char **env)
 	t_cmd	*cmd;
 	t_shell	sh;
 
-    (void)ac;
-    (void)av;
+	(void)ac;
+	(void)av;
 	tsh = NULL;
 	ft_fill_env(env);
 	tsh = init_termc(ft_var_env(NULL));
 	ft_ret_sh(&sh);
 	ft_ret_tsh(&tsh);
-	// ft_init_signal(); 			//NEW GESTIONNAIRE SIGNAL
+	ft_init_signal(); 			//NEW GESTIONNAIRE SIGNAL
 	while (42)
 	{
-		signal(SIGINT, ft_handle_signal);
 		ft_fill_history(tsh);
 		ft_fill_line(tsh);
 		sh.line = ft_strdup(tsh->line_shell);
@@ -94,5 +93,5 @@ int     main(int ac, char **av, char **env)
 		ft_free_cmd(cmd);
 	}
 	free_shell(tsh);
-    return (0);
+	return (0);
 }

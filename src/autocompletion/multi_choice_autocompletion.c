@@ -70,7 +70,7 @@ static t_auto  *ft_sort_list(t_termc *tsh, char *after, int ret)
 				ft_fill_back_autocompl(tmp, begin->data, ++i);
 			begin = begin->next;
 		}
-        if (ret)																				//IF MULTIAUTO_ACTIVE :)
+		if (ret)																				//IF MULTIAUTO_ACTIVE :)
 			ft_suitlist(ft_var_env(NULL), after, tmp, i);
 	}
 	return (tmp);
@@ -111,7 +111,7 @@ int    ft_fill_same_word(t_termc *tsh)
 	if (tsh->autoc->str != NULL && tsh->autoc->begin != NULL)
 	{
 		tmp_line = (ft_dir_or_not(tsh->autoc->str)) ?
-		ft_strjoin(tsh->autoc->str, "/") : ft_strdup(tsh->autoc->str);
+			ft_strjoin(tsh->autoc->str, "/") : ft_strdup(tsh->autoc->str);
 		if ((after = ft_after_antislash(tmp_line, &ret)) != NULL)
 		{
 			ft_try_fill(tsh, after, &flag, 0);
@@ -119,8 +119,8 @@ int    ft_fill_same_word(t_termc *tsh)
 		}
 		else
 		{
-            (tsh->multiauto_active == 1) ? ft_try_fill(tsh, tmp_line, &flag, 0)
-			: ft_try_fill(tsh, tmp_line, &flag, 1);
+			(tsh->multiauto_active == 1) ? ft_try_fill(tsh, tmp_line, &flag, 0)
+				: ft_try_fill(tsh, tmp_line, &flag, 1);
 			ft_init_autocompl(tsh, tmp_line);
 		}
 		free(tmp_line);

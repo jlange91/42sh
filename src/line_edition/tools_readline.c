@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:21 by stvalett          #+#    #+#             */
-/*   Updated: 2017/08/29 14:06:27 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:48 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ void    push_backdlst(dlist *line, int c, int i)
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
 	new->c = (char)c;
-    new->under = 0;
+	new->under = 0;
 	new->index = i;
 	new->s_pos = 1;
 	new->next = NULL;
 	new->prev = line->end;
 	if (line->end)
 		line->end->next = new;
-    else
-        line->begin = new;
+	else
+		line->begin = new;
 	line->end = new;
 }
 
@@ -104,7 +104,7 @@ void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
 	new->c = (char)c;
-    new->under = 0;
+	new->under = 0;
 	new->s_pos = 1;
 	new->index = i;
 	new->next = end;

@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/09 19:26:54 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:43 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void					ft_exec(t_cmd *cmd, char **av, char **env)
 	else if (father == 0)
 	{
 		ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
-		av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
+						av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
 		if (ret != 0)
 		{
 			DIR		*dir;

@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:03 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:04:12 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 15:33:58 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void					swap_pwd(int opt)
 		return ;
 	}
 	if (opt == 1)
-		ft_cd_p(&oldpwd[7]);
+		ft_cd_p(&oldpwd[7], 1);
 	else
-		ft_cd_l(&oldpwd[7]);
+		ft_cd_l(&oldpwd[7], 1);
 }
 
 void					go_home(int opt)
@@ -68,9 +68,9 @@ void					go_home(int opt)
 		return ;
 	}
 	if (opt == 1)
-		ft_cd_p(&home[5]);
+		ft_cd_p(&home[5], 1);
 	else
-		ft_cd_l(&home[5]);
+		ft_cd_l(&home[5], 1);
 }
 
 void					ft_cd(t_cmd *cmd, int fast)
@@ -81,7 +81,7 @@ void					ft_cd(t_cmd *cmd, int fast)
 	opt = 0;
 	if (fast == 1)
 	{
-		ft_cd_l(cmd->av[0]);
+		ft_cd_l(cmd->av[0], 1);
 		return ;
 	}
 	i = init_flags(cmd->av, &opt, 0);
@@ -89,8 +89,10 @@ void					ft_cd(t_cmd *cmd, int fast)
 		go_home(opt);
 	else if (!ft_strcmp(cmd->av[i], "-"))
 		swap_pwd(opt);
+	else if (ft_try_cdpath(cmd->av[i], ft_var_env(NULL), opt))
+		;
 	else if (opt == 0)
-		ft_cd_l(cmd->av[i]);
+		ft_cd_l(cmd->av[i], 1);
 	else if (opt == 1)
-		ft_cd_p(cmd->av[i]);
+		ft_cd_p(cmd->av[i], 1);
 }

@@ -6,7 +6,7 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2018/01/09 16:16:40 by jlange           ###   ########.fr        #
+#    Updated: 2018/01/12 15:33:28 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,6 +82,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/perror/ft_useless_norme.c						\
 	   src/builtins/cd.c									\
 	   src/builtins/cd2.c									\
+	   src/builtins/cdpath.c								\
 	   src/builtins/echo.c									\
 	   src/builtins/echo2.c									\
 	   src/builtins/env.c									\

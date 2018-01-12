@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:30 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:09:02 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 16:52:43 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static inline int		ft_ret(t_cmd *cmd)
 		if (!ft_isalnum(cmd->av[1][i]))
 		{
 			ft_putstr_fd("setenv: Variable name must contain alphanumeric \
-characters.\n", 2);
+					characters.\n", 2);
 			ft_singleton(1, 1);
 			return (1);
 		}

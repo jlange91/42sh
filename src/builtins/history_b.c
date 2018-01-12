@@ -118,7 +118,7 @@ static inline int ft_end(char *av1, int flag)
 		if (av1[i] == 'c' && flag == 2)
 			return (1);
 		if ((av1[i] == 'p' || av1[i] == 's') && (flag == 3 || flag == 4
-			|| flag == 5))
+					|| flag == 5))
 			return(1);
 		i++;
 	}
@@ -182,9 +182,9 @@ int history(t_cmd *cmd)
 {
 	t_termc *tsh;
 
-    tsh = ft_ret_tsh(NULL);
-    if (cmd->av[1] == NULL)
-        return (ft_display_history(tsh->histlist));
+	tsh = ft_ret_tsh(NULL);
+	if (cmd->av[1] == NULL)
+		return (ft_display_history(tsh->histlist));
 	else if (cmd->av[1] != NULL && ft_only_digit(cmd->av[1]))
 		return (ft_find_index_history(cmd->av[1], tsh->histlist));
 	else

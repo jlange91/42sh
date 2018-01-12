@@ -37,7 +37,7 @@ char	*ft_readline_simple(char *prompt)
 		if ((ft_is_key(t->line, t, c) == 0 && ft_isprint((char)c)))
 		{
 			(t->line->lnk_before) ? ft_insert_dlnk(t->line->end, t, c, 1) :
-			push_backdlst(t->line, c, 1);
+				push_backdlst(t->line, c, 1);
 		}
 		else
 			t->line->lnk_before = 1;

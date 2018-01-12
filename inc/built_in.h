@@ -9,8 +9,9 @@
 
 void		ft_echo(char **av);
 void		ft_cd(t_cmd *cmd, int fast);
-void		ft_cd_l(char *path);
-void		ft_cd_p(char *path);
+int 		ft_cd_l(char *path, int opt);
+int 		ft_cd_p(char *path, int opt);
+int			ft_try_cdpath(char *path, char **env, int opt);
 void		ft_env(t_cmd *cmd);
 int			env_skip_name_value(char **av, char ***env);
 void		ft_prepare_setenv(t_cmd *cmd);
