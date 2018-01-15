@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 02:01:50 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:57 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/17 03:06:45 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,51 +42,51 @@ static inline void	init_escape_tab(char *escape_tab)
 static inline void	init_escape_tab2(char *escape_tab)
 {
 	escape_tab[23] = ' ';
-	escape_tab[24] = '\t';
-	escape_tab[25] = '\n';
+    escape_tab[24] = '\t';
+    escape_tab[25] = '\n';
 	escape_tab[26] = '\0';    
 }
 
 static inline char  *add_backslah(char *str, int index)
 {
-	char    *ret;
-	int     i;
+    char    *ret;
+    int     i;
 
-	i = -1;
-	if ((ret = (char *)malloc(sizeof(char ) * (ft_strlen(str) + 2))) == NULL)
-	{
-		ft_putendl_fd("Error Malloc", 2);
-		exit (1);
-	}
-	while (++i < index)
-		ret[i] = str[i];
-	ret[i] = '\\';
-	ret[i + 1] = '\0';
-	ret = ft_strcat(ret, &str[i]);
-	return (ret);
+    i = -1;
+    if ((ret = (char *)malloc(sizeof(char ) * (ft_strlen(str) + 2))) == NULL)
+    {
+        ft_putendl_fd("Error Malloc", 2);
+        exit (1);
+    }
+    while (++i < index)
+        ret[i] = str[i];
+    ret[i] = '\\';
+    ret[i + 1] = '\0';
+    ret = ft_strcat(ret, &str[i]);
+    return (ret);
 }
 
 char    *ft_add_escape(char *str)
 {
-	char    tab[27];
-	int     i;
-	int     j;
+    char    tab[27];
+    int     i;
+    int     j;
 
-	init_escape_tab(tab);
-	init_escape_tab2(tab);
-	i = -1;
-	while (str[++i])
-	{
-		j = -1;
-		while (tab[++j])
-		{
-			if (str[i] == tab[j])
-			{
-				str = ft_replace_str(add_backslah(str, i), str);
-				++i;
-				break;
-			}
-		}
-	}
-	return (str);
+    init_escape_tab(tab);
+    init_escape_tab2(tab);
+    i = -1;
+    while (str[++i])
+    {
+        j = -1;
+        while (tab[++j])
+        {
+            if (str[i] == tab[j])
+            {
+                str = ft_replace_str(add_backslah(str, i), str);
+                ++i;
+                break;
+            }
+        }
+    }
+    return (str);
 }

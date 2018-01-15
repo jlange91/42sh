@@ -19,53 +19,53 @@
 
 void	ft_move_right(t_lineterm *end, t_termc *tsh)
 {
-	if ((tsh->auto_active || tsh->multiauto_active))
-	{
+    if (tsh->auto_active || tsh->multiauto_active)
+    {
 		if (tsh->console->total_line > 1)
 			return ;
-		ft_autoMove(end, tsh, 1);
-		return ;
-	}
-	tsh->auto_active = 0;
-	tsh->multiauto_active = 0;
-	if (end && end->next)
-	{
-		if (tsh->keyflag->underline && end->under != 1)
-			end->under = 1;
-		end->s_pos = 0;
-		end->next->s_pos = 1;
-		if (!end->next->next)
-			tsh->line->last = 1;
-		else
-			tsh->line->lnk_before = 1;
-	}
+        ft_autoMove(end, tsh, 1);
+        return ;
+    }
+    tsh->auto_active = 0;
+    tsh->multiauto_active = 0;
+    if (end && end->next)
+    {
+        if (tsh->keyflag->underline && end->next->under != 1)
+            end->next->under = 1;
+        end->s_pos = 0;
+        end->next->s_pos = 1;
+        if (!end->next->next)
+            tsh->line->last = 1;
+        else
+            tsh->line->lnk_before = 1;
+    }
 }
 
 void    ft_move_left(t_lineterm *end, t_termc *tsh)
 {
-	if (tsh->auto_active || tsh->multiauto_active)
-	{
+    if (tsh->auto_active || tsh->multiauto_active)
+    {
 		if (tsh->console->total_line > 1)
 			return ;
-		ft_autoMove(end, tsh, 0);
-		return ;
-	}
-	tsh->auto_active = 0;
-	tsh->multiauto_active = 0;
-	if (end->prev && end->index != 0)
-	{
-		if (tsh->keyflag->underline && end->under != 1)
-			end->under = 1;
-		end->s_pos = 0;
-		end->prev->s_pos = 1;
-		tsh->line->last = 0;
-	}
+        ft_autoMove(end, tsh, 0);
+        return ;
+    }
+    tsh->auto_active = 0;
+    tsh->multiauto_active = 0;
+    if (end->prev && end->index != 0)
+    {
+        if (tsh->keyflag->underline && end->under != 1)
+            end->under = 1;
+        end->s_pos = 0;
+        end->prev->s_pos = 1;
+        tsh->line->last = 0;
+    }
 }
 
 /************************************************************************************
  * FUNCTION MAJ_RIGHT OR MAJ_LEFT
  *
- * ALL VARIABLE			tsh->keyflag->underline ===> initialise
+ * ALL VARIABLE
  *						tsh->mleft ===> is SHIFT + arrow left
  *						tsh->mright ==> is SHIFT + arrow right
  *
@@ -78,28 +78,16 @@ void    ft_move_left(t_lineterm *end, t_termc *tsh)
 
 void    ft_move_mleft(t_lineterm *end, t_termc *tsh)
 {
-	if (tsh->auto_active || tsh->multiauto_active)
-		return ;
-	tsh->keyflag->underline = 1;
-	tsh->keyflag->mleft = 1;
-	tsh->keyflag->mright = 0;
-	ft_move_left(end, tsh);
+    if (tsh->auto_active || tsh->multiauto_active)
+        return ;
+    tsh->keyflag->underline = 1;
+    ft_move_left(end, tsh);
 }
 
 void    ft_move_mright(t_lineterm *end, t_termc *tsh)
 {
-	if (tsh->auto_active || tsh->multiauto_active)
-		return ;
-	tsh->keyflag->underline = 1;
-	tsh->keyflag->mright = 1;
-	tsh->keyflag->mleft = 0;
-	if (end && !end->next)
-	{
-		if (end->c != ' ' && tsh->keyflag->underline && end->under != 1)
-			end->under = 1;
-		return ;
-	}
-	if (end && end->index == 0) //FIX START UNDERLINE FIRST LETTER
-		end = end->next;
-	ft_move_right(end, tsh);
+    if (tsh->auto_active || tsh->multiauto_active)
+        return ;
+    tsh->keyflag->underline = 1;
+    ft_move_right(end, tsh);
 }

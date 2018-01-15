@@ -40,7 +40,7 @@ static inline int ft_repl_expand(t_termc *tsh, dlist *tmp, char *word, int *ret)
 	i = ft_strlen(word);
 	begin = tmp->begin;
 	if (!(*ret) && ft_strcmp(sh->line, word) != 0 && ft_strlen(sh->line) > 0 &&
-			ft_word_here(begin, word))
+		ft_word_here(begin, word))
 	{
 		*ret = 1;
 		ft_cpy_to_line(sh->line, tsh);
@@ -69,7 +69,7 @@ static inline int ft_repl_glob(t_termc *tsh, dlist *tmp, char *word, int *ret)
 	i = ft_strlen(word);
 	begin = tmp->begin;
 	if (!(*ret) && glob != NULL && tmp->begin->c == word[0] &&\
-			ft_word_here(begin, word))
+		ft_word_here(begin, word))
 	{
 		*ret = 1;
 		tsh->keyflag->k_tab = 0;
@@ -95,17 +95,17 @@ static inline void 		ft_split_repl(t_termc *tsh, dlist tmp, char *word)
 		if (tmp.begin->c == word[0])
 		{
 			if (!ft_repl_glob(tsh, &tmp, word, &ret) &&\
-					!ft_repl_expand(tsh, &tmp, word, &ret))
+				!ft_repl_expand(tsh, &tmp, word, &ret))
 			{
 				push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
-						tmp.begin->index);
+					tmp.begin->index);
 				tmp.begin = tmp.begin->next;
 			}
 		}
 		else
 		{
 			push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
-					tmp.begin->index);
+				tmp.begin->index);
 			tmp.begin = tmp.begin->next;
 		}
 	}

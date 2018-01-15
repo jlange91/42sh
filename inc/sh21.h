@@ -9,6 +9,7 @@
 # include "../libft/include/libft.h"
 # include <errno.h>
 # include <fcntl.h>
+# include "hash.h"
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -88,8 +89,6 @@ typedef struct          s_key
 {
     int                 backspace;
     int                 underline;
-    int                 mleft;
-    int                 mright;
     int                 cl;
 	int                 k_tab;          //how time touch tab
 }                       t_keyflag;
@@ -186,7 +185,8 @@ typedef struct		s_cmd
 
 typedef struct      s_shell
 {
-    char *line;
+    char    *line;
+    t_hash  hash[1000];
 }                   t_shell;
 
 typedef struct      s_redir
@@ -320,5 +320,8 @@ int	ft_check_redir(t_shell *sh);
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j);
 
+
+
+int		search_hash(char **av, char **env);
 
 #endif

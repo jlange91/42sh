@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:22:31 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:56 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/12 14:54:08 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int			ft_redirection(t_cmd *cmd)
 	ft_backup_stderr(1);
 	while (cmd->line[i])
 	{
-		i += ft_skip_quote(&cmd->line[i]);
+        i += ft_skip_quote(&cmd->line[i]);
 		i += ft_skip_dquote(&cmd->line[i]);
 		if ((cmd->line[i] == '>' || cmd->line[i] == '<') && !(i > 0 && cmd->line[i - 1] == '\\'))
 		{

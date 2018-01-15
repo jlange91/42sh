@@ -80,7 +80,7 @@ static void	ft_addOpenGlob(t_glob *glob, int star, char **str)
 	s_tab = ft_add_slash(glob->path, glob->path[ft_strlen(glob->path) - 1]);
 	path = ft_goodPath(s_tab, &ret);
 	if ((res = ft_open(path, s_tab[ret], star, 0)) != NULL
-			&& ft_count_dtab(res) > 0)
+		&& ft_count_dtab(res) > 0)
 	{
 		new = ft_addOpenGlobSplit(res, s_tab, ret);
 		ret = -1;
@@ -95,13 +95,13 @@ static void	ft_addOpenGlob(t_glob *glob, int star, char **str)
 
 char 	*ft_resGlob(t_glob *glob, int star, char **str)
 {
-	int i;
+    int i;
 
-	i = 0;
-	while (i < glob->len)
-	{
+    i = 0;
+    while (i < glob->len)
+    {
 		ft_addOpenGlob(&glob[i], star, str);
-		i++;
-	}
+        i++;
+    }
 	return (*str);
 }

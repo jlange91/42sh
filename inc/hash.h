@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   hash.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmartins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/19 12:02:59 by vmartins          #+#    #+#             */
-/*   Updated: 2017/12/19 12:03:07 by vmartins         ###   ########.fr       */
+/*   Updated: 2018/01/15 18:41:46 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HASH_H
 # define HASH_H
-# include "../libft/libft.h"
+# include "../libft/include/libft.h"
+# define SIZEH 1000
+
 
 typedef struct  s_hash
 {
@@ -21,6 +23,9 @@ typedef struct  s_hash
     struct s_hash   *next;
 }               t_hash;
 
-int     hash_table(char *cmd, t_hash *hash);
+int		ft_calc_hash(char *word);
+char 	*ft_return_hash(char *cmd);
+int     ft_add_hash(char *cmd, char *path);
+void    ft_free_hash(void);
 
 #endif

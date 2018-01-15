@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:46 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/12 16:45:24 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ int	ft_line_edition(t_cmd *cmd)
 			ft_pipe(cmd);
 		wait(&status);
 		if (status)
-			ft_singleton(status, 1);
+				ft_singleton(status, 1);
 		return (ft_singleton(0, 0));
 	}
 	ft_redirection(cmd);

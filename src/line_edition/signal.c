@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/13 13:16:48 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:47 by jlange           ###   ########.fr       */
+/*   Updated: 2017/12/19 13:47:51 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ static void				ft_suspended(t_termc *tsh)
 {
 	char		cp[2];
 
+	tputs(tsh->term->cdstr, 1, ft_inputstr);
 	ft_end_term(tsh);
 	signal(SIGTSTP, SIG_DFL);
 	cp[0] = tsh->term->term.c_cc[VSUSP];
@@ -102,8 +103,11 @@ void	ft_handle_signal(int signum)
 		ft_sigwinch(tsh);
 	if (signum == SIGCONT)
 	{
-		ft_display_prompt(tsh);
 		ft_init_terminal_mode(tsh);
+		tsh->autoc->updaterow = 0;
+		tsh->autoc->updaterow = ft_sk_cursor(0, tsh->autoc->updaterow, tsh);
+		ft_display_prompt(tsh);
+		ft_display(tsh);
 	}
 	if (signum == SIGTSTP)
 		ft_suspended(tsh);
@@ -117,8 +121,8 @@ void 	ft_init_signal(void)
 		ft_putstr_fd("\nCan't catch SIGWINCH", 2);
 	if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
 		ft_putstr_fd("\nCan't catch SIGQUIT", 2);
-	// if (signal(SIGTSTP, ft_handle_signal) == SIG_ERR)
-	// ft_putstr_fd("\nCan't catch SIGTSTP", 2);
+	if (signal(SIGTSTP, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGTSTP", 2);
 	if (signal (SIGCONT, ft_handle_signal) == SIG_ERR)
 		ft_putstr_fd("\nCan't catch SIGCONT", 2);
 }

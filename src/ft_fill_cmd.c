@@ -37,7 +37,7 @@ void	ft_add_cmd(t_cmd **begin, char *line, int op)
 	t_cmd *cmd;
 	t_cmd *new;
 
-	cmd = *begin;
+    cmd = *begin;
 	new = ft_create_cmd(line, op);
 	if (!cmd)
 		*begin = new;
@@ -52,41 +52,41 @@ void	ft_add_cmd(t_cmd **begin, char *line, int op)
 
 int     is_end(char *line)
 {
-	int ret;
+    int ret;
 
-	ret = 0;
-	ret = (line[0] == 0 || line[0] == '\n') ? 1 : ret;
-	ret = (line[0] == ';') ? 2 : ret;
-	ret = (line[0] == '&' && line[1] == '&') ? 3 : ret;
-	ret = (line[0] == '|') ? 5 : ret;
-	ret = (ret == 5 && line[1] == '|') ? 4 : ret;
-	return (ret);
+    ret = 0;
+    ret = (line[0] == 0 || line[0] == '\n') ? 1 : ret;
+    ret = (line[0] == ';') ? 2 : ret;
+    ret = (line[0] == '&' && line[1] == '&') ? 3 : ret;
+    ret = (line[0] == '|') ? 5 : ret;
+    ret = (ret == 5 && line[1] == '|') ? 4 : ret;
+    return (ret);
 }
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j)
 {
-	t_cmd	*cmd;
-	char    *cline;
-	int     op;
+    t_cmd	*cmd;
+    char    *cline;
+    int     op;
 
-	cmd = NULL;
+    cmd = NULL;
 	while (42)
 	{
-		i += ft_skip_quote(&line[i]);
-		i += ft_skip_dquote(&line[i]);
-		if ((op = is_end(&line[i])))
-		{            
-			cline = ft_strndup(&line[j], i - j);
+        i += ft_skip_quote(&line[i]);
+        i += ft_skip_dquote(&line[i]);
+        if ((op = is_end(&line[i])))
+        {            
+            cline = ft_strndup(&line[j], i - j);
 			ft_add_cmd(&cmd, cline, op - 1);
 			free(cline);
-			j = (op == 3 || op == 4) ? i + 2 : i + 1;
-			i += (op == 3 || op == 4) ? 1 : 0;
-			if (op == 1)
-				return (cmd);
-		}
+            j = (op == 3 || op == 4) ? i + 2 : i + 1;
+            i += (op == 3 || op == 4) ? 1 : 0;
+            if (op == 1)
+                return (cmd);
+        }
 		if (backslash_word(&line[i]) > 0)
 			i++;
 		i++;
-	}
+    }
 	return (cmd);
 }

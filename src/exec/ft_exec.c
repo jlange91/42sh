@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:43 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/15 18:53:12 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ static inline int		exec_path(char **av, char **env)
 	int		ret;
 
 	i = 0;
+	ret = 2;	
+	execve(ft_return_hash(av[0]), av, env);	
 	path = fill_path(env);
-	ret = 2;
 	while (path && path[i])
 	{
 		l_path = ft_replace_line(path[i], "/", av[0]);
@@ -85,6 +86,7 @@ void					ft_exec(t_cmd *cmd, char **av, char **env)
 	pid_t	father;
 	int		ret;
 
+	search_hash(av, env);
 	father = fork();
 	if (father > 0)
 	{
@@ -97,7 +99,7 @@ void					ft_exec(t_cmd *cmd, char **av, char **env)
 	else if (father == 0)
 	{
 		ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
-						av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
+		av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
 		if (ret != 0)
 		{
 			DIR		*dir;
@@ -109,7 +111,7 @@ void					ft_exec(t_cmd *cmd, char **av, char **env)
 				ft_putendl_fd(av[0], 2);
 			}
 			else
-				ft_perror("shell", errno, av[0]);
+				ft_perror("shell", ret, av[0]);
 			exit(1);
 		}
 	}

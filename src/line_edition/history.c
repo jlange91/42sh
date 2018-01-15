@@ -6,106 +6,61 @@
 /*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:12 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:45 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/17 10:01:34 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
 #include "../../inc/sh21.h"
-
-char	*ft_lnk_to_str(t_lineterm *begin, t_termc *tsh) // TOOLS PR TOUT
-{
-	char		*str;
-	t_lineterm	*tmp;
-	int			i;
-
-	str = NULL;
-	tmp = begin;
-	if (tmp)
-	{
-		if ((str = (char *)malloc(sizeof(char) *
-						ft_count_dlnk(tsh, 0) + 1)) == NULL)
-			return (NULL);
-		if (tmp->next)
-			tmp = ft_dontGetPrompt2(tmp);
-		i = 0;
-		while (tmp)
-		{
-			str[i++] = tmp->c;
-			tmp = tmp->next;
-		}
-		str[i] = '\0';
-	}
-	return (str);
-}
-
-int 	ft_useless(char *line)
-{
-	int i;
-
-	i = 0;
-	while (line[i] && ft_isdigit(line[i]))
-		i++;
-	if (line[i] == ' ')
-		return (i + 1);
-	return (0);
-}
+#include "../../inc/quote.h"
 
 int		ft_find_history(t_termc *tsh)
 {
-	t_history   *hist;
-	char        *str;
+    t_history   *hist;
+    char        *str;
 
-	hist = NULL;
-	str = NULL;
-	hist = tsh->histlist->begin;
-	if (!hist || !tsh->histlist)
-		return (0);
-	else
+    hist = NULL;
+    str = NULL;
+    hist = tsh->histlist->begin;
+    if (!hist || !tsh->histlist)
+        return (0);
+	ft_free_history(tsh->histmp);
+	str = (tsh->quotes) ? ft_to_str(tsh, 1) : ft_to_str(tsh, 0);
+    while (hist)
 	{
-		ft_free_history(tsh->histmp);
-		if ((str = ft_lnk_to_str(tsh->line->begin, tsh)) != NULL)
-		{
-			while (hist)
-			{
-				if (!ft_strncmp(str, &hist->data[ft_useless(hist->data)],\
-							ft_strlen(str)))
-					push_backhist(tsh->histmp,\
-							&hist->data[ft_useless(hist->data)], hist->index, hist->new);
-				hist = hist->next;
-			}
-			push_backhist(tsh->histmp, "", -1, 0);
-			tsh->histmp->current = tsh->histmp->end;
-			free(str);
-		}
+		if (!ft_strncmp(str, hist->data, ft_strlen(str)))
+			push_backhist(tsh->histmp, hist->data, hist->index, hist->new);
+        hist = hist->next;
 	}
+	push_backhist(tsh->histmp, "", -1, 0);
+	tsh->histmp->current = tsh->histmp->end;
+	free(str);
 	return (1);
 }
 
 int		ft_fill_history(t_termc *tsh)
 {
-	t_history   *hist;
+    t_history   *hist;
 	static int 	count;
 
-	hist = NULL;
+    hist = NULL;
 	if (count++ < 1)
 		tsh->histlist->pwd = ft_strjoin(ft_var_pwd(NULL), NAME_HIST);
-	hist = tsh->histlist->begin;
-	if (!hist || !tsh->histlist)
-		return (0);
-	else
-	{
+    hist = tsh->histlist->begin;
+    if (!hist || !tsh->histlist)
+        return (0);
+    else
+    {
 		ft_free_history(tsh->histmp);
 		while (hist)
 		{
 			if (hist->print)
-				push_backhist(tsh->histmp, &hist->data[ft_useless(hist->data)],\
-						hist->index, hist->new);
+				push_backhist(tsh->histmp, hist->data, hist->index, hist->new);
 			hist = hist->next;
 		}
 		push_backhist(tsh->histmp, "", -1, 0);
 		tsh->histmp->current = tsh->histmp->end;
-	}
+    }
 	return (1);
 }
 
@@ -119,7 +74,7 @@ t_history *ft_concat_string(t_history *begin, hlist *histlist, int i)
 	begin = begin->next;
 	while (begin)
 	{
-		if (ft_strchr(begin->data, '"'))
+		if (ft_check_quote(begin->data) != 0)
 		{
 			ft_join_all(begin->data, &tmp, 0);
 			push_backhist(histlist, tmp, ++i, 0);
@@ -144,7 +99,7 @@ void 	ft_format_string(hlist *tmp, hlist *histlist)
 	i = 0;
 	while (tmp->begin)
 	{
-		if (ft_strchr(tmp->begin->data, '"') != NULL)
+		if (ft_check_quote(tmp->begin->data) != 0)
 			tmp->begin = ft_concat_string(tmp->begin, histlist, i);
 		else
 		{
@@ -156,9 +111,9 @@ void 	ft_format_string(hlist *tmp, hlist *histlist)
 
 int    	ft_init_fill_history(hlist *histlist)
 {
-	int     fd;
-	int     i;
-	int     ret;
+    int     fd;
+    int     i;
+    int     ret;
 	char    *line;
 	hlist 	*tmp;
 
@@ -173,14 +128,14 @@ int    	ft_init_fill_history(hlist *histlist)
 	if (fd < 0)
 		return (0);
 	line = NULL;
-	while ((ret = get_next_line(fd, &line)) > 0)
+    while ((ret = get_next_line(fd, &line)) > 0)
 	{
-		push_backhist(tmp, &line[ft_useless(line)], ++i, 0);
+		push_backhist(tmp, line, ++i, 0);
 		free(line);
 	}
 	ft_format_string(tmp, histlist);
 	ft_free_history(tmp);
 	free(tmp);
-	close(fd);
-	return (1);
+    close(fd);
+    return (1);
 }

@@ -5,27 +5,27 @@ static	void	ft_print_hour(void)
 {
 	time_t		time_sec;
 	struct tm	now;
-	char        *tmp;
+    char        *tmp;
 
 	time(&time_sec);
 	now = *localtime(&time_sec);
 	ft_putstr(" [");
-	tmp = ft_itoa(now.tm_hour);
-	if (ft_strlen(tmp) == 1)
-		ft_putchar('0');
-	free(tmp);
+    tmp = ft_itoa(now.tm_hour);
+    if (ft_strlen(tmp) == 1)
+        ft_putchar('0');
+    free(tmp);
 	ft_putnbr(now.tm_hour);
 	ft_putchar(':');
-	tmp = ft_itoa(now.tm_min);
-	if (ft_strlen(tmp) == 1)
-		ft_putchar('0');
-	free(tmp);
+    tmp = ft_itoa(now.tm_min);
+    if (ft_strlen(tmp) == 1)
+        ft_putchar('0');
+    free(tmp);
 	ft_putnbr(now.tm_min);
 	ft_putchar(':');
-	tmp = ft_itoa(now.tm_sec);
-	if (ft_strlen(tmp) == 1)
-		ft_putchar('0');
-	free(tmp);
+    tmp = ft_itoa(now.tm_sec);
+    if (ft_strlen(tmp) == 1)
+        ft_putchar('0');
+    free(tmp);
 	ft_putnbr(now.tm_sec);
 	ft_putstr("] ");
 }

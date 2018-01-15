@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:21 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:48 by jlange           ###   ########.fr       */
+/*   Updated: 2017/08/29 14:06:27 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ void    push_backdlst(dlist *line, int c, int i)
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
 	new->c = (char)c;
-	new->under = 0;
+    new->under = 0;
 	new->index = i;
 	new->s_pos = 1;
 	new->next = NULL;
 	new->prev = line->end;
 	if (line->end)
 		line->end->next = new;
-	else
-		line->begin = new;
+    else
+        line->begin = new;
 	line->end = new;
 }
 
@@ -67,19 +67,21 @@ t_lineterm *find_cursor(t_lineterm *end, int flag)
 	{
 		if (!end)
 			return (NULL);
+		if (end && end->index == 0)
+			return (end);
 		while (end->s_pos == 0)
 			end = end->prev;
 		return (end);
 	}
 }
 
-int		ft_count_dlnk(t_termc *tsh, int f)
+int		ft_count_dlnk(t_termc *tsh, int q)
 {
 	t_lineterm *tmp;
 	int			i;
 
 	tmp = tsh->line->begin;
-	tmp = (tmp->next && f) ? ft_dont_get_prompt(tmp) : ft_dontGetPrompt2(tmp);
+	tmp = (tmp->next && q) ? ft_dont_get_prompt(tmp) : ft_dontGetPrompt2(tmp);
 	i = 0;
 	while (tmp)
 	{
@@ -104,7 +106,7 @@ void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
 	new->c = (char)c;
-	new->under = 0;
+    new->under = 0;
 	new->s_pos = 1;
 	new->index = i;
 	new->next = end;

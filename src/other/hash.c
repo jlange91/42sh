@@ -3,123 +3,103 @@
 /*                                                        :::      ::::::::   */
 /*   hash.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vmartins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/18 14:17:05 by vmartins          #+#    #+#             */
-/*   Updated: 2017/12/18 14:23:45 by vmartins         ###   ########.fr       */
+/*   Updated: 2018/01/15 18:41:36 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "hash.h"
+#include "../../inc/hash.h"
+#include "../../inc/sh21.h"
 
-#define SIZEH 1000
-
-t_hash					*ft_new_maillon(char *cmd)
+static inline t_hash	*ft_new_maillon(char *cmd, char *path)
 {
 	t_hash *new;
 
 	if ((new = (t_hash *)malloc(sizeof(t_hash))) == NULL)
 		return (NULL);
 	new->cmd = ft_strdup(cmd);
-	new->path = NULL;
+	new->path = ft_strdup(path);
 	new->next = NULL;
 	return (new);
 }
 
-int						hash_table(char *cmd, t_hash hash[SIZEH])
+int						ft_calc_hash(char *word)
+{
+	int		i;
+	int		ret;
+
+	i = 0;
+	ret = 0;
+	while (word[i] != '\0')
+	{
+		ret += word[i];
+		i++;
+	}
+	ret %= SIZEH;
+	return (ret);
+}
+
+int						ft_add_hash(char *cmd, char *path)
 {
 	int		i;
 	int		nbrhash;
 	t_hash	*tmp;
+	t_shell *sh;
+	t_hash *hash;
 
 	i = 0;
-	nbrhash = 0;
-	while (cmd[i] != '\0')
-	{
-		nbrhash += cmd[i];
-		i++;
-	}
-	nbrhash %= SIZEH;
+	if (!cmd || !path)
+		return (0);
+	sh = ft_ret_sh(NULL);
+	hash = sh->hash;
+	nbrhash = ft_calc_hash(cmd);
 	if (hash[nbrhash].cmd == NULL)
 	{
 		hash[nbrhash].cmd = ft_strdup(cmd);
+		hash[nbrhash].path = ft_strdup(path);
 		hash[nbrhash].next = NULL;
 	}
 	else if (hash[nbrhash].cmd != NULL)
 	{
 		tmp = &hash[nbrhash];
+		while (tmp)
+		{
+			if (ft_strcmp(cmd, tmp->cmd) == 0)
+			{
+				tmp->path = ft_strdup(path);
+				return (nbrhash);
+			}
+			tmp = tmp->next;
+		}
+		tmp = &hash[nbrhash];
 		while (tmp->next)
 			tmp = tmp->next;
-		tmp->next = ft_new_maillon(cmd);
+		tmp->next = ft_new_maillon(cmd, path);
 	}
 	return (nbrhash);
 }
 
-
-
-char 					*return_hash(char *cmd, t_hash hash[SIZEH])
+char 					*ft_return_hash(char *cmd)
 {
-	int		i;
 	int		nbrhash;
+	t_shell	*sh;
+	t_hash	*hash;
 	t_hash 	*tmp;
 
-	i = 0;
-	nbrhash = 0;
-	while (cmd[i] != '\0')
-	{
-		nbrhash += cmd[i];
-		i++;
-	}
+	nbrhash = ft_calc_hash(cmd);
+	sh = ft_ret_sh(NULL);
+	hash = sh->hash;
 	if (hash[nbrhash].cmd)
 	{
 		tmp = &hash[nbrhash];
 		while (tmp)
 		{
 			if (ft_strcmp(cmd, tmp->cmd) == 0)
-				return (tmp->cmd);
+				return (tmp->path);
 			tmp = tmp->next;
 		}
 	}
 	return (NULL);
-}
-
-int						main(void)
-{
-	int		i;
-	int		j;
-	t_hash	hash[SIZEH];
-
-	i = 0;
-	j = 0;
-	ft_memset(hash, 0, sizeof(hash));
-	i = hash_table("cba", hash);
-	i = hash_table("abc", hash);
-	i = hash_table("cba", hash);
-	i = hash_table("abc", hash);
-	i = hash_table("bca", hash);
-	i = hash_table("acb", hash);
-	i = hash_table("toto", hash);
-	i = hash_table("otot", hash);
-	while (j < 1000)
-	{
-		if (hash[j].cmd != NULL)
-		{
-			//ft_putendl("NEW");
-			//ft_putendl(hash[j].cmd);
-			t_hash tmp;
-
-			tmp = hash[j];
-			if (tmp.next != NULL)
-			{
-				while (tmp.next)
-				{
-					tmp = *tmp.next;
-					//ft_putendl(tmp.cmd);
-				}
-			}
-		}
-		j++;
-	}
-	ft_putstr(return_hash("abc", hash));
-	return (0);
 }

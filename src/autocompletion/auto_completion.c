@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/02 10:23:22 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:39 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/16 13:10:16 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int		ft_findword(t_termc *tsh, char *data, char *before, char *after)
 		if (ft_strncmp(after, data, ft_strlen(after)) == 0)
 		{
 			(before == NULL) ? ft_ajuste_and_fill_line(tsh, data, NULL, 0) :
-				ft_ajuste_and_fill_line(tsh, data, before, 1);
+			ft_ajuste_and_fill_line(tsh, data, before, 1);
 			return (1);
 		}
 	}
@@ -48,7 +48,7 @@ int		ft_findword(t_termc *tsh, char *data, char *before, char *after)
 		if (ft_strcmp(after, data) == 0)
 		{
 			(before == NULL) ? ft_ajuste_and_fill_line(tsh, data, NULL, 0) :
-				ft_ajuste_and_fill_line(tsh, data, before, 1);
+			ft_ajuste_and_fill_line(tsh, data, before, 1);
 			return (1);
 		}
 	}

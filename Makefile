@@ -6,7 +6,7 @@
 #    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2018/01/12 15:33:28 by jlange           ###   ########.fr        #
+#    Updated: 2018/01/15 18:24:23 by jlange           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -111,6 +111,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/replace/ft_add_escape.c							\
 	   src/exec/ft_exec.c									\
 	   src/exec/ft_exec_pipe.c								\
+	   src/exec/hash.c										\
 	   src/other/charcat.c									\
 	   src/other/free_tab_2d.c								\
 	   src/other/tab_2d_len.c								\
@@ -125,6 +126,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/other/ft_skip_useless.c							\
 	   src/other/ft_skip_quote.c							\
 	   src/other/singleton.c								\
+	   src/other/hash.c										\
 	   src/redirection/count.c								\
 	   src/redirection/fill_word.c							\
 	   src/redirection/ft_ret_word.c						\

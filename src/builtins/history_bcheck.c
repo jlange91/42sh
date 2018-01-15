@@ -79,7 +79,7 @@ static inline int ft_check_other_opt(char *av, int *ret)
 				return (-2);
 		}
 		if (av[i] != 'c' &&av[i] != 'p' &&av[i] != 'r' &&\
-				av[i] != 'w' &&av[i] != 'a' &&av[i] != 's')
+			av[i] != 'w' &&av[i] != 'a' &&av[i] != 's')
 		{
 			*ret += i;
 			return (i);

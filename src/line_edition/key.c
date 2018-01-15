@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:04 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:46 by jlange           ###   ########.fr       */
+/*   Updated: 2017/11/16 13:01:18 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,16 @@ static inline void 	ft_reset_var(t_termc *tsh, int flag)
  * *********************************************************************************/
 static inline int  ft_del_split(dlist **line, t_termc *tsh)
 {
-	t_lineterm  *tmp;
+    t_lineterm  *tmp;
 
-	tmp = (*line)->end;
-	if (!tmp)
-		return (0);
-	(*line)->end = tmp->prev;
+    tmp = (*line)->end;
+    if (!tmp)
+        return (0);
+    (*line)->end = tmp->prev;
 	if ((*line)->end)
 		(*line)->end->next = NULL;
-	else
-	{
+    else
+    {
 		(*line)->begin = NULL;
 		return (0);
 	}
@@ -88,9 +88,9 @@ static inline int	ft_del_caractere(t_lineterm *end, t_termc *tsh)
 		end->prev->next = tmp->next;
 		end->next->prev = tmp->prev;
 		end->prev->s_pos = 1;
-		tsh->line->last = 0;
+        tsh->line->last = 0;
 	}
-	free(tmp);
+    free(tmp);
 	return (1);
 }
 
@@ -108,17 +108,17 @@ static inline int	ft_del_caractere(t_lineterm *end, t_termc *tsh)
  ************************************************************************************/
 int     ft_is_key(dlist *line, t_termc *tsh, long c)
 {
-	t_lineterm  *tmp;
+    t_lineterm  *tmp;
 
-	tmp = NULL;
+    tmp = NULL;
 	tmp = find_cursor(line->end, 0);
 	// if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3) // WORK SIGNAL SIGWINCH TONIGHT
-	// return (1);
-	if (c == ' ' && !tsh->quotes && !tsh->hdoc) 				//ATTENTION ENLEVE LA SELECTION CHECK
+		// return (1);
+	if (c == ' ')													//ATTENTION ENLEVE LA SELECTION CHECK
 		ft_replace_exp_hist(tsh);
-	if (c == TAB && !tsh->quotes && !tsh->hdoc)
+    if (c == TAB && !tsh->quotes && !tsh->hdoc)
 		tsh->keyflag->k_tab = 1;
-	if (c == '\n' && !tsh->quotes && !tsh->hdoc)
+    if (c == '\n' && !tsh->quotes && !tsh->hdoc)
 		ft_reset_var(tsh, 2);
 	if (c == BACKSPACE)
 	{
@@ -126,9 +126,9 @@ int     ft_is_key(dlist *line, t_termc *tsh, long c)
 		if (!ft_del_caractere(tmp, tsh))
 			return (0);
 	}
-	else if (c == UP && !tsh->quotes && !tsh->hdoc)
+    else if (c == UP)
 		ft_move_history(tsh, &tsh->histmp->current, 2);
-	else if (c == DOWN && !tsh->quotes && !tsh->hdoc)
+	else if (c == DOWN)
 		ft_move_history(tsh, &tsh->histmp->current, 1);
 	else if (!ft_other_key(tmp, tsh, c))
 		return (0);

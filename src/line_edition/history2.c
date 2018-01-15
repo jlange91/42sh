@@ -23,14 +23,14 @@ void	ft_free_history(hlist *history)
 
 int     ft_add_file_history(t_termc *tsh)
 {
-	int         fd;
-	t_history   *begin;
+    int         fd;
+    t_history   *begin;
 
-	if ((fd = open(tsh->histlist->pwd, (O_WRONLY | O_CREAT | O_TRUNC), 0777)) < 0)
-		return (0);
-	begin = NULL;
-	begin = tsh->histlist->begin;
-	if (begin)
+    if ((fd = open(tsh->histlist->pwd, (O_WRONLY | O_CREAT | O_TRUNC), 0777)) < 0)
+        return (0);
+    begin = NULL;
+    begin = tsh->histlist->begin;
+    if (begin)
 	{
 		while (begin)
 		{
@@ -42,25 +42,25 @@ int     ft_add_file_history(t_termc *tsh)
 			begin = begin->next;
 		}
 	}
-	close(fd);
-	return (1);
+    close(fd);
+    return (1);
 }
 
 void	ft_add_tmp_history(t_termc *tsh, const char *str)
 {
-	int flag;
-	int i;
+    int flag;
+    int i;
 	int index;
 
-	flag = 0;
-	i = -1;
-	while (str[++i])
-	{
-		if (str[i] >= 33 && str[i] <= 126)
-			flag = 1;
-	}
-	if (flag && (!tsh->histlist->end ||
-				ft_strcmp(tsh->histlist->end->data, str) != 0))
+    flag = 0;
+    i = -1;
+    while (str[++i])
+    {
+        if (str[i] >= 33 && str[i] <= 126)
+            flag = 1;
+    }
+    if (flag && (!tsh->histlist->end ||
+        ft_strcmp(tsh->histlist->end->data, str) != 0))
 	{
 		index = (!tsh->histlist->end) ? 1 : tsh->histlist->end->index + 1;
 		push_backhist(tsh->histlist, str, index, 1);

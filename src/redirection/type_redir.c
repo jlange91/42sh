@@ -29,12 +29,12 @@ int				ft_check_type_redir(char *str)
 	ret = (str[0] == '>') ? 1 : ret;
 	ret = (str[0] == '<') ? 2 : ret;
 	ret = (str[0] == '>' && str[1] == '&') ? 3 : ret;
-	ret = (str[0] == '>' && str[1] == '>') ? 4 : ret;
+    ret = (str[0] == '>' && str[1] == '>') ? 4 : ret;
 	ret = (str[0] == '<' && str[1] == '&') ? 5 : ret;
 	ret = (str[0] == '<' && str[1] == '<') ? 6 : ret;
 	ret = (str[0] == '<' && str[1] == '>') ? 7 : ret;
 	ret = (str[0] == '>' && str[1] == '&' && str[2] == '-' &&
-			(str[3] == ' ' || str[3] == '\t' || str[3] == '\n')) ? 8 : ret;
+	(str[3] == ' ' || str[3] == '\t' || str[3] == '\n')) ? 8 : ret;
 	str[0] = ' ';
 	if (ret > 2)
 		str[1] = ' ';

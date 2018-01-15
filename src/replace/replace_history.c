@@ -42,10 +42,10 @@ static inline int ft_replace_pattern(dlist *tmp, t_termc *tsh)
 			return (1);
 	}
 	else if (ft_isdigit(tmp->begin->next->c) || ft_isalpha(tmp->begin->next->c)\
-			|| tmp->begin->next->c == '\\')
+ 		|| tmp->begin->next->c == '\\')
 	{
-		if ((tmp = ft_result(tsh, tmp, 2, 1)) != NULL)
-			return (1);
+			if ((tmp = ft_result(tsh, tmp, 2, 1)) != NULL)
+				return (1);
 	}
 	else if (tmp->begin->next->c == '?')
 	{
@@ -85,12 +85,17 @@ void 			ft_replace_exp_hist(t_termc *tsh)
 	tmp.end = NULL;
 	ft_dupdlnk(tsh->line, &tmp);
 	ft_clean_line(tsh);
+	if (tsh->quotes)
+	{
+		while (tmp.begin && tmp.begin->index == 0)
+			tmp.begin = tmp.begin->next;
+	}
 	while (tmp.begin)
 	{
 		if (!ft_replace_pattern(&tmp, tsh))
 		{
 			push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
-					tmp.begin->index);
+				tmp.begin->index);
 			tmp.begin = tmp.begin->next;
 		}
 	}

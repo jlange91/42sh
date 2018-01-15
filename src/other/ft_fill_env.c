@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:42:28 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/12 16:52:48 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/04 14:49:24 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,5 @@ void				ft_fill_env(char **env)
 		ft_var_env(ft_replace_env(ft_setenv("PWD", &pwd2[4], tenv), tenv));
 		ft_var_pwd(ft_strdup(&pwd2[4]));
 	}
-	//	cmd->var = load_env(env);
+//	cmd->var = load_env(env);
 }

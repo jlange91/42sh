@@ -59,8 +59,8 @@ static inline char		*fill_path(char *str1, char *str2)
 	if (!line)
 		return (NULL);
 	fill_collins(str1, line, &j);
-	if (str1[ft_strlen(str1) - 1] != '/')
-		fill_collins("/", line, &j);
+    if (str1[ft_strlen(str1) - 1] != '/')
+	    fill_collins("/", line, &j);
 	fill_collins(str2, line, &j);
 	line[j] = 0;
 	return (line);
@@ -71,7 +71,7 @@ int		ft_try_cdpath(char *word, char **env, int opt)
 	char	**path;
 	char	*l_path;
 	int		i;
-
+    
 	if (word[0] == '/' || word[0] == '.')
 		return (0);
 	i = 0;
@@ -81,8 +81,8 @@ int		ft_try_cdpath(char *word, char **env, int opt)
 		l_path = fill_path(path[i], word);
 		if (try_path(l_path, opt) == 0)
 		{
-			free(l_path);
-			return (1);
+            free(l_path);
+            return (1);
 		}
 		free(l_path);
 		i++;

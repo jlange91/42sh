@@ -62,11 +62,12 @@ int     main(int ac, char **av, char **env)
 	t_cmd	*cmd;
 	t_shell	sh;
 
-	(void)ac;
-	(void)av;
+    (void)ac;
+    (void)av;
 	tsh = NULL;
 	ft_fill_env(env);
 	tsh = init_termc(ft_var_env(NULL));
+	ft_memset(&sh, 0, sizeof(sh));
 	ft_ret_sh(&sh);
 	ft_ret_tsh(&tsh);
 	ft_init_signal(); 			//NEW GESTIONNAIRE SIGNAL
@@ -88,10 +89,13 @@ int     main(int ac, char **av, char **env)
 			ft_add_tmp_history(tsh, tsh->save_line);
 		ft_strdel(&tsh->save_line);
 		cmd = ft_fill_cmd(sh.line, 0, 0);
-		free(sh.line);
+		free(sh.line);		
 		ft_exec_all_cmd(cmd);
 		ft_free_cmd(cmd);
+		
 	}
 	free_shell(tsh);
-	return (0);
+	ft_free_hash();
+	
+    return (0);
 }

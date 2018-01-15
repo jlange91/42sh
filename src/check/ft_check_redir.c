@@ -19,7 +19,7 @@ static int     check_token(char *line)
 	ret = (line[0] == '>') ? 1 : ret;
 	ret = (line[0] == '<') ? 2 : ret;
 	ret = (line[0] == '>' && line[1] == '&') ? 3 : ret;
-	ret = (line[0] == '>' && line[1] == '>') ? 4 : ret;
+    ret = (line[0] == '>' && line[1] == '>') ? 4 : ret;
 	ret = (line[0] == '<' && line[1] == '&') ? 5 : ret;
 	ret = (line[0] == '<' && line[1] == '<') ? 6 : ret;
 	ret = (line[0] == '<' && line[1] == '>') ? 7 : ret;
@@ -36,14 +36,14 @@ static int      check_next_token(char *line)
 	i += ft_skip_useless(line);
 	ret = (line[i] == '\n' || line[i] == 0) ? 1 : ret;
 	ret = (line[i] == ';') ? 2 : ret;
-	ret = (line[i] == '&') ? 3 : ret;
+    ret = (line[i] == '&') ? 3 : ret;
 	ret = (line[i] == '|') ? 4 : ret;
-	ret = (line[i] == '>') ? 5 : ret;
+    ret = (line[i] == '>') ? 5 : ret;
 	ret = (line[i] == '<') ? 6 : ret;
 	ret = (line[i] == '|' && line[i + 1] == '|') ? 7 : ret;
-	ret = (line[i] == '&' && line[i + 1] == '&') ? 8 : ret;
+    ret = (line[i] == '&' && line[i + 1] == '&') ? 8 : ret;
 	ret = (line[i] == '>' && line[i + 1] == '&') ? 9 : ret;
-	ret = (line[i] == '>' && line[i + 1] == '>') ? 10 : ret;
+    ret = (line[i] == '>' && line[i + 1] == '>') ? 10 : ret;
 	ret = (line[i] == '<' && line[i + 1] == '&') ? 11 : ret;
 	ret = (line[i] == '<' && line[i + 1] == '<') ? 12 : ret;
 	ret = (line[i] == '<' && line[i + 1] == '>') ? 13 : ret;
@@ -65,20 +65,20 @@ static void      print_error(int token)
 		write(2, ">", 1);
 	else if (token == 6)
 		write(2, "<", 1);
-	else if (token == 7)
-		write(2, "||", 2);
-	else if (token == 8)
-		write(2, "&&", 2);
-	else if (token == 9)
-		write(2, ">&", 2);
-	else if (token == 10)
-		write(2, ">>", 2);
-	else if (token == 11)
-		write(2, "<&", 2);
-	else if (token == 12)
-		write(2, "<<", 2);
-	else if (token == 13)
-		write(2, "<>", 2);
+    else if (token == 7)
+        write(2, "||", 2);
+    else if (token == 8)
+        write(2, "&&", 2);
+    else if (token == 9)
+        write(2, ">&", 2);
+    else if (token == 10)
+        write(2, ">>", 2);
+    else if (token == 11)
+        write(2, "<&", 2);
+    else if (token == 12)
+        write(2, "<<", 2);
+    else if (token == 13)
+        write(2, "<>", 2);
 
 
 	write(2, "'\n", 2);
