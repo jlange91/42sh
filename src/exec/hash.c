@@ -21,7 +21,7 @@ void    ft_free_hash(void)
     }
 }
 
-int		ft_fill_hash(char *name, char *path)
+int		check_access(char *name, char *path)
 {
 	t_shell *sh;
 	DIR		*dir;
@@ -55,7 +55,7 @@ static inline char		**fill_path(char **env)
 	return (NULL);
 }
 
-int		search_hash(char **av, char **env)
+int		ft_fill_hash(char **av, char **env)
 {
     t_shell *sh;
 	char	**path;
@@ -70,7 +70,7 @@ int		search_hash(char **av, char **env)
 	while (path && path[i])
 	{
 		l_path = ft_replace_line(path[i], "/", av[0]);
-		if (ft_fill_hash(av[0], l_path) == 1)
+		if (check_access(av[0], l_path) == 1)
 		{
             free(l_path);
             free_tab_2d(path);

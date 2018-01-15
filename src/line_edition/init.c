@@ -108,5 +108,6 @@ t_termc						*init_termc(char **env)
 	tsh->hdoc = 0;
 	tsh->repl = 0;
 	tsh->sigint = 0;
+	tsh->quote_no = 0;
 	return (tsh);
 }

@@ -42,7 +42,7 @@ t_lineterm	*ft_cut_split(t_lineterm *tmp, t_termc *tsh)
 	free(del);
 	return (tmp);
 }
-
+														//A CORRIGER TODAY CPY-CUt-PAST
 void    ft_cut_line(t_lineterm *end, t_termc *tsh)
 {
 	t_lineterm  *tmp;

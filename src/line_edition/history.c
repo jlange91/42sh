@@ -26,6 +26,8 @@ int		ft_find_history(t_termc *tsh)
         return (0);
 	ft_free_history(tsh->histmp);
 	str = (tsh->quotes) ? ft_to_str(tsh, 1) : ft_to_str(tsh, 0);
+	if (str == NULL)
+		return (0);
     while (hist)
 	{
 		if (!ft_strncmp(str, hist->data, ft_strlen(str)))

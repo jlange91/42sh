@@ -79,17 +79,15 @@ void 			ft_replace_exp_hist(t_termc *tsh)
 {
 	dlist 		tmp;
 
-	if (!tsh->histlist && !tsh->histlist->end)
+	if ((!tsh->histlist && !tsh->histlist->end) || tsh->quote_no)
 		return ;
 	tmp.begin = NULL;
 	tmp.end = NULL;
 	ft_dupdlnk(tsh->line, &tmp);
 	ft_clean_line(tsh);
 	if (tsh->quotes)
-	{
 		while (tmp.begin && tmp.begin->index == 0)
 			tmp.begin = tmp.begin->next;
-	}
 	while (tmp.begin)
 	{
 		if (!ft_replace_pattern(&tmp, tsh))

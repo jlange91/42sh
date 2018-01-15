@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/15 18:53:12 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/15 19:00:55 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void					ft_exec(t_cmd *cmd, char **av, char **env)
 	pid_t	father;
 	int		ret;
 
-	search_hash(av, env);
+	ft_fill_hash(av, env);
 	father = fork();
 	if (father > 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/15 18:45:44 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/15 19:02:57 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void					ft_exec_pipe(char **av, char **env)
 {
 	int		ret;
 
-	search_hash(av, env);
+	ft_fill_hash(av, env);
     ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
     av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
     if (ret != 0)
@@ -83,7 +83,7 @@ void					ft_exec_pipe(char **av, char **env)
             ft_putendl_fd(av[0], 2);
         }
         else
-            ft_perror("shell", errno, av[0]);
+            ft_perror("shell", ret, av[0]);
         exit(1);
     }
 }

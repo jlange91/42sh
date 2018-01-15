@@ -33,8 +33,11 @@ static inline void 	ft_sigwinch(t_termc *tsh)
 		save = ft_to_str(tsh, 0);
 		ft_free_dlist(&tsh->line);
 		ft_init_console(tsh, tsh->line);
-		ft_cpy_to_line(save, tsh);
-		free(save);
+		if (save != NULL)
+		{
+			ft_cpy_to_line(save, tsh);
+			free(save);
+		}
 		ft_display(tsh);
 	}
 }

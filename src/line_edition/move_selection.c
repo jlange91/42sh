@@ -32,6 +32,8 @@ void	ft_move_right(t_lineterm *end, t_termc *tsh)
     {
         if (tsh->keyflag->underline && end->next->under != 1)
             end->next->under = 1;
+		else if (tsh->keyflag->underline && end->next->under == 1)
+			end->next->under = 0;
         end->s_pos = 0;
         end->next->s_pos = 1;
         if (!end->next->next)
@@ -56,6 +58,8 @@ void    ft_move_left(t_lineterm *end, t_termc *tsh)
     {
         if (tsh->keyflag->underline && end->under != 1)
             end->under = 1;
+		else if (tsh->keyflag->underline && end->under == 1)
+			end->under = 0;
         end->s_pos = 0;
         end->prev->s_pos = 1;
         tsh->line->last = 0;

@@ -9,9 +9,9 @@
 # include "../libft/include/libft.h"
 # include <errno.h>
 # include <fcntl.h>
-# include "hash.h"
 #include <dirent.h>
 #include <sys/stat.h>
+#include "hash.h"
 
 #define PATH_MAX 2048
 
@@ -133,6 +133,7 @@ typedef struct          s_senti_auto
 typedef struct          s_termc
 {
 	int					quotes;
+	int 				quote_no;
 	int 				hdoc;
     int                 auto_active;        //autocomple
     int                 multiauto_active;   //autocomple
@@ -186,7 +187,7 @@ typedef struct		s_cmd
 typedef struct      s_shell
 {
     char    *line;
-    t_hash  hash[1000];
+    t_hash  hash[SIZEH];
 }                   t_shell;
 
 typedef struct      s_redir
@@ -320,8 +321,7 @@ int	ft_check_redir(t_shell *sh);
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j);
 
+int     ft_fill_hash(char **av, char **env);
 
-
-int		search_hash(char **av, char **env);
 
 #endif

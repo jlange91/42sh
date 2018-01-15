@@ -48,7 +48,7 @@ static int     skip_quote(char *line, int *i)
     int save;
     char c;
     int ret;
-    
+
     save = *i;
     if (line[*i] == '\'' || line[*i] == '"' || line[*i] == '`')
     {
