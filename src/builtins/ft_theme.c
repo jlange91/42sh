@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:50:41 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/09 15:18:48 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/22 14:44:15 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	show_usage(void)
 	ft_putstr("⎛  theme_hour_ | theme_prompt_ | theme_path_ | theme_host |");
 	ft_putendl(" | theme_line_ | theme_global_ ⎞");
 	ft_putstr("Ensuite precisez la couleur comme par exemple : ");
-	ft_putendl("theme_hour_GREEN, mettra l'heure en vert");
+	ft_putstr("theme_hour_GREEN, mettra l'heure en vert");
 }
 
 void	ft_theme(t_cmd *cmd, t_termc *tsh)
@@ -76,18 +76,21 @@ void	ft_theme(t_cmd *cmd, t_termc *tsh)
 		show_color();
 		show_usage();
 	}
-	if (!ft_strncmp(cmd->av[0], "theme_hour_", 11))
-		ft_theme_hour(cmd->av[0], tsh);
-	else if (!ft_strncmp(cmd->av[0], "theme_prompt_", 13))
-		ft_theme_prompt(cmd->av[0], tsh);
-	else if (!ft_strncmp(cmd->av[0], "theme_path_", 11))
-		ft_theme_path(cmd->av[0], tsh);
-	else if (!ft_strncmp(cmd->av[0], "theme_host_", 11))
-		ft_theme_host(cmd->av[0], tsh);
-	else if (!ft_strncmp(cmd->av[0], "theme_line_", 11))
-		ft_theme_line(cmd->av[0], tsh);
-	else if (!ft_strncmp(cmd->av[0], "theme_global_", 13))
-		ft_theme_global(cmd->av[0], tsh);
 	else
-		ft_putstr_fd("Mauvaise syntax", 2);
+	{
+		if (!ft_strncmp(cmd->av[0], "theme_hour_", 11))
+			ft_theme_hour(cmd->av[0], tsh);
+		else if (!ft_strncmp(cmd->av[0], "theme_prompt_", 13))
+			ft_theme_prompt(cmd->av[0], tsh);
+		else if (!ft_strncmp(cmd->av[0], "theme_path_", 11))
+			ft_theme_path(cmd->av[0], tsh);
+		else if (!ft_strncmp(cmd->av[0], "theme_host_", 11))
+			ft_theme_host(cmd->av[0], tsh);
+		else if (!ft_strncmp(cmd->av[0], "theme_line_", 11))
+			ft_theme_line(cmd->av[0], tsh);
+		else if (!ft_strncmp(cmd->av[0], "theme_global_", 13))
+			ft_theme_global(cmd->av[0], tsh);
+		else
+			ft_putstr_fd("Mauvaise syntax", 2);
+	}
 }

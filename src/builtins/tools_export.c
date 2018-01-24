@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/13 14:25:57 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/04 16:07:37 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/22 14:31:11 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		only_p(t_cmd *cmd)
 		if (ft_strcmp(cmd->av[i], "-p"))
 			return (0);
 	}
-	ft_display_export(cmd->var);
+	ft_display_export(ft_var_var(NULL));
 	return (1);
 }
 
@@ -58,4 +58,47 @@ int		check_pattern(char *str)
 		ft_free_tab(tmp);
 	}
 	return (1);
+}
+
+void	add_each(t_cmd *cmd, int i, char *tmp)
+{
+	char	*str;
+
+	str = NULL;
+	if (ft_getenv(tmp, ft_var_var(NULL)) == NULL)
+	{
+		str = ft_strdup(cmd->av[i]);
+		ft_var_var(rapid_set(str, ft_var_var(NULL), 0));
+		if (ft_getenv(tmp, ft_var_local(NULL)) != NULL)
+		{
+			replace_elem(tmp, str, ft_var_local(NULL));
+			free(str);
+		}
+		else
+			ft_var_env(rapid_set(str, ft_var_env(NULL), 1));
+	}
+	else if (ft_getenv(tmp, ft_var_var(NULL)) != NULL)
+	{
+		replace_elem(tmp, cmd->av[i], ft_var_var(NULL));
+		replace_elem(tmp, cmd->av[i], ft_var_env(NULL));
+		if (ft_getenv(tmp, ft_var_local(NULL)) != NULL)
+			replace_elem(tmp, cmd->av[i], ft_var_local(NULL));
+	}
+}
+
+void	basic_replace(char *compare, char *input, char **env)
+{
+	int		i;
+
+	i = -1;
+	while (env[++i])
+	{
+		if (ft_strncmp(compare, env[i], ft_strlen(compare)) == 0)
+		{
+			free(env[i]);
+			env[i] = ft_strdup(input);
+		}
+		else if (ft_strncmp(input, env[i], ft_strlen(input)) == 0)
+			return ;
+	}
 }

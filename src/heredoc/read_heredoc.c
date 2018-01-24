@@ -1,111 +1,108 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_heredoc.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/20 15:04:12 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/23 16:00:20 by jlange           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 #include "../../inc/sh21.h"
 
-static inline char	*ft_new_line(char **str)
+static	int		ft_key_and_char1(t_termc *tsh, long c, char *word)
 {
-	int nb;
-	char *ret;
-	int i;
-
-	nb = ft_strlen(*str);
-	i = 0;
-	if (!(ret = (char*)malloc(sizeof(char) * (nb + 2))))
-		return (NULL);
-	while ((*str)[i])
+	if ((char)c == '\n')
 	{
-		ret[i] = (*str)[i];
-		i++;
+		if (ft_line_hdoc(tsh, word))
+			return (0);
+		return (1);
 	}
-	ret[i] = '\n';
-	ret[i + 1] = 0;
-	free(*str);
-	return (ret);
-}
-
-static inline void ft_display_prompt_quotes(t_termc *tsh)
-{
-	int 		i;
-	char 		*prompt;
-
-	ft_free_dlist(&tsh->line);
-	tsh->line->lnk_before = 0;
-	prompt = "heredoc> ";
-	i = -1;
-	while (prompt[++i])
-		push_backdlst(tsh->line, prompt[i], 0);
-	i = 0;
-	while (i < (int)tsh->console->total_line)
+	if ((char)c == EOT)
+		ft_ctr_d(tsh);
+	if ((ft_action_key(tsh->line, tsh, c) == 0 && ft_isprint((char)c)))
 	{
-		tputs(tsh->term->dostr, 1, ft_inputstr);
-		i++;
-	}
-	ft_display(tsh);
-}
-
-static inline char	*ft_readline_hdoc(t_termc *t)
-{
-	long	c;
-
-	c = 0;
-	ft_display_prompt_quotes(t);
-	while (read(0, &c, sizeof(c)))
-	{
-		if (c == '\n')
-			break ;
-		if ((ft_is_key(t->line, t, c) == 0 && ft_isprint((char)c)))
-		{
-			(t->line->lnk_before) ? ft_insert_dlnk(t->line->end, t, c, 1) :
-			push_backdlst(t->line, c, 1);
-		}
+		if (tsh->line->lnk_before)
+			ft_insert_dlnk(tsh->line->end, tsh, c, 1);
 		else
-			t->line->lnk_before = 1;
-		if (t->line->last)
-			t->line->lnk_before = 0;
-		c = 0;
-		ft_display(t);
+			push_backdlst(tsh->line, c, 1);
+		if (ft_isprint((char)c) && c != BACKSPACE && c
+				!= LEFT && c != RIGHT && c != UP && c != DOWN)
+			ft_find_history(tsh);
 	}
-	if (t->console->total_line < 1)
-		ft_putchar('\n');
-	return (ft_to_str(t, 1));
+	else
+		tsh->line->lnk_before = 1;
+	if (tsh->line->last)
+		tsh->line->lnk_before = 0;
+	return (1);
 }
 
-char  *ft_line_hdoc(char *end)
+static	char	*ft_readline_hdoc(char *word, t_termc *tsh)
 {
-	int 	opt;
-	char 	*tmp;
-	char 	*line;
-	char 	*line_tmp;
-	t_termc *tsh;
+	char		k;
+	long		c;
+	static int	stop;
 
+	if (isatty(0))
+	{
+		tsh->hdoc = 1;
+		ft_fill_history(tsh);
+		ft_display_prompt_hdoc(tsh);
+		while (read(0, &k, sizeof(k)))
+		{
+			if (ft_signal_here(tsh))
+				return ("\0");
+			if (ft_what_key(&c, &stop, k))
+				continue ;
+			if (!ft_key_and_char1(tsh, c, word))
+				break ;
+			ft_display(tsh);
+		}
+		ft_free_dlist(&tsh->line);
+		write(1, "\n", 1);
+		return (ft_ret_word_hdoc(NULL, 0));
+	}
+	return (NULL);
+}
+
+static void		fill_cmd_hrdc(t_cmd *cmd, t_termc *tsh, int i)
+{
+	char		*word;
+
+	word = ft_ret_word(&cmd->line[i]);
+	if (cmd->hrdc)
+		free(cmd->hrdc);
+	cmd->hrdc = ft_strdup(ft_readline_hdoc(word, tsh));
+	if (word)
+		free(word);
+	ft_ret_word_hdoc(NULL, 1);
+}
+
+int				ft_hdoc(t_cmd *cmd)
+{
+	int			i;
+	t_termc		*tsh;
+
+	i = 0;
 	tsh = ft_ret_tsh(NULL);
-	opt = 0;
-	tsh->hdoc = 1;
-	tsh->console->total_line = 0;
-	while ((line = ft_readline_hdoc(tsh)) != NULL)
+	ft_init_terminal_mode(tsh);
+	while (cmd->line[i])
 	{
-		line_tmp = line;
-		if (!tsh->hdoc)
+		i += ft_skip_quote(&cmd->line[i]);
+		i += ft_skip_dquote(&cmd->line[i]);
+		if (cmd->line[i] == '<' && cmd->line[i + 1] == '<')
 		{
-			if (tmp)
-				free(tmp);
-			return (line);
+			i += 2;
+			fill_cmd_hrdc(cmd, tsh, i);
 		}
-		if (opt == 1)
-		{
-			opt = 0;
-			line = ft_free_join(tmp, line, 'B');
-		}
-		if (!ft_strcmp(line_tmp, end))
-		{
-			ft_putchar('\n');
-			break ;
-		}
-		else
-		{
-			tmp = ft_new_line(&line);
-			opt = 1;
-		}
+		if (ft_backslash_word(&cmd->line[i]) > 0)
+			i++;
+		i++;
 	}
-	return (line);
+	ft_end_term(tsh);
+	return (0);
 }

@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tools_replace2.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 16:00:29 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 16:00:53 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 #include "../../inc/line_edition.h"
 
-void 	ft_add_space(char **line, char **s_line, char *word)
+void		ft_add_space(char **line, char **s_line, char *word)
 {
-	int 	i;
-	long  	c;
-	char 	*str;
+	int		i;
+	long	c;
+	char	*str;
 
 	if (!(*line) || !(*s_line) || !word)
 		return ;
@@ -29,10 +41,10 @@ void 	ft_add_space(char **line, char **s_line, char *word)
 	}
 }
 
-void ft_join_all(char *word, char **line_tmp, int ret)
+void		ft_join_all(char *word, char **line_tmp, int ret)
 {
 	*line_tmp = (*line_tmp == NULL) ? ft_strdup(word) :
-	ft_free_join(*line_tmp, word, 'L');
+		ft_free_join(*line_tmp, word, 'L');
 	if (ret && word)
 		free(word);
 }

@@ -6,14 +6,14 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:24:21 by stvalett          #+#    #+#             */
-/*   Updated: 2017/08/29 14:06:27 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/23 15:33:52 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
 #include "../../inc/quote.h"
 
-void    push_backdlst(dlist *line, int c, int i)
+void			push_backdlst(dlist *line, int c, int i)
 {
 	t_lineterm	*new;
 
@@ -21,19 +21,19 @@ void    push_backdlst(dlist *line, int c, int i)
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
 	new->c = (char)c;
-    new->under = 0;
+	new->under = 0;
 	new->index = i;
 	new->s_pos = 1;
 	new->next = NULL;
 	new->prev = line->end;
 	if (line->end)
 		line->end->next = new;
-    else
-        line->begin = new;
+	else
+		line->begin = new;
 	line->end = new;
 }
 
-void    push_backhist(hlist *h, const char *str, int index, int n)
+void			push_backhist(hlist *h, const char *str, int index, int n)
 {
 	t_history	*new;
 
@@ -53,7 +53,7 @@ void    push_backhist(hlist *h, const char *str, int index, int n)
 	h->end = new;
 }
 
-t_lineterm *find_cursor(t_lineterm *end, int flag)
+t_lineterm		*find_cursor(t_lineterm *end, int flag)
 {
 	if (flag)
 	{
@@ -75,13 +75,13 @@ t_lineterm *find_cursor(t_lineterm *end, int flag)
 	}
 }
 
-int		ft_count_dlnk(t_termc *tsh, int q)
+int				ft_count_dlnk(t_termc *tsh, int q)
 {
-	t_lineterm *tmp;
+	t_lineterm	*tmp;
 	int			i;
 
 	tmp = tsh->line->begin;
-	tmp = (tmp->next && q) ? ft_dont_get_prompt(tmp) : ft_dontGetPrompt2(tmp);
+	tmp = (tmp->next && q) ? ft_ps2(tmp) : ft_ps1(tmp);
 	i = 0;
 	while (tmp)
 	{
@@ -91,9 +91,9 @@ int		ft_count_dlnk(t_termc *tsh, int q)
 	return (i);
 }
 
-void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
+void			ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 {
-	t_lineterm  *new;
+	t_lineterm	*new;
 
 	end = find_cursor(end, 1);
 	if (end->index == 0)
@@ -106,7 +106,7 @@ void  ft_insert_dlnk(t_lineterm *end, t_termc *tsh, int c, int i)
 	if ((new = (t_lineterm *)malloc(sizeof(t_lineterm))) == NULL)
 		exit(1);
 	new->c = (char)c;
-    new->under = 0;
+	new->under = 0;
 	new->s_pos = 1;
 	new->index = i;
 	new->next = end;

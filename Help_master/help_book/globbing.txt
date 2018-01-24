@@ -1,0 +1,24 @@
+NAME	GLOBBLING
+
+SYNOPSIS
+        AUCUN
+
+DESCRIPTION
+
+		Pattern : 
+				* = Match avec tout
+				^ = Ne pas trouver
+				? = peut remplacer n'importe quel caractere
+				[letter-letter] = recherche compris entre
+				{pattern,pattern} = Recherche tous les pattern qui sont entre accolade
+
+Exmeple : 	l*/ = good pattern
+			* = good pattern
+			*?/ = good pattern
+			[?-z]* = good pattern
+			[^a-z] = Good Pattern
+			{a*,[a-z]*} = good pattern
+
+Command :
+		Placer votre curseur apres votre pattern, Taper sur TAB pour replace sur
+		la ligne.

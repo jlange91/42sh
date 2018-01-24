@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:13:58 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/08 14:52:51 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/24 15:07:44 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,42 +59,55 @@ void	export_flagb(t_cmd *cmd)
 	i = 1;
 	while (cmd->av[++i])
 	{
-		if (ft_strchr(cmd->av[i], '=') && ft_strchr(cmd->av[i], '-'))
+		if (check_pattern(cmd->av[i]) == 0)
 		{
-			ft_putendl_fd("bad option -=", 2);
-			return ;
+			ft_putstr_fd("export: ", 2);
+			ft_putstr_fd(cmd->av[i], 2);
+			ft_putstr_fd(": not a valid identifier", 2);
+			ft_singleton(1, 1);
 		}
 		else if (!ft_strchr(cmd->av[i], '=') || cmd->av[i][0] == '=')
 		{
 			ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
-			return ;
+			ft_singleton(1, 1);
 		}
 		else if (check_correct_arg(cmd, i) == -1)
-			return ;
+			ft_singleton(1, 1);
 	}
 	i = 1;
 	while (cmd->av[++i])
 		export_flag_b(cmd, i);
+	ft_singleton(1, 1);
 }
 
 void	export_no_eq(t_cmd *cmd, int i)
 {
-	if (ft_getenv(cmd->av[i], cmd->var) == NULL && !ft_strchr(cmd->av[i], '='))
-		cmd->var = rapid_set(ft_strjoin(cmd->av[i], "=''"), cmd->var, 1);
-	else if (ft_getenv(cmd->av[i], cmd->var) != NULL && \
+	if (ft_getenv(cmd->av[i], ft_var_local(NULL)) != NULL && \
+			ft_getenv(cmd->av[i], ft_var_var(NULL)) == NULL)
+	{
+		ft_var_var(rapid_set(ft_getenv(cmd->av[i], ft_var_local(NULL)),\
+					ft_var_var(NULL), 0));
+		ft_var_env(rapid_set(ft_getenv(cmd->av[i], ft_var_local(NULL)),\
+					ft_var_env(NULL), 0));
+	}
+	else if (ft_getenv(cmd->av[i], ft_var_var(NULL)) == NULL \
+			&& !ft_strchr(cmd->av[i], '='))
+		ft_var_var(rapid_set(ft_strjoin(cmd->av[i], "=''"), \
+					ft_var_var(NULL), 1));
+	else if (ft_getenv(cmd->av[i], ft_var_var(NULL)) != NULL && \
 			!ft_strchr(cmd->av[i], '=') && \
 			ft_getenv(cmd->av[i], ft_var_env(NULL)) == NULL)
 	{
-		if (ft_strchr(ft_getenv(cmd->av[i], cmd->var), '\''))
+		if (ft_strchr(ft_getenv(cmd->av[i], ft_var_var(NULL)), '\''))
 			ft_var_env(rapid_set(ft_strjoin(cmd->av[i], "="), \
 						ft_var_env(NULL), 1));
 		else
-			ft_var_env(rapid_set(ft_getenv(cmd->av[i], cmd->var), \
+			ft_var_env(rapid_set(ft_getenv(cmd->av[i], ft_var_var(NULL)), \
 						ft_var_env(NULL), 0));
 	}
 }
 
-void	export_with_eq(t_cmd *cmd, int i)
+int		export_with_eq(t_cmd *cmd, int i)
 {
 	char	**tmp;
 	char	*str;
@@ -103,22 +116,14 @@ void	export_with_eq(t_cmd *cmd, int i)
 	if (cmd->av[i][0] == '=')
 	{
 		ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
-		return ;
+		return (1);
 	}
 	tmp = ft_strsplit(cmd->av[i], '=');
 	if (tmp[0])
 	{
-		if (ft_getenv(tmp[0], cmd->var) == NULL)
-		{
-			str = ft_strdup(cmd->av[i]);
-			cmd->var = rapid_set(str, cmd->var, 0);
-			ft_var_env(rapid_set(str, ft_var_env(NULL), 1));
-		}
-		if (ft_getenv(tmp[0], cmd->var) != NULL)
-		{
-			replace_elem(tmp[0], cmd->av[i], cmd->var);
-			replace_elem(tmp[0], cmd->av[i], ft_var_env(NULL));
-		}
+		add_each(cmd, i, tmp[0]);
 		ft_free_tab(tmp);
+		return (0);
 	}
+	return (0);
 }

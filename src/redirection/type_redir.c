@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   type_redir.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/19 16:30:21 by jlange            #+#    #+#             */
+/*   Updated: 2018/01/19 16:34:19 by jlange           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/sh21.h"
 #include "../../inc/quote.h"
 
@@ -10,7 +22,8 @@ int				ft_check_fd_in(char *str, int index)
 	save = index;
 	while (index >= 0 && ft_isdigit(str[index]))
 		index--;
-	if (index >= 0 && str[index] != ' ' && str[index] != '\t' && str[index] != '\n')
+	if (index >= 0 && str[index] != ' ' && str[index] != '\t' &&
+			str[index] != '\n')
 		return (ret);
 	ret = (save != index) ? ft_atoi(&str[index + 1]) : ret;
 	while (index != save)
@@ -29,12 +42,12 @@ int				ft_check_type_redir(char *str)
 	ret = (str[0] == '>') ? 1 : ret;
 	ret = (str[0] == '<') ? 2 : ret;
 	ret = (str[0] == '>' && str[1] == '&') ? 3 : ret;
-    ret = (str[0] == '>' && str[1] == '>') ? 4 : ret;
+	ret = (str[0] == '>' && str[1] == '>') ? 4 : ret;
 	ret = (str[0] == '<' && str[1] == '&') ? 5 : ret;
 	ret = (str[0] == '<' && str[1] == '<') ? 6 : ret;
 	ret = (str[0] == '<' && str[1] == '>') ? 7 : ret;
 	ret = (str[0] == '>' && str[1] == '&' && str[2] == '-' &&
-	(str[3] == ' ' || str[3] == '\t' || str[3] == '\n')) ? 8 : ret;
+			(str[3] == ' ' || str[3] == '\t' || str[3] == '\n')) ? 8 : ret;
 	str[0] = ' ';
 	if (ret > 2)
 		str[1] = ' ';
@@ -45,13 +58,13 @@ int				ft_check_type_redir(char *str)
 
 int				directory_fd(char *line, int type)
 {
-	char *word;
-	int fd;
-	int i;
+	char	*word;
+	int		fd;
+	int		i;
 
 	fd = 0;
-	i = 0;	
-	line += ft_skip_useless(line);	
+	i = 0;
+	line += ft_skip_useless(line);
 	word = ft_ret_word(line);
 	if (type == 1 || type == 3)
 		fd = open(word, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -65,17 +78,17 @@ int				directory_fd(char *line, int type)
 		fd = open(word, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd != -1 && type == 4)
 		lseek(fd, 0, SEEK_END);
+	if (fd == -1)
+		ft_perror("shell", errno, word);
+	if (word)
+		free(word);
 	return (fd);
 }
 
-t_redir             *type_redir(char *str, int index)
+t_redir			*type_redir(char *str, int index, int len, int i)
 {
 	t_redir	*red;
-	int		len;
-	int		i;
 
-	len = 0;
-	i = 0;
 	if (!(red = (t_redir*)malloc(sizeof(t_redir) * 1)))
 	{
 		ft_perror("malloc", errno, NULL);
@@ -96,6 +109,5 @@ t_redir             *type_redir(char *str, int index)
 	red->type = ft_check_type_redir(str);
 	if (red->type != 8 && red->out == -1)
 		red->out = directory_fd(str, red->type);
-	//printf("in : {%d} out {%d} type: {%d}\nstr : {%s}\n", red->in, red->out, red->type, &str[-index]);
 	return (red);
 }

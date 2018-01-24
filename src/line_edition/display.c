@@ -1,163 +1,114 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   display.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 17:55:17 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 18:37:10 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-/************************************************************************************
- * FUNCTION REPLACE CURSOR
- * ALL VARIBLE
- * 						up ===> up for how time cursor jump
- *
- * 	Explication : This function to place correctly
- *
- * NO NORME
- * **********************************************************************************/
-static inline int    ft_cursor_pos(t_lineterm *end, t_termc *tsh)
+static	inline	int		ft_cursor_pos(t_lineterm *end, t_termc *tsh)
 {
-	int 		up;
-	int 		i;
-	t_lineterm 	*tmp;
+	int					up;
+	int					i;
 
 	up = 0;
-    if (!end)
-        return (-1);
-    while (end->s_pos == 0 && end->index != 0)
-    {
-        if ((tsh->console->char_pos == 0  || end->c == '\n') && end->prev)
-        {
-            tputs(tsh->term->upstr, 1, ft_inputstr);
-            tsh->console->char_pos = get_columns() - 1;
-			if (end->c == '\n')
+	if (!end)
+		return (-1);
+	while (end->s_pos == 0 && end->index != 0)
+	{
+		if ((tsh->console->char_pos == 0 || end->c == '\n') && end->prev)
+		{
+			tputs(tsh->term->upstr, 1, ft_inputstr);
+			tsh->console->char_pos = get_columns() - 1;
+			if (!ft_ret_ligne(end, tsh))
 			{
-				i = 0;
-				tmp = end;
-				while(tmp && (tmp = tmp->prev) && tmp->c != '\n')
-					i++;
-				i++;
-				if (i >= (int)tsh->console->char_pos)
-				{
-					tputs(tparm(tsh->term->ristr, i % tsh->console->char_pos + 1), 1, ft_inputstr);
-					tsh->console->char_pos = i % tsh->console->char_pos;
-				}
-				else
-					tputs(tparm(tsh->term->ristr, i % get_columns()), 1, ft_inputstr);
+				i = -1;
+				while (++i < (int)get_columns() - 1)
+					tputs(tsh->term->ndstr, 1, ft_inputstr);
 			}
-			else
-				tputs(tparm(tsh->term->ristr, get_columns() - 1), 1, ft_inputstr);
 			up++;
-        }
-        tputs(tsh->term->lestr, 1, ft_inputstr);
-        tsh->console->char_pos--;
-        end = end->prev;
-    }
-    return (up);
+		}
+		tputs(tsh->term->lestr, 1, ft_inputstr);
+		tsh->console->char_pos--;
+		end = end->prev;
+	}
+	return (up);
 }
 
-/************************************************************************************
- * FUNCTION DEL_LINE
- * ALL VARIABLE
- * 							down ===> adjust cursor if not key_up or key_down
- *
- * 	Explication : This function catch all line and put correctly
- *
- * NO NORME
- * **********************************************************************************/
-static inline void    ft_del_line(t_termc *t)
+static	inline	void	ft_del_line(t_termc *t)
 {
-	int 	down;
+	int					down;
 
-	down = ft_singleton_down(-1);
+	down = ft_ret_down(-1);
 	while (down-- > 0)
 		tputs(t->term->dostr, 1, ft_inputstr);
 	t->console->total_line--;
 	if (t->console->total_line > 0)
-		tputs(tparm(t->term->upstru, t->console->total_line), 1, ft_inputstr);
-	tputs(tparm(t->term->lestru, t->console->char_pos), 1, ft_inputstr);
+		while (t->console->total_line--)
+			tputs(t->term->upstr, 1, ft_inputstr);
+	while (t->console->char_pos--)
+		tputs(t->term->lestr, 1, ft_inputstr);
 }
 
-/************************************************************************************
- * FUNCTION DISPLAY CARACTERE BY CARACTERE
- * ALL VARIABLE			ret ===> the total number from line
- *						col ===> if char_pos == col, we down cursor
- *
- *	Explication : This function display caractere by caractere correctly
- *
- * NO NORME
- * *********************************************************************************/
-static void		ft_display_char_split(t_lineterm *begin, t_termc *tsh)
+static	void			ft_display_char_split(t_lineterm *begin, t_termc *tsh)
 {
-    size_t  	col;
+	size_t				col;
 
-    col = get_columns() - 1;
-    if (begin->index == 0 && !tsh->quotes)
-        ft_putstr(tsh->color[tsh->prompt]);
-    else
-        ft_putstr(RESET);
-    if (tsh->console->char_pos == col ||begin->c == '\n')
-    {
+	col = get_columns() - 1;
+	if (begin->index == 0 && !tsh->quotes)
+		ft_putstr(tsh->color[tsh->prompt]);
+	else
+		ft_putstr(RESET);
+	if (tsh->console->char_pos == col || begin->c == '\n')
+	{
 		if (begin->c == '\n')
 			tputs(tsh->term->cestr, 1, ft_inputstr);
-        tputs(tsh->term->dostr, 1, ft_inputstr);
-        tsh->console->total_line++;
-        tsh->console->char_pos = 0;
-    }
-    if (begin->under)
-        ft_putstr(tsh->color[tsh->linep]);
-    if (begin->c != '\t' && begin->c != '\n')
-        ft_putchar(begin->c);
-    tsh->console->char_pos++;
-    ft_putstr(RESET);
+		tputs(tsh->term->dostr, 1, ft_inputstr);
+		tsh->console->total_line++;
+		tsh->console->char_pos = 0;
+	}
+	if (begin->under)
+		ft_putstr(tsh->color[tsh->linep]);
+	if (begin->c != '\t' && begin->c != '\n')
+		ft_putchar(begin->c);
+	tsh->console->char_pos++;
+	ft_putstr(RESET);
 }
 
-int    ft_display_char(t_lineterm *begin, t_termc *tsh)
+int						ft_display_char(t_lineterm *begin, t_termc *tsh)
 {
-    tsh->console->char_pos = 0;
-    tsh->console->total_line = 1;
-    while (begin)
-    {
-        ft_display_char_split(begin ,tsh);
-        begin = begin->next;
-    }
-    if (tsh->auto_active || tsh->multiauto_active)
-        tputs(tsh->term->cestr, 1, ft_inputstr);
-    else
-        tputs(tsh->term->cdstr, 1, ft_inputstr);
-    return (0);
+	tsh->console->char_pos = 0;
+	tsh->console->total_line = 1;
+	while (begin)
+	{
+		ft_display_char_split(begin, tsh);
+		begin = begin->next;
+	}
+	if (tsh->auto_active || tsh->multiauto_active)
+		tputs(tsh->term->cestr, 1, ft_inputstr);
+	else
+		tputs(tsh->term->cdstr, 1, ft_inputstr);
+	return (0);
 }
 
-/******************************************************************************
- * FUNCTION ALL_DISPLAY (AFTER CHECK KEY AND INSERT CARACTERE)
- * ALL VARIABLE			reset ====> Just reset static int up
- * 						down ====> for function del_line and how time cursor must down
- *						, to adjust good position; he gets from function
- *						ft_cursor_pos;
- *
- *	Explication : DISPLAY LOL ;)
- * NORME OK
- * ****************************************************************************/
-
-int 	ft_singleton_down(int len)
-{
-	static int  down;
-
-	if (len == 0)
-		down = 0;
-	else if (len == -1)
-		return (down);
-	else if (down != len)
-		down = len;
-	return (down);
-}
-
-void    ft_display(t_termc *tsh)
+void					ft_display(t_termc *tsh)
 {
 	tputs(tsh->term->vistr, 1, ft_inputstr);
-    ft_del_line(tsh);
-    ft_display_char(tsh->line->begin, tsh);
-    ft_singleton_down(ft_cursor_pos(tsh->line->end, tsh));
+	ft_del_line(tsh);
+	ft_display_char(tsh->line->begin, tsh);
+	ft_ret_down(ft_cursor_pos(tsh->line->end, tsh));
 	if ((tsh->auto_active || tsh->multiauto_active)\
-		&& tsh->console->total_line < 2 && !tsh->sigint)
+			&& tsh->console->total_line < 2 && !tsh->sigint)
 	{
 		ft_display_autocompletion(tsh);
 		return ;
 	}
-    tputs(tsh->term->vestr, 1, ft_inputstr);
+	tputs(tsh->term->vestr, 1, ft_inputstr);
 }

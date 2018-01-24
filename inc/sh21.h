@@ -87,7 +87,6 @@ typedef	struct			tlist
 
 typedef struct          s_key
 {
-    int                 backspace;
     int                 underline;
     int                 cl;
 	int                 k_tab;          //how time touch tab
@@ -177,6 +176,7 @@ typedef struct		s_cmd
 	char	        *line;
 	char	        **av;
 	int		        ac;
+    char            *hrdc;
 	int		        load;
     char	        **var;
     int             l_op;
@@ -225,7 +225,7 @@ int 		ft_find(t_termc *tsh, t_lineterm *begin, int *count);
 void 		ft_cpy_to_line(char *data, t_termc *tsh);
 void 		ft_dupdlnk(dlist *line, dlist *tmp);
 void 		ft_freedlnk(dlist *line);
-void 		push_dupdlst(dlist *line, int c, int pos, int index);
+void 		push_dupdlst(dlist *new, t_lineterm *line);
 int 		ft_word_here(t_lineterm *begin, char *word);
 /*********************************/
 /*			TOOL_REPLACE2 		 */
@@ -235,7 +235,7 @@ void 		ft_add_space(char **line, char **s_line, char *word);
 /*********************************/
 /*			REPLACE_GLOB 		 */
 /*********************************/
-void 		ft_replace_globbling_and_expansion(t_termc *tsh, t_lineterm *end);
+void 		ft_replace_glob_exp(t_termc *tsh, t_lineterm *end);
 
 /******************************************************************************/
 
@@ -245,16 +245,26 @@ void 		ft_replace_globbling_and_expansion(t_termc *tsh, t_lineterm *end);
 
 void		ft_exec(t_cmd *cmd, char **av, char **env);
 void		ft_exec_pipe(char **av, char **env);
+int			ft_exit_exec(t_cmd *cmd, int ret);
 
-/********************************/
-/*          singleton           */
-/********************************/
+/*          
+**singleton
+*/
 
 char	    **ft_var_env(char **arg);
 char	    **ft_var_var(char **arg);
 char	    *ft_var_pwd(char *arg);
 int		    ft_singleton(int nb, int opt);
 t_shell		*ft_ret_sh(t_shell *arg);
+
+/*          
+**singleton2
+*/
+
+char		**ft_var_local(char **arg);
+t_termc		*ft_ret_tsh(t_termc **arg);
+int 		ft_ret_down(int len);
+
 
 /********************************/
 /*            other             */
@@ -274,7 +284,7 @@ void		free_tab_2d(char **tab);
 int			tab_2d_len(char **tab);
 char		**rapid_set(char *input, char **env, int j);
 void		export_no_eq(t_cmd *cmd, int i);
-void		export_with_eq(t_cmd *cmd, int i);
+int			export_with_eq(t_cmd *cmd, int i);
 char		**load_env(char **env);
 void		export_flagb(t_cmd *cmd);
 void		replace_elem(char *compare, char *input, char **env);
@@ -296,6 +306,17 @@ void		ft_theme_prompt(char *str, t_termc *tsh);
 void		ft_theme_path(char *str, t_termc *tsh);
 void		ft_theme_global(char *str, t_termc *tsh);
 void		change_all_color(t_termc *tsh, int color);
+void		prepare_setlocal(t_cmd *cmd);
+char		**ft_var_local(char **arg);
+int			p_here(t_cmd *cmd);
+char		**init_local(void);
+void		add_each(t_cmd *cmd, int i, char *tmp);
+void		basic_replace(char *compare, char *input, char **env);
+void		check_env_export(char *tmp, char *str);
+int			place_me(t_cmd *cmd);
+void		update_local(int i, int j);
+void		update_export(int i, int j);
+int			ft_backslash_word(char *line);
 
 /********************************/
 /*         redirection          */
@@ -309,7 +330,7 @@ int         ft_count_char_word(char *line);
 int			ft_backup_stdin(int nb);
 int			ft_backup_stdout(int nb);
 int			ft_backup_stderr(int nb);
-t_redir     *type_redir(char *str, int index);
+t_redir     *type_redir(char *str, int index, int len, int i);
 void		ft_redirr_type8(t_redir *red);
 void		ft_redirr_type1(t_redir *red);
 void		ft_redirr_type2(t_redir *red);
@@ -321,7 +342,16 @@ int	ft_check_redir(t_shell *sh);
 
 t_cmd	*ft_fill_cmd(char *line, int i, int j);
 
-int     ft_fill_hash(char **av, char **env);
+/*
+** HEREDOC
+*/
 
+int     ft_fill_hash(char **av, char **env);
+int		ft_hdoc(t_cmd *cmd);
+char 	*ft_ret_word_hdoc(char **word, int flag);
+int				ft_signal_here(t_termc *tsh);
+int				ft_line_hdoc(t_termc *t, char *word);
+void			ft_display_prompt_hdoc(t_termc *tsh);
+void		ft_reinit_hash(void);
 
 #endif

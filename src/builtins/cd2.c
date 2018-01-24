@@ -6,17 +6,17 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:16 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/12 15:52:20 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/22 16:23:41 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/sh21.h"
 #include "../../inc/built_in.h"
 
-static inline void	replace_pwd(void)
+static	inline	void	replace_pwd(void)
 {
-	char *tmp;
-	char **tenv;
+	char				*tmp;
+	char				**tenv;
 
 	tenv = ft_var_env(NULL);
 	tmp = ft_getenv("PWD", tenv);
@@ -26,9 +26,9 @@ static inline void	replace_pwd(void)
 	ft_var_env(ft_replace_env(ft_setenv("PWD", ft_var_pwd(NULL), tenv), tenv));
 }
 
-int				ft_cd_l(char *path, int opt)
+int						ft_cd_l(char *path, int opt)
 {
-	char *curpath;
+	char				*curpath;
 
 	if (path[0] == '/')
 		curpath = ft_strdup(path);
@@ -55,9 +55,9 @@ int				ft_cd_l(char *path, int opt)
 	return (0);
 }
 
-int				ft_cd_p(char *path, int opt)
+int						ft_cd_p(char *path, int opt)
 {
-	char curpath[PATH_MAX];
+	char				curpath[PATH_MAX];
 
 	if (chdir(path) == -1)
 	{

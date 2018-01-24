@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 11:37:49 by adebrito          #+#    #+#             */
-/*   Updated: 2017/12/18 16:49:03 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/24 15:46:24 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	read_text(int fd)
 {
-	char	buff[120];
+	char	c;
 
 	if (fd == -1)
 		ft_putstr_fd("FILE NOT FOUND", 2);
 	else
 	{
-		while (read(fd, buff, 1))
-			ft_putchar(*buff);
+		while (read(fd, &c, 1))
+			ft_putchar(c);
 	}
 }
 
@@ -31,22 +31,22 @@ void	open_text1(char *str)
 
 	if (!ft_strcmp(str, "COPIER/COLLER"))
 	{
-		fd = open("/tmp/copcol.txt", O_RDONLY);
+		fd = open("/tmp/help_book/cpypast.txt", O_RDONLY);
 		read_text(fd);
 	}
 	if (!ft_strcmp(str, "COUPER/COLLER"))
 	{
-		fd = open("/tmp/coupcol.txt", O_RDONLY);
+		fd = open("/tmp/help_book/cutcpy.txt", O_RDONLY);
 		read_text(fd);
 	}
 	if (!ft_strcmp(str, "SE_DEPLACER"))
 	{
-		fd = open("/tmp/deplacement.txt", O_RDONLY);
+		fd = open("/tmp/help_book/deplacement.txt", O_RDONLY);
 		read_text(fd);
 	}
 	if (!ft_strcmp(str, "SELECTION"))
 	{
-		fd = open("/tmp/selection.txt", O_RDONLY);
+		fd = open("/tmp/help_book/selection.txt", O_RDONLY);
 		read_text(fd);
 	}
 }
@@ -57,17 +57,17 @@ void	open_text2(char *str)
 
 	if (!ft_strcmp(str, "AUTOCOMPLETION"))
 	{
-		fd = open("/tmp/autocompletion.txt", O_RDONLY);
+		fd = open("/tmp/help_book/autocompletion.txt", O_RDONLY);
 		read_text(fd);
 	}
 	if (!ft_strcmp(str, "GLOBBING"))
 	{
-		fd = open("/tmp/globbing.txt", O_RDONLY);
+		fd = open("/tmp/help_book/globbing.txt", O_RDONLY);
 		read_text(fd);
 	}
 	if (!ft_strcmp(str, "HISTORIQUE"))
 	{
-		fd = open("/tmp/historique.txt", O_RDONLY);
+		fd = open("/tmp/help_book/history.txt", O_RDONLY);
 		read_text(fd);
 	}
 }

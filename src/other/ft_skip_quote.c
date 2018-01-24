@@ -1,6 +1,18 @@
-int				ft_skip_quote(char *str)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_skip_quote.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 16:02:44 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 16:03:02 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+int		ft_skip_quote(char *str)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	if (str[0] == '\'')
@@ -13,9 +25,9 @@ int				ft_skip_quote(char *str)
 		return (0);
 }
 
-int				ft_skip_dquote(char *str)
+int		ft_skip_dquote(char *str)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	if (str[0] == '"')

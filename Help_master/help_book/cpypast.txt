@@ -1,0 +1,15 @@
+NAME
+        CPY_L   - - COPY LINE
+        PAST_L  - - PASTE LINE
+
+SYNOPSIS
+        AUCUN
+
+DESCRIPTION
+
+        Selectioner les lettres avec "SHIFT + ARROW" LEFT ou RIGHT.
+
+Command :
+        ALT + C                                     : copier.
+
+        ALT + V                                     : Coller.

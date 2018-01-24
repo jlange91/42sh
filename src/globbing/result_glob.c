@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   result_glob.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/19 18:20:38 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/19 18:33:51 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/globbing.h"
 
-static char	*ft_goodPath(char **s_tab, int *ret)
+static	char	*ft_goodpath(char **s_tab, int *ret)
 {
-	char	*new;
-	int		i;
+	char		*new;
+	int			i;
 
 	i = 0;
 	new = NULL;
@@ -13,7 +25,7 @@ static char	*ft_goodPath(char **s_tab, int *ret)
 			if (!ft_glob_here(s_tab[i]))
 				i++;
 			else
-				break;
+				break ;
 		new = ft_strdup(s_tab[0]);
 		*ret = i;
 		i = 1;
@@ -26,11 +38,11 @@ static char	*ft_goodPath(char **s_tab, int *ret)
 	return (new);
 }
 
-static t_glob	ft_fillGlob2(char *file, int ret, char **s_tab)
+static	t_glob	ft_fillglob2(char *file, int ret, char **s_tab)
 {
-	t_glob	glob;
-	int		k;
-	struct stat info;
+	t_glob		glob;
+	int			k;
+	struct stat	info;
 
 	glob.path = NULL;
 	ft_memset(&info, 0, sizeof(info));
@@ -50,10 +62,10 @@ static t_glob	ft_fillGlob2(char *file, int ret, char **s_tab)
 	return (glob);
 }
 
-static t_glob  *ft_addOpenGlobSplit(char **res, char **s_tab, int ret)
+static	t_glob	*ft_addopenglobsplit(char **res, char **s_tab, int ret)
 {
-	t_glob	*new;
-	int 	i;
+	t_glob		*new;
+	int			i;
 
 	if ((new = (t_glob *)malloc(sizeof(t_glob) * ft_count_dtab(res))) == NULL)
 		exit(0);
@@ -61,47 +73,47 @@ static t_glob  *ft_addOpenGlobSplit(char **res, char **s_tab, int ret)
 		ret = 99;
 	i = -1;
 	while (res[++i])
-		new[i] = ft_fillGlob2(res[i], ret, s_tab);
+		new[i] = ft_fillglob2(res[i], ret, s_tab);
 	new->len = ft_count_dtab(res);
 	return (new);
 }
 
-static void	ft_addOpenGlob(t_glob *glob, int star, char **str)
+static	void	ft_addopenglob(t_glob *glob, int star, char **str)
 {
-	t_glob	*new;
-	char	**s_tab;
-	char	**res;
-	char	*path;
-	int		ret;
+	t_glob		*new;
+	char		**s_tab;
+	char		**res;
+	char		*path;
+	int			ret;
 
 	if (!glob->path)
 		return ;
 	ret = 0;
 	s_tab = ft_add_slash(glob->path, glob->path[ft_strlen(glob->path) - 1]);
-	path = ft_goodPath(s_tab, &ret);
+	path = ft_goodpath(s_tab, &ret);
 	if ((res = ft_open(path, s_tab[ret], star, 0)) != NULL
-		&& ft_count_dtab(res) > 0)
+			&& ft_count_dtab(res) > 0)
 	{
-		new = ft_addOpenGlobSplit(res, s_tab, ret);
+		new = ft_addopenglobsplit(res, s_tab, ret);
 		ret = -1;
 		while (++ret < new->len)
-			ft_addOpenGlob(&new[ret], star, str);
+			ft_addopenglob(&new[ret], star, str);
 		ft_save_word(&new[0], str, new->len);
-		ft_freeall_glob(path, res, s_tab, new);
+		freeall(path, res, s_tab, new);
 		return ;
 	}
-	ft_freeall_glob(path, res, s_tab, NULL);
+	freeall(path, res, s_tab, NULL);
 }
 
-char 	*ft_resGlob(t_glob *glob, int star, char **str)
+char			*ft_resglob(t_glob *glob, int star, char **str)
 {
-    int i;
+	int			i;
 
-    i = 0;
-    while (i < glob->len)
-    {
-		ft_addOpenGlob(&glob[i], star, str);
-        i++;
-    }
+	i = 0;
+	while (i < glob->len)
+	{
+		ft_addopenglob(&glob[i], star, str);
+		i++;
+	}
 	return (*str);
 }

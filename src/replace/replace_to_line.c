@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   replace_to_line.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 15:54:50 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 15:56:21 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-static inline void ft_get_hist(char *word, char **line_tmp)
+static	void	ft_get_hist(char *word, char **line_tmp)
 {
-	int 	i;
-	char 	*str;
-	t_termc *tsh;
+	int			i;
+	char		*str;
+	t_termc		*tsh;
 
 	i = 0;
 	tsh = ft_ret_tsh(NULL);
@@ -19,15 +31,15 @@ static inline void ft_get_hist(char *word, char **line_tmp)
 	}
 	ft_replace_exp_hist(tsh);
 	str = ft_to_str(tsh, 0);
+	if (str && ft_strcmp(str, word))
+		tsh->repl = 1;
 	(!str) ? ft_join_all(word, line_tmp, 0) : ft_join_all(str, line_tmp, 1);
 	ft_free_dlist(&tsh->line);
-	if (str && ft_strlen(str) >= 1 && ft_strcmp(str, word))
-		tsh->repl = 1;
 }
 
-static inline void ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
+static	void	ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
 {
-	char *glob;
+	char		*glob;
 
 	if (flag == 0)
 	{
@@ -38,23 +50,23 @@ static inline void ft_findok(char *word, t_shell *sh, char **line_tmp, int flag)
 	else if (flag == 1)
 	{
 		((glob = ft_glob(word)) != NULL) ? ft_join_all(glob, line_tmp, 1) :
-		ft_join_all(word, line_tmp, 0);
+			ft_join_all(word, line_tmp, 0);
 	}
 	else if (flag == 2)
 		ft_get_hist(word, line_tmp);
 }
 
-static inline char *ft_split_res(char **save_line, t_shell *sh, char **new_tab)
+static	char	*ft_split_res(char **save_line, t_shell *sh, char **new_tab)
 {
-	char 	*line_tmp;
-	int 	i;
+	char		*line_tmp;
+	int			i;
 
 	i = 0;
 	line_tmp = NULL;
 	while (new_tab[i])
 	{
 		if ((ft_strchr(new_tab[i], '$') || ft_strchr(new_tab[i], '~')) &&\
-			!ft_glob_here(new_tab[i]))
+				!ft_glob_here(new_tab[i]))
 			ft_findok(new_tab[i], sh, &line_tmp, 0);
 		else if (ft_glob_here(new_tab[i]))
 			ft_findok(new_tab[i], sh, &line_tmp, 1);
@@ -68,11 +80,11 @@ static inline char *ft_split_res(char **save_line, t_shell *sh, char **new_tab)
 	return (line_tmp);
 }
 
-void 	ft_result_replace(t_shell *sh)
+void			ft_result_replace(t_shell *sh)
 {
-	char 	*save_line;
-	char 	**new_tab;
-	t_termc *tsh;
+	char		*save_line;
+	char		**new_tab;
+	t_termc		*tsh;
 
 	if (!sh->line)
 		return ;

@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history_bcheck.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 14:32:14 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 16:34:10 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/sh21.h"
 #include "../../inc/built_in.h"
 #include "../../inc/line_edition.h"
 
-static inline int ft_band_opt(char *av)
+static	inline	int		ft_band_opt(char *av)
 {
-	int i;
-	int a;
-	int w;
-	int r;
+	int					i;
+	int					a;
+	int					w;
+	int					r;
 
 	w = 0;
 	a = 0;
@@ -23,12 +35,12 @@ static inline int ft_band_opt(char *av)
 			r = 1;
 		i++;
 	}
-	if ((a && w) ||(a && r) ||(w && r))
+	if ((a && w) || (a && r) || (w && r))
 		return (1);
 	return (0);
 }
 
-int 		ft_error_history(char *av, int flag)
+int						ft_error_history(char *av, int flag)
 {
 	ft_putstr_fd("42sh: history: ", 2);
 	if (flag == 3)
@@ -36,12 +48,12 @@ int 		ft_error_history(char *av, int flag)
 		ft_putendl_fd("cannot use more than one of -arw", 2);
 		return (1);
 	}
-	if (flag == 1 ||flag == 2)
+	if (flag == 1 || flag == 2)
 	{
 		ft_putchar_fd('-', 2);
 		ft_putchar(av[0]);
 	}
-	else if (flag == 0 ||flag == 4)
+	else if (flag == 0 || flag == 4)
 		ft_putstr_fd(av, 2);
 	if (flag == 0)
 		ft_putendl_fd(": history position out of range", 2);
@@ -51,22 +63,13 @@ int 		ft_error_history(char *av, int flag)
 		return (1);
 	}
 	else
-	{
-		if (flag == 2)
-			ft_putendl_fd(": option requires an argument", 2);
-		else
-			ft_putendl_fd(": invalid option", 2);
-		ft_putstr_fd("42sh: history: ", 2);
-		ft_putstr_fd("usage: ", 2);
-		ft_putstr_fd("history [-c] [-d offset] [n] or history -awr", 2);
-		ft_putendl_fd("[filename] or history -ps arg [arg...]", 2);
-	}
+		ft_split_error_hist(flag);
 	return (1);
 }
 
-static inline int ft_check_other_opt(char *av, int *ret)
+static	inline	int		ft_check_other_opt(char *av, int *ret)
 {
-	int i;
+	int					i;
 
 	i = 0;
 	while (av[i])
@@ -78,8 +81,8 @@ static inline int ft_check_other_opt(char *av, int *ret)
 			else
 				return (-2);
 		}
-		if (av[i] != 'c' &&av[i] != 'p' &&av[i] != 'r' &&\
-			av[i] != 'w' &&av[i] != 'a' &&av[i] != 's')
+		if (av[i] != 'c' && av[i] != 'p' && av[i] != 'r' &&
+				av[i] != 'w' && av[i] != 'a' && av[i] != 's')
 		{
 			*ret += i;
 			return (i);
@@ -89,25 +92,36 @@ static inline int ft_check_other_opt(char *av, int *ret)
 	return (0);
 }
 
-int ft_check_option(char *av1, char *av2)
+static	int				ft_split_check_opt(char *av1, char *av2, int i, int ret)
 {
-	int i;
-	int ret;
-	int res;
+	int					res;
+
+	res = 0;
+	res = ft_check_other_opt(&av1[i], &ret);
+	if (res == -1 && !av2)
+		return (ft_error_history(&av1[i], 2));
+	else if (res == -2)
+		return (0);
+	else if (res > 0)
+		return (ft_error_history(&av1[ret], 1));
+	return (-1);
+}
+
+int						ft_check_option(char *av1, char *av2)
+{
+	int					i;
+	int					ret;
+	int					res;
 
 	i = 0;
 	while (av1[++i])
 	{
 		ret = i;
-		if (av1[i] == 'c' || av1[i] == 'p' || av1[i] == 's' ||av1[i] == 'd')
+		if (av1[i] == 'c' || av1[i] == 'p' || av1[i] == 's' || av1[i] == 'd')
 		{
-			res = ft_check_other_opt(&av1[i], &ret);
-			if (res == -1 && !av2)
-				return (ft_error_history(&av1[i], 2));
-			else if (res == -2)
-				break;
-			else if (res > 0)
-				return (ft_error_history(&av1[ret], 1));
+			res = ft_split_check_opt(av1, av2, i, ret);
+			if (res == 0 || res == 1)
+				return (res);
 		}
 		else if (av1[i] == 'w' || av1[i] == 'r' || av1[i] == 'a')
 		{

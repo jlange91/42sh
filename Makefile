@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jlange <jlange@student.42.fr>              +#+  +:+       +#+         #
+#    By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2018/01/15 18:24:23 by jlange           ###   ########.fr        #
+#    Updated: 2018/01/23 19:53:51 by stvalett         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 
 .PHONY : all clean fclean re
 
-NAME = 42sh
+NAME = 21sh
 
 CC = gcc
 
@@ -37,18 +37,22 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/line_edition/readline.c							\
 	   src/line_edition/utils_read.c						\
 	   src/line_edition/tools_readline.c					\
-	   src/line_edition/key.c								\
-	   src/line_edition/key2.c								\
+		src/line_edition/key.c								\
+	   src/line_edition/action_key.c						\
+	   src/line_edition/action_key2.c						\
 	   src/line_edition/signal.c							\
 	   src/line_edition/move_selection.c					\
 	   src/line_edition/move_word.c							\
 	   src/line_edition/move_up_down.c						\
+	   src/line_edition/move_up_down2.c						\
 	   src/line_edition/cpy_cut_dup.c						\
 	   src/line_edition/display.c							\
+	   src/line_edition/tools_display.c						\
 	   src/line_edition/history.c							\
 	   src/line_edition/prompt.c							\
 	   src/line_edition/history2.c							\
 	   src/line_edition/tool.c								\
+	   src/line_edition/free.c								\
 	   src/quote/check.c									\
 	   src/quote/count1.c									\
 	   src/quote/count2.c									\
@@ -98,6 +102,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/builtins/history_b.c								\
 	   src/builtins/history_b2.c							\
 	   src/builtins/history_bcheck.c						\
+	   src/builtins/tool_history.c							\
 	   src/replace/replace_to_line.c						\
 	   src/replace/ft_replace.c								\
 	   src/replace/replace_globbing.c						\
@@ -111,6 +116,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/replace/ft_add_escape.c							\
 	   src/exec/ft_exec.c									\
 	   src/exec/ft_exec_pipe.c								\
+	   src/exec/ft_exit_exec.c								\
 	   src/exec/hash.c										\
 	   src/other/charcat.c									\
 	   src/other/free_tab_2d.c								\
@@ -127,6 +133,8 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/other/ft_skip_quote.c							\
 	   src/other/singleton.c								\
 	   src/other/hash.c										\
+	   src/other/ft_backslash_word.c						\
+	   src/other/ft_reinit_hash.c							\
 	   src/redirection/count.c								\
 	   src/redirection/fill_word.c							\
 	   src/redirection/ft_ret_word.c						\
@@ -137,12 +145,17 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/redirection/ft_redirr_type.c						\
 	   src/ft_fill_cmd.c									\
 	   src/heredoc/read_heredoc.c							\
+	   src/heredoc/tool_heredoc.c							\
 	   src/main.c 											\
 	   src/builtins/ft_theme.c \
 	   src/builtins/ft_theme2.c \
 	   src/line_edition/init3.c \
 	   src/check/ft_check_cmd.c \
 	   src/check/ft_check_redir.c \
+	   src/builtins/ft_local.c \
+	   src/other/singleton2.c \
+	   src/builtins/tools.c \
+	   src/other/update_export.c \
 
 OBJ = $(SRCS:.c=.o)
 
@@ -153,18 +166,20 @@ OBJ : $(OBJ)
 
 $(NAME) : $(OBJ)
 	@make -C libft
-	@make -C Help_master
+	@make -C help_master
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) $(LDLIBS) $(LDCURSE)
 	@echo COMPIALTION 21SH OK !!!!
 
 clean :
 	@make clean -C libft
+	@make clean -C help_master
 	@rm -rf $(OBJ)
 	@echo OBJ FROM 42SH REMOVE
 	@sleep 2
 
 fclean : clean
 	@make fclean -C libft
+	@make fclean -C help_master
 	@rm -f $(NAME)
 	@echo BINAIRE 42SH REMOVE
 	@sleep 2

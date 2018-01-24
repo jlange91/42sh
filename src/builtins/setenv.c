@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:30 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:09:02 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/23 14:44:02 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static inline int		ft_ret(t_cmd *cmd)
 {
 	int i;
 
-	i = 0;
+	i = -1;
 	if (cmd->ac < 2)
 	{
 		ft_display_env(ft_var_env(NULL));
@@ -28,7 +28,7 @@ static inline int		ft_ret(t_cmd *cmd)
 		ft_singleton(1, 1);
 		return (1);
 	}
-	while (cmd->av[1][i])
+	while (cmd->av[1][++i])
 	{
 		if (!ft_isalnum(cmd->av[1][i]))
 		{
@@ -37,7 +37,6 @@ characters.\n", 2);
 			ft_singleton(1, 1);
 			return (1);
 		}
-		++i;
 	}
 	return (0);
 }

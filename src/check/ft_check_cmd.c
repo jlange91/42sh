@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_check_cmd.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 16:17:55 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 16:18:52 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/sh21.h"
 #include "../../inc/quote.h"
 
-static int		backslash_word(char *line)
+static	int		backslash_word(char *line)
 {
 	if (line[0] != '\\')
 		return (0);
@@ -11,9 +23,9 @@ static int		backslash_word(char *line)
 		return (1);
 }
 
-static int     check_token(char *line)
+static	int		check_token(char *line)
 {
-	int ret;
+	int			ret;
 
 	ret = 0;
 	ret = (line[0] == ';') ? 2 : ret;
@@ -23,10 +35,10 @@ static int     check_token(char *line)
 	return (ret);
 }
 
-static int      check_next_token(char *line)
+static	int		check_next_token(char *line)
 {
-	int i;
-	int ret;
+	int			i;
+	int			ret;
 
 	i = 0;
 	ret = 0;
@@ -40,7 +52,7 @@ static int      check_next_token(char *line)
 	return (ret);
 }
 
-static void      print_error(int token)
+static	void	print_error(int token)
 {
 	write(2, "42sh: syntax error near unexpected token `", 42);
 	if (token == 1)
@@ -58,11 +70,11 @@ static void      print_error(int token)
 	write(2, "'\n", 2);
 }
 
-int	ft_check_cmd(t_shell *sh)
+int				ft_check_cmd(t_shell *sh)
 {
-	int i;
-	int op;
-	int token;
+	int			i;
+	int			op;
+	int			token;
 
 	i = 0;
 	while (sh->line[i])
@@ -71,7 +83,8 @@ int	ft_check_cmd(t_shell *sh)
 		i += ft_skip_dquote(&sh->line[i]);
 		if ((op = check_token(&sh->line[i])))
 		{
-			token = check_next_token(&sh->line[i + ((op == 3 || op == 4) ? 2 : 1)]);
+			token = check_next_token(&sh->line[i + ((op == 3 || op == 4) ?
+				2 : 1)]);
 			if (token)
 			{
 				print_error(token);

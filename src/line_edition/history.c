@@ -6,7 +6,7 @@
 /*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:12 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/17 10:01:34 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/22 18:41:23 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 #include "../../inc/sh21.h"
 #include "../../inc/quote.h"
 
-int		ft_find_history(t_termc *tsh)
+int				ft_find_history(t_termc *tsh)
 {
-    t_history   *hist;
-    char        *str;
+	t_history	*hist;
+	char		*str;
 
-    hist = NULL;
-    str = NULL;
-    hist = tsh->histlist->begin;
-    if (!hist || !tsh->histlist)
-        return (0);
+	hist = NULL;
+	str = NULL;
+	hist = tsh->histlist->begin;
+	if (!hist || !tsh->histlist)
+		return (0);
 	ft_free_history(tsh->histmp);
-	str = (tsh->quotes) ? ft_to_str(tsh, 1) : ft_to_str(tsh, 0);
+	str = (tsh->quotes || tsh->hdoc) ? ft_to_str(tsh, 1) : ft_to_str(tsh, 0);
 	if (str == NULL)
 		return (0);
-    while (hist)
+	while (hist)
 	{
 		if (!ft_strncmp(str, hist->data, ft_strlen(str)))
 			push_backhist(tsh->histmp, hist->data, hist->index, hist->new);
-        hist = hist->next;
+		hist = hist->next;
 	}
 	push_backhist(tsh->histmp, "", -1, 0);
 	tsh->histmp->current = tsh->histmp->end;
@@ -40,19 +40,19 @@ int		ft_find_history(t_termc *tsh)
 	return (1);
 }
 
-int		ft_fill_history(t_termc *tsh)
+int				ft_fill_history(t_termc *tsh)
 {
-    t_history   *hist;
-	static int 	count;
+	t_history	*hist;
+	static int	count;
 
-    hist = NULL;
+	hist = NULL;
 	if (count++ < 1)
 		tsh->histlist->pwd = ft_strjoin(ft_var_pwd(NULL), NAME_HIST);
-    hist = tsh->histlist->begin;
-    if (!hist || !tsh->histlist)
-        return (0);
-    else
-    {
+	hist = tsh->histlist->begin;
+	if (!hist || !tsh->histlist)
+		return (0);
+	else
+	{
 		ft_free_history(tsh->histmp);
 		while (hist)
 		{
@@ -62,13 +62,13 @@ int		ft_fill_history(t_termc *tsh)
 		}
 		push_backhist(tsh->histmp, "", -1, 0);
 		tsh->histmp->current = tsh->histmp->end;
-    }
+	}
 	return (1);
 }
 
-t_history *ft_concat_string(t_history *begin, hlist *histlist, int i)
+t_history		*ft_concat_string(t_history *begin, hlist *histlist, int i)
 {
-	char *tmp;
+	char		*tmp;
 
 	tmp = NULL;
 	ft_join_all(begin->data, &tmp, 0);
@@ -81,7 +81,7 @@ t_history *ft_concat_string(t_history *begin, hlist *histlist, int i)
 			ft_join_all(begin->data, &tmp, 0);
 			push_backhist(histlist, tmp, ++i, 0);
 			begin = begin->next;
-			break;
+			break ;
 		}
 		else
 		{
@@ -94,9 +94,9 @@ t_history *ft_concat_string(t_history *begin, hlist *histlist, int i)
 	return (begin);
 }
 
-void 	ft_format_string(hlist *tmp, hlist *histlist)
+void			ft_format_string(hlist *tmp, hlist *histlist)
 {
-	int 	i;
+	int			i;
 
 	i = 0;
 	while (tmp->begin)
@@ -111,26 +111,24 @@ void 	ft_format_string(hlist *tmp, hlist *histlist)
 	}
 }
 
-int    	ft_init_fill_history(hlist *histlist)
+int				ft_init_fill_history(hlist *histlist)
 {
-    int     fd;
-    int     i;
-    int     ret;
-	char    *line;
-	hlist 	*tmp;
+	int			fd;
+	int			i;
+	int			ret;
+	char		*line;
+	hlist		*tmp;
 
-	tmp = NULL;
 	if ((tmp = (hlist *)malloc(sizeof(hlist))) == NULL)
-		exit (1);
+		exit(1);
 	tmp->begin = NULL;
 	tmp->current = NULL;
 	tmp->end = NULL;
 	i = 0;
-	fd = open(&NAME_HIST[1], O_RDONLY);
-	if (fd < 0)
+	if ((fd = open(&NAME_HIST[1], O_RDONLY)) < 0)
 		return (0);
 	line = NULL;
-    while ((ret = get_next_line(fd, &line)) > 0)
+	while ((ret = get_next_line(fd, &line)) > 0)
 	{
 		push_backhist(tmp, line, ++i, 0);
 		free(line);
@@ -138,6 +136,6 @@ int    	ft_init_fill_history(hlist *histlist)
 	ft_format_string(tmp, histlist);
 	ft_free_history(tmp);
 	free(tmp);
-    close(fd);
-    return (1);
+	close(fd);
+	return (1);
 }

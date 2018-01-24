@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history2.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 18:41:35 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 18:42:32 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 
-void	ft_free_history(hlist *history)
+void			ft_free_history(hlist *history)
 {
 	t_history	*tmp;
 	t_history	*del;
@@ -12,7 +24,8 @@ void	ft_free_history(hlist *history)
 		{
 			del = tmp;
 			tmp = tmp->prev;
-			free(del->data);
+			if (del->data)
+				free(del->data);
 			free(del);
 		}
 		history->end = NULL;
@@ -21,16 +34,17 @@ void	ft_free_history(hlist *history)
 	}
 }
 
-int     ft_add_file_history(t_termc *tsh)
+int				ft_add_file_history(t_termc *tsh)
 {
-    int         fd;
-    t_history   *begin;
+	int			fd;
+	t_history	*begin;
 
-    if ((fd = open(tsh->histlist->pwd, (O_WRONLY | O_CREAT | O_TRUNC), 0777)) < 0)
-        return (0);
-    begin = NULL;
-    begin = tsh->histlist->begin;
-    if (begin)
+	if ((fd = open(tsh->histlist->pwd, (O_WRONLY | O_CREAT | O_TRUNC), 0600)) <
+			0)
+		return (0);
+	begin = NULL;
+	begin = tsh->histlist->begin;
+	if (begin)
 	{
 		while (begin)
 		{
@@ -42,25 +56,25 @@ int     ft_add_file_history(t_termc *tsh)
 			begin = begin->next;
 		}
 	}
-    close(fd);
-    return (1);
+	close(fd);
+	return (1);
 }
 
-void	ft_add_tmp_history(t_termc *tsh, const char *str)
+void			ft_add_tmp_history(t_termc *tsh, const char *str)
 {
-    int flag;
-    int i;
-	int index;
+	int			flag;
+	int			i;
+	int			index;
 
-    flag = 0;
-    i = -1;
-    while (str[++i])
-    {
-        if (str[i] >= 33 && str[i] <= 126)
-            flag = 1;
-    }
-    if (flag && (!tsh->histlist->end ||
-        ft_strcmp(tsh->histlist->end->data, str) != 0))
+	flag = 0;
+	i = -1;
+	while (str[++i])
+	{
+		if (str[i] >= 33 && str[i] <= 126)
+			flag = 1;
+	}
+	if (flag && (!tsh->histlist->end ||
+				ft_strcmp(tsh->histlist->end->data, str) != 0))
 	{
 		index = (!tsh->histlist->end) ? 1 : tsh->histlist->end->index + 1;
 		push_backhist(tsh->histlist, str, index, 1);

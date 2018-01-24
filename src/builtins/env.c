@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:51 by jlange            #+#    #+#             */
-/*   Updated: 2017/12/20 17:04:48 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/17 14:55:46 by vmartins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void			ft_env(t_cmd *cmd)
 	if (ret == -1)
 	{
 		ft_putstr_fd("env [-i][name=value]... [-u name] \
-[utility [argument...]]\n", 2);
+				[utility [argument...]]\n", 2);
 		free_tab_2d(env);
 		ft_singleton(1, 1);
 		return ;

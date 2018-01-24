@@ -6,16 +6,16 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/18 14:17:05 by vmartins          #+#    #+#             */
-/*   Updated: 2018/01/15 18:41:36 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/23 15:23:31 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/hash.h"
 #include "../../inc/sh21.h"
 
-static inline t_hash	*ft_new_maillon(char *cmd, char *path)
+static	inline	t_hash	*ft_new_maillon(char *cmd, char *path)
 {
-	t_hash *new;
+	t_hash				*new;
 
 	if ((new = (t_hash *)malloc(sizeof(t_hash))) == NULL)
 		return (NULL);
@@ -27,8 +27,8 @@ static inline t_hash	*ft_new_maillon(char *cmd, char *path)
 
 int						ft_calc_hash(char *word)
 {
-	int		i;
-	int		ret;
+	int					i;
+	int					ret;
 
 	i = 0;
 	ret = 0;
@@ -41,13 +41,34 @@ int						ft_calc_hash(char *word)
 	return (ret);
 }
 
+void					ft_add_hash_next(t_hash *hash, char *cmd, char *path)
+{
+	t_hash		*tmp;
+
+	tmp = hash;
+	while (tmp)
+	{
+		if (ft_strcmp(cmd, tmp->cmd) == 0)
+		{
+			if (tmp->path)
+				free(tmp->path);
+			tmp->path = ft_strdup(path);
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	tmp = hash;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = ft_new_maillon(cmd, path);
+}
+
 int						ft_add_hash(char *cmd, char *path)
 {
-	int		i;
-	int		nbrhash;
-	t_hash	*tmp;
-	t_shell *sh;
-	t_hash *hash;
+	int					i;
+	int					nbrhash;
+	t_shell				*sh;
+	t_hash				*hash;
 
 	i = 0;
 	if (!cmd || !path)
@@ -62,31 +83,16 @@ int						ft_add_hash(char *cmd, char *path)
 		hash[nbrhash].next = NULL;
 	}
 	else if (hash[nbrhash].cmd != NULL)
-	{
-		tmp = &hash[nbrhash];
-		while (tmp)
-		{
-			if (ft_strcmp(cmd, tmp->cmd) == 0)
-			{
-				tmp->path = ft_strdup(path);
-				return (nbrhash);
-			}
-			tmp = tmp->next;
-		}
-		tmp = &hash[nbrhash];
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = ft_new_maillon(cmd, path);
-	}
+		ft_add_hash_next(&hash[nbrhash], cmd, path);
 	return (nbrhash);
 }
 
-char 					*ft_return_hash(char *cmd)
+char					*ft_return_hash(char *cmd)
 {
-	int		nbrhash;
-	t_shell	*sh;
-	t_hash	*hash;
-	t_hash 	*tmp;
+	int					nbrhash;
+	t_shell				*sh;
+	t_hash				*hash;
+	t_hash				*tmp;
 
 	nbrhash = ft_calc_hash(cmd);
 	sh = ft_ret_sh(NULL);

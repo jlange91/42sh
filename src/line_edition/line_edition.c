@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:41 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/12 16:45:24 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/24 15:57:42 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,12 @@ void			ft_cmd(t_cmd *cmd)
 		ft_theme(cmd, tsh);
 	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N
 		history(cmd);
+	else if (!ft_strcmp(cmd->av[0], "setlocal"))
+			prepare_setlocal(cmd);
 	else if (cmd->av[0])
 		ft_exec(cmd, cmd->av, ft_var_env(NULL));
+	update_export(-1, -1);
+	update_local(-1, -1);
 	//printf("{%d}\n", ft_singleton(0,0));
 }
 
@@ -87,8 +91,12 @@ void			ft_cmd_pipe(t_cmd *cmd)
 		prepare_export(cmd);
 	else if (!ft_strcmp(cmd->av[0], "history")) //NO EXPANSION LIKE THIS !! !-N
 		history(cmd);
+	else if (!ft_strcmp(cmd->av[0], "setlocal"))
+			prepare_setlocal(cmd);
 	else if (cmd->av[0])
 		ft_exec_pipe(cmd->av, ft_var_env(NULL));
+	update_export(-1, -1);
+	update_local(-1, -1);
 	exit(ft_singleton(0,0));
 	//printf("{%d}\n", ft_singleton(0,0));
 }
@@ -103,12 +111,20 @@ void	ft_multi_pipe(t_cmd *cmd, int opt)
 	{
 		if (cmd->r_op == 4)
 			ft_pipe(cmd);
-		ft_redirection(cmd);
+		if (ft_redirection(cmd) == -1)
+		{
+			ft_remove_redirection(cmd);
+			exit(1);
+		}
 		ft_cmd_pipe(cmd);
 	}
 	else
 	{
-		ft_redirection(cmd);
+		if (ft_redirection(cmd) == -1)
+		{
+			ft_remove_redirection(cmd);		
+			exit(1);
+		}
 		ft_cmd_pipe(cmd);
 	}
 }
@@ -141,12 +157,11 @@ void			ft_pipe(t_cmd *cmd)
 	{
 		dup2(pdes[READ_END], STDIN_FILENO);
 		close(pdes[WRITE_END]);
-		if (cmd->r_op != 4)
+		if (cmd->next->r_op != 4)
 			wait(NULL);
 		ft_multi_pipe(cmd->next, 1);
 	}
 }
-
 
 int	ft_line_edition(t_cmd *cmd)
 {
@@ -166,10 +181,15 @@ int	ft_line_edition(t_cmd *cmd)
 			ft_pipe(cmd);
 		wait(&status);
 		if (status)
-				ft_singleton(status, 1);
+			ft_singleton(status, 1);
 		return (ft_singleton(0, 0));
 	}
-	ft_redirection(cmd);
+	if (ft_redirection(cmd) == -1)
+	{
+		ft_remove_redirection(cmd);
+		ft_singleton(1, 1);
+		return (1);
+	}
 	ft_cmd(cmd);
 	ft_remove_redirection(cmd);
 	return (ft_singleton(0, 0));

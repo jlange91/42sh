@@ -6,7 +6,7 @@
 /*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 19:11:16 by stvalett42        #+#    #+#             */
-/*   Updated: 2017/12/19 15:14:59 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/19 18:32:49 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,20 +63,11 @@ static inline t_glob	*ft_firstinitglob(char *word, int star)
 		while (res[++i])
 			glob[i] = ft_fillglob(res[i], word);
 		if (i == 0)
-		{
-			ft_freeall_glob(NULL, res, s_tab, NULL);
-			while (i < len)
-			{
-				free(glob[i].path);
-				i++;
-			}
-			free(glob);
-			return (NULL);
-		}
+			return (ft_free_or_not(res, s_tab, glob, len));
 	}
 	else
 		glob[0] = ft_fillglob(NULL, word);
-	ft_freeall_glob(NULL, res, s_tab, NULL);
+	freeall(NULL, res, s_tab, NULL);
 	glob->len = len;
 	return (glob);
 }
@@ -126,10 +117,10 @@ char					*ft_glob(char *word)
 		glob = ft_firstinitglob(word, star);
 		if (glob != NULL)
 		{
-			ft_resGlob(&glob[0], star, &str);
+			ft_resglob(&glob[0], star, &str);
 			if ((str == NULL && glob->res == NULL) || (str == NULL && star))
 				ft_save_word(&glob[0], &str, glob->len);
-			ft_freeall_glob(NULL, NULL, NULL, &glob[0]);
+			freeall(NULL, NULL, NULL, &glob[0]);
 			return (str);
 		}
 	}

@@ -1,0 +1,35 @@
+NAME
+        HIST    - - HISTORY
+SYNOPSIS
+		NONE
+
+DESCRIPTION	
+			1) Si la ligne est vide, ca liste l'historique du dernier jusau'qu premier.
+			2) Si il ya un mot, il affiche les mots qui ont match dans l'historique.
+			3) Si le mot est ("!!" || "!-[0-max_historique]) suivit d'un espace,
+				ca replace sur la ligne d'edition. 
+
+COMMAND :
+		ARROW UP = on monte dans l'historique
+		ARROW DOWN = On descend dans l'historique
+
+
+BUILT-IN OPTION :
+
+        Avoir acces à l'historique des commande rentre sur le 21/42sh.
+
+        history                 : Affiche tout l'historique entré.
+
+        history -c              : supprime tout l'historique.
+
+        history -d + nb ligne   : Supprime la ligne souhaité.
+
+        history -p              : Affiche mais ne le met pas dans l'historique.
+
+        history -s              : Ajoute l'argument dans l'historique.
+
+        history -w [argument]   : Créé un fichier avec le nom de l'argument et recopie l'historique dedans.
+
+        history -a [argument]   : Créé un fichier avec le nom de l'argument et recopie toutes les commande à partir de celle-ci.
+
+        history -r [argument]   : Ajoute à l'historique le contenu de l'argument pendant la session d'utilisateur.

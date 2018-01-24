@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   match_chunk.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/19 18:12:44 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/19 18:14:55 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/globbing.h"
 
 static void	ft_is_neg(char **chunk, int *neg)
@@ -16,7 +28,7 @@ static void	ft_is_neg(char **chunk, int *neg)
 
 static int	ft_found_between(char *chunk, char *lo, char *hi, int *count)
 {
-	int 	i;
+	int		i;
 	char	*tmp;
 
 	i = 0;
@@ -37,7 +49,7 @@ static int	ft_found_between(char *chunk, char *lo, char *hi, int *count)
 
 static int	ft_end_between(char **chunk_orig, int match, int neg, int *count)
 {
-	char *chunk;
+	char	*chunk;
 
 	chunk = *chunk_orig;
 	if (match != neg)
@@ -50,7 +62,7 @@ static int	ft_end_between(char **chunk_orig, int match, int neg, int *count)
 			if (chunk[0] == ']')
 			{
 				chunk++;
-				break;
+				break ;
 			}
 			chunk++;
 		}
@@ -73,25 +85,25 @@ static void	ft_between(char **chunk, int *match, char *tmp, int *count)
 		if ((*chunk)[0] == ']')
 		{
 			(*chunk)++;
-			break;
+			break ;
 		}
 		if (l <= tmp[0] && tmp[0] <= h)
 		{
 			(*count)++;
 			*match = 1;
-			break;
+			break ;
 		}
 		(*chunk)++;
 	}
 }
 
-int	ft_match_chunk(char *chunk, char **word, int i)
+int			ft_match_chunk(char *chunk, char **word, int i)
 {
-	char    *tmp;
-	int     count;
-	int     match;
-	int     neg;
-	int 	escape;
+	char	*tmp;
+	int		count;
+	int		match;
+	int		neg;
+	int		escape;
 
 	escape = 0;
 	tmp = ft_init_var(&neg, &count, &match, *word) + i;

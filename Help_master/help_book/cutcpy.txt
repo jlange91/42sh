@@ -1,0 +1,15 @@
+NAME
+        CUT_L   - - CUT LINE
+        PAST_L  - - PASTE LINE
+
+SYNOPSIS
+        AUCUN
+
+DESCRIPTION
+
+        Selectioner les lettres avec "SHIFT + ARROW" LEFT ou RIGHT.
+
+Command : 
+        ALT + X                                     : Couper/copier.
+
+        ALT + V                                     : Coller.

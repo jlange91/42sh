@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:18:32 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/04 15:49:48 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/24 15:08:18 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,15 @@ void	export_flag_b(t_cmd *cmd, int i)
 	search_exec(&cmd->av[i], tmp, str);
 	if (tmp[0])
 	{
-		if (ft_getenv(tmp[0], cmd->var) == NULL)
+		if (ft_getenv(tmp[0], ft_var_var(NULL)) == NULL)
 		{
 			str = ft_strdup(cmd->av[i]);
-			cmd->var = rapid_set(str, cmd->var, 0);
+			ft_var_var(rapid_set(str, ft_var_var(NULL), 0));
 			ft_var_env(rapid_set(str, ft_var_env(NULL), 1));
 		}
-		else if (ft_getenv(tmp[0], cmd->var) != NULL)
+		else if (ft_getenv(tmp[0], ft_var_var(NULL)) != NULL)
 		{
-			replace_elem(tmp[0], cmd->av[i], cmd->var);
+			replace_elem(tmp[0], cmd->av[i], ft_var_var(NULL));
 			replace_elem(tmp[0], cmd->av[i], ft_var_env(NULL));
 		}
 		ft_free_tab(tmp);

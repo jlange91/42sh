@@ -6,14 +6,14 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:20 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/04 16:54:06 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/23 15:17:50 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-static 	inline	void 		ft_init_move(t_term *term)
+static	inline	void		ft_init_move(t_term *term)
 {
 	ft_memset(term->bp, '\0', 2048);
 	ft_memset(term->area, '\0', 2048);
@@ -32,14 +32,13 @@ static 	inline	void 		ft_init_move(t_term *term)
 	term->clrstr = tgetstr("cl", (char **)term->area);
 	term->vistr = tgetstr("vi", (char **)term->area);
 	term->vestr = tgetstr("ve", (char **)term->area);
-
 }
 
-static 	inline 	char 		*ft_find_terminfo(void)
+static	inline	char		*ft_find_terminfo(void)
 {
-	DIR 			*path;
-	struct dirent 	*file;
-	char 			*str;
+	DIR						*path;
+	struct dirent			*file;
+	char					*str;
 
 	if ((path = opendir("/usr/share/terminfo/78/")) == NULL)
 		return (NULL);
@@ -58,24 +57,24 @@ static 	inline 	char 		*ft_find_terminfo(void)
 
 static	inline	t_term		*init_term(char **env)
 {
-	t_term	*term;
-    char    *str;
-	int		ret;
+	t_term					*term;
+	char					*str;
+	int						ret;
 
 	term = NULL;
-    str = NULL;
+	str = NULL;
 	ret = 0;
 	if ((term = (t_term *)malloc(sizeof(t_term))) == NULL)
 		return (NULL);
-    str = ft_getenv("TERM", env);
+	str = ft_getenv("TERM", env);
 	if (str == NULL || !str[5] || ft_strcmp(&str[5], "xterm-256color") != 0)
 	{
 		str = ft_find_terminfo();
-		if (!str ||tgetent(term->bp, str) < 0)
+		if (!str || tgetent(term->bp, str) < 0)
 			ft_putendl_fd("Error Tgetent", 2);
 		ret = 1;
 	}
-	if (!ret && (!str || !str[5] ||tgetent(term->bp, &str[5]) < 0))
+	if (!ret && (!str || !str[5] || tgetent(term->bp, &str[5]) < 0))
 		ft_putendl_fd("Error Tgetent", 2);
 	ft_init_move(term);
 	if (ret)
@@ -83,9 +82,23 @@ static	inline	t_term		*init_term(char **env)
 	return (term);
 }
 
+void						ft_init_signal(void)
+{
+	if (signal(SIGINT, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGINT\n", 2);
+	if (signal(SIGWINCH, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGWINCH", 2);
+	if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGQUIT", 2);
+	if (signal(SIGTSTP, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGTSTP", 2);
+	if (signal(SIGCONT, ft_handle_signal) == SIG_ERR)
+		ft_putstr_fd("\nCan't catch SIGCONT", 2);
+}
+
 t_termc						*init_termc(char **env)
 {
-	t_termc	*tsh;
+	t_termc					*tsh;
 
 	tsh = NULL;
 	if ((tsh = (t_termc *)malloc(sizeof(t_termc))) == NULL)
@@ -93,21 +106,20 @@ t_termc						*init_termc(char **env)
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
 	}
-    if ((tsh->term = init_term(env)) == NULL)
+	if ((tsh->term = init_term(env)) == NULL)
 		ft_putendl_fd("Error init_term", 2);
 	ft_init_termc2(&tsh);
-    ft_init_termc3(tsh);
+	ft_init_termc3(tsh);
 	ft_init_fill_history(tsh->histlist);
 	tsh->replace = NULL;
 	tsh->save_line = NULL;
 	tsh->auto_active = 0;
-    tsh->multiauto_active = 0;
-    tsh->keyflag->k_tab = 0;
-    tsh->len_prompt = 0;
+	tsh->multiauto_active = 0;
+	tsh->keyflag->k_tab = 0;
+	tsh->len_prompt = 0;
 	tsh->quotes = 0;
 	tsh->hdoc = 0;
 	tsh->repl = 0;
 	tsh->sigint = 0;
-	tsh->quote_no = 0;
 	return (tsh);
 }

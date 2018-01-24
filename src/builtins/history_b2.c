@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/08 14:55:30 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/08 14:56:21 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/22 16:27:03 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	ft_opt_r(char *av2, t_history *begin, hlist *hist)
 		push_backhist(hist, av2, hist->end->index + 1, 1);
 	else
 	{
-		while ((ret = get_next_line(fd, &line)) > 0)// CHECK IF LINE IS ONLY SPACE OR TAB, DON'T PUT IN HISTLIST
+		while ((ret = get_next_line(fd, &line)) > 0)
 		{
 			push_backhist(hist, line, hist->end->index + 1, 104);
 			free(line);

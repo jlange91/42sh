@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cpy_cut_dup.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 17:53:25 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 17:54:28 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 
-static void	ft_reset_under(t_termc *tsh)
+static	void	ft_reset_under(t_termc *tsh)
 {
 	t_lineterm	*end;
 
@@ -16,13 +28,12 @@ static void	ft_reset_under(t_termc *tsh)
 	}
 }
 
-t_lineterm	*ft_cut_split(t_lineterm *tmp, t_termc *tsh)
+t_lineterm		*ft_cut_split(t_lineterm *tmp, t_termc *tsh)
 {
-	t_lineterm *del;
+	t_lineterm	*del;
 
 	push_backdlst(tsh->line_dup, tmp->c, 2);
 	del = tmp;
-	tsh->keyflag->backspace = 1;
 	if (tmp->next == NULL)
 	{
 		tsh->line->end = tmp->prev;
@@ -42,10 +53,10 @@ t_lineterm	*ft_cut_split(t_lineterm *tmp, t_termc *tsh)
 	free(del);
 	return (tmp);
 }
-														//A CORRIGER TODAY CPY-CUt-PAST
-void    ft_cut_line(t_lineterm *end, t_termc *tsh)
+
+void			ft_cut_line(t_lineterm *end, t_termc *tsh)
 {
-	t_lineterm  *tmp;
+	t_lineterm	*tmp;
 	int			ret;
 
 	(void)end;
@@ -68,7 +79,7 @@ void    ft_cut_line(t_lineterm *end, t_termc *tsh)
 	tsh->line->last = (end->next == NULL) ? 1 : 0;
 }
 
-void	ft_dup_line(t_lineterm *end, t_termc *tsh)
+void			ft_dup_line(t_lineterm *end, t_termc *tsh)
 {
 	int			i;
 	t_lineterm	*begin;
@@ -89,10 +100,10 @@ void	ft_dup_line(t_lineterm *end, t_termc *tsh)
 	ft_reset_under(tsh);
 }
 
-void	ft_past_line(t_lineterm *end, t_termc *tsh)
+void			ft_past_line(t_lineterm *end, t_termc *tsh)
 {
 	int			i;
-	t_lineterm 	*begin;
+	t_lineterm	*begin;
 
 	begin = tsh->line_dup->begin;
 	if (begin)

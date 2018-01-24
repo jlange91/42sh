@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   research_hist.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 15:56:48 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 15:58:45 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 
-static void 	*ft_skip_hist(t_history *end, int len, int flag, char *data)
+static	void	*ft_skip_hist(t_history *end, int len, int flag, char *data)
 {
 	if (!flag)
 		while (end && len-- > 1)
@@ -17,20 +29,20 @@ static void 	*ft_skip_hist(t_history *end, int len, int flag, char *data)
 	return ((t_history *)end);
 }
 
-static inline char 	*ft_str(int *count, t_lineterm *begin, int flag)
+static	char	*ft_str(int *count, t_lineterm *begin, int flag)
 {
-	char 		*tmp;
+	char		*tmp;
 
 	tmp = ft_strdup(&begin->c);
 	*count = *count + 1;
 	while ((begin = begin->next))
 	{
 		if (!flag && !ft_isdigit(begin->c))
-			break;
+			break ;
 		else if (flag == 1 && begin->c == ' ')
-			break;
+			break ;
 		else if (flag == 2 && begin->c == '?')
-			break;
+			break ;
 		*count = *count + 1;
 		tmp = ft_free_join(tmp, &begin->c, 'L');
 	}
@@ -42,15 +54,15 @@ static inline char 	*ft_str(int *count, t_lineterm *begin, int flag)
 	return (tmp);
 }
 
-int 	ft_find(t_termc *tsh, t_lineterm *begin, int *count)
+int				ft_find(t_termc *tsh, t_lineterm *begin, int *count)
 {
-	int 		ret;
-	char 		*tmp;
-	t_history 	*end;
+	int			ret;
+	char		*tmp;
+	t_history	*end;
 
 	tmp = ft_str(count, begin, 0);
 	ret = ft_atoi(tmp);
-	if (!ret || ret > ft_count_from_file(tsh->histlist->pwd))
+	if (!ret || ret <= 0 || ret > ft_count_from_file(tsh->histlist->pwd))
 		return (ft_returnfree(tmp, 0, 'f'));
 	else
 	{
@@ -61,11 +73,11 @@ int 	ft_find(t_termc *tsh, t_lineterm *begin, int *count)
 	return (0);
 }
 
-int 	ft_find2(t_termc *tsh, t_lineterm *begin, int *count)
+int				ft_find2(t_termc *tsh, t_lineterm *begin, int *count)
 {
-	int 		ret;
-	char 		*tmp;
-	t_history 	*end;
+	int			ret;
+	char		*tmp;
+	t_history	*end;
 
 	tmp = ft_str(count, begin, 1);
 	if (begin->c >= '0' && begin->c <= '9')
@@ -87,10 +99,10 @@ int 	ft_find2(t_termc *tsh, t_lineterm *begin, int *count)
 	return (0);
 }
 
-int 	ft_find3(t_termc *tsh, t_lineterm *begin, int *count)
+int				ft_find3(t_termc *tsh, t_lineterm *begin, int *count)
 {
-	char 		*tmp;
-	t_history 	*end;
+	char		*tmp;
+	t_history	*end;
 
 	if ((tmp = ft_str(count, begin, 2)) == NULL)
 		return (0);

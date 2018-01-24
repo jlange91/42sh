@@ -6,13 +6,13 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/19 15:17:07 by adebrito          #+#    #+#             */
-/*   Updated: 2017/12/19 15:18:58 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/19 18:12:18 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/globbing.h"
 
-static	int 	ft_token_glob(char **pat, int escape, int *ret, int *brac)
+static	int		ft_token_glob(char **pat, int escape, int *ret, int *brac)
 {
 	if (**pat == '[' && !escape)
 		*brac = 1;
@@ -32,7 +32,7 @@ static	int 	ft_token_glob(char **pat, int escape, int *ret, int *brac)
 static	char	*ft_split_pattern(char **chunk, char **pattern, int *bracket)
 {
 	int		i;
-	int 	escape;
+	int		escape;
 	int		leave;
 
 	i = -1;
@@ -45,7 +45,7 @@ static	char	*ft_split_pattern(char **chunk, char **pattern, int *bracket)
 			(*chunk)[++i] = *(*pattern)++;
 		}
 		if (ft_token_glob(pattern, escape, &leave, bracket))
-			break;
+			break ;
 		(*chunk)[++i] = *(*pattern)++;
 		escape = 0;
 	}
@@ -84,7 +84,7 @@ static int		ft_match_split(char *pattern, char *word, char *chunk)
 		{
 			if (ft_strlen(pattern) == 0 && ft_strlen(word) > 0)
 				continue;
-			return (ft_returnfree(chunk, ft_match(pattern,word), 'f'));
+			return (ft_returnfree(chunk, ft_match(pattern, word), 'f'));
 		}
 		i++;
 	}

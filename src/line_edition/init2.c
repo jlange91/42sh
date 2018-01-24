@@ -1,23 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init2.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 18:45:46 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 18:50:17 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-static	inline	t_console	*init_console(void)
-{
-	t_console	*console;
-
-	console = NULL;
-	if ((console = (t_console *)malloc(sizeof(t_console))) == NULL)
-	{
-		return (NULL);
-	}
-	console->total_line = 0;
-	console->char_pos = 0;
-	return (console);
-}
-
 static	inline	hlist		*init_history(void)
 {
-	hlist	*h;
+	hlist					*h;
 
 	h = NULL;
 	if ((h = (hlist *)malloc(sizeof(hlist))) == NULL)
@@ -28,50 +26,46 @@ static	inline	hlist		*init_history(void)
 	h->begin = NULL;
 	h->end = NULL;
 	h->current = NULL;
-    h->ecrase_hist = 0;
+	h->ecrase_hist = 0;
 	return (h);
 }
 
-static  inline  t_keyflag   *init_keyflag(void)
+static	inline	t_keyflag	*init_keyflag(void)
 {
-    t_keyflag   *new;
+	t_keyflag				*new;
 
-    if ((new = (t_keyflag *)malloc(sizeof(*new))) == NULL)
-    {
-        ft_putendl_fd("Error malloc", 2);
-        return (NULL);
-    }
-    new->backspace = 0;
-    new->underline = 0;
-    new->cl = 0;
-    return (new);
-}
-
-static	inline	t_auto		*init_autocompletion(void)
-{
-    t_auto   *autoc;
-
-	autoc = NULL;
-	if ((autoc = (t_auto *)malloc(sizeof(t_auto))) == NULL)
+	if ((new = (t_keyflag *)malloc(sizeof(*new))) == NULL)
 	{
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
 	}
-    autoc->str = NULL;
+	new->underline = 0;
+	new->cl = 0;
+	return (new);
+}
+
+static	inline	t_auto		*init_autocompletion(void)
+{
+	t_auto					*autoc;
+
+	autoc = NULL;
+	if ((autoc = (t_auto *)malloc(sizeof(t_auto))) == NULL)
+		return (NULL);
+	autoc->str = NULL;
 	autoc->end = NULL;
-    autoc->current = NULL;
+	autoc->current = NULL;
 	autoc->begin = NULL;
-    autoc->finish = 0;
-    autoc->jump = 0;
-    autoc->max_len = 0;
-    autoc->row = 0;
-    autoc->col = 0;
-    autoc->pages = 0;
-    autoc->more_pages = 0;
-    autoc->nbr_word = 0;
-    autoc->updaterow = 0;
-    autoc->arrow = 0;
-    autoc->clr_yes = 0;
+	autoc->finish = 0;
+	autoc->jump = 0;
+	autoc->max_len = 0;
+	autoc->row = 0;
+	autoc->col = 0;
+	autoc->pages = 0;
+	autoc->more_pages = 0;
+	autoc->nbr_word = 0;
+	autoc->updaterow = 0;
+	autoc->arrow = 0;
+	autoc->clr_yes = 0;
 	autoc->can_print = 0;
 	autoc->possiblitie = 0;
 	return (autoc);
@@ -79,7 +73,7 @@ static	inline	t_auto		*init_autocompletion(void)
 
 static	inline	dlist		*init_lineterm(void)
 {
-	dlist	*line;
+	dlist					*line;
 
 	line = NULL;
 	if ((line = (dlist *)malloc(sizeof(dlist))) == NULL)
@@ -94,20 +88,20 @@ static	inline	dlist		*init_lineterm(void)
 	return (line);
 }
 
-void    ft_init_termc2(t_termc **tsh)
+void						ft_init_termc2(t_termc **tsh)
 {
 	if (((*tsh)->line = init_lineterm()) == NULL)
-	   ft_putendl_fd("Error init_lineterm", 2);
+		ft_putendl_fd("Error init_lineterm", 2);
 	if (((*tsh)->line_dup = init_lineterm()) == NULL)
-	   ft_putendl_fd("Error init_lineterm", 2);
+		ft_putendl_fd("Error init_lineterm", 2);
 	if (((*tsh)->histmp = init_history()) == NULL)
-	   ft_putendl_fd("Error init_history", 2);
+		ft_putendl_fd("Error init_history", 2);
 	if (((*tsh)->histlist = init_history()) == NULL)
-	   ft_putendl_fd("Error init_history", 2);
+		ft_putendl_fd("Error init_history", 2);
 	if (((*tsh)->console = init_console()) == NULL)
-	   ft_putendl_fd("Error init_console", 2);
+		ft_putendl_fd("Error init_console", 2);
 	if (((*tsh)->autoc = init_autocompletion()) == NULL)
-	   ft_putendl_fd("Error init_autocompletion", 2);
+		ft_putendl_fd("Error init_autocompletion", 2);
 	if (((*tsh)->keyflag = init_keyflag()) == NULL)
-	   ft_putendl_fd("Error init_keyflag", 2);
+		ft_putendl_fd("Error init_keyflag", 2);
 }

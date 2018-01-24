@@ -1,111 +1,108 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_quote.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/19 16:47:48 by jlange            #+#    #+#             */
+/*   Updated: 2018/01/23 17:44:03 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/quote.h"
 #include "../../inc/line_edition.h"
 
-t_lineterm *ft_dont_get_prompt(t_lineterm *tmp)
-{
-	while (tmp)
-	{
-        if (tmp->c == '>')
-        {
-            tmp = tmp->next;
-            break;
-        }
-		tmp = tmp->next;
-    }
-    tmp = tmp->next;
-	return (tmp);
-}
-
 static inline int		ft_fill_prompt_quotes(dlist *line, int ret)
 {
-    char	*str;
-    int		i;
+	char	*str;
+	int		i;
 
-    str = NULL;
+	str = NULL;
 	if (ret == -1)
 		str = "dquote > ";
 	else if (ret == -2)
-    	str = "quote > ";
+		str = "quote > ";
 	else if (ret == -3)
-    	str = "bquote > ";
+		str = "bquote > ";
 	else if (ret == -4)
-    	str = "> ";
-    if (str)
-    {
-        i = -1;
-        while (str[++i])
-            push_backdlst(line, str[i], 0);
-        return (1);
-    }
-    return (0);
-}
-
-char 		*ft_skel_quote(char **wrd, int flag)
-{
-	static char *new;
-
-	if (flag)
+		str = "> ";
+	if (str)
 	{
-		ft_strdel(&new);
-		return (NULL);
+		i = -1;
+		while (str[++i])
+			push_backdlst(line, str[i], 0);
+		return (1);
 	}
-	if (!wrd || !(*wrd))
-		return (new);
-	*wrd = ft_free_join(*wrd, "\n", 'L');
-	ft_join_all(*wrd, &new, 1);
-	return (new);
+	return (0);
 }
 
-int ft_line_quotes(t_termc *t) 				// LEAKS ==> MUST FREE TMP
+static	inline	int		ft_doublequotes(int ret, int *yes, t_termc *t)
 {
-	char 			*tmp;
-	char 			*test;
-	static int  	ret;
-	int 			i;
-	static int 		yes;
+	if (ret == 0)
+	{
+		tputs(t->term->upstr, 1, ft_inputstr);
+		*yes = 0;
+		return (0);
+	}
+	else
+	{
+		ft_free_dlist(&t->line);
+		ft_fill_prompt_quotes(t->line, ret);
+		ft_find_history(t);
+		return (1);
+	}
+}
+
+static	inline	int		ft_s_quote(t_termc *t, int *yes, int *ret, char *tmp)
+{
+	int					i;
+	char				*test;
+
+	i = 0;
+	t->quotes = 1;
+	while (i < (int)t->console->total_line)
+	{
+		tputs(t->term->dostr, 1, ft_inputstr);
+		i++;
+	}
+	if (((test = (ft_strchr(tmp, '\\'))) != NULL
+				&& (test[ft_strlen(test) - 1] == '\\'
+					|| test[ft_strlen(test) - 1] == '\n'))
+			&& *ret != -1 && *ret != -2 && *ret != -3)
+	{
+		*ret = -4;
+		*yes = 1;
+		ft_free_dlist(&t->line);
+		ft_fill_prompt_quotes(t->line, *ret);
+		tmp = ft_ret_word_quote(&tmp, 0);
+		*ret = ft_check_quote(tmp);
+		ft_find_history(t);
+		return (1);
+	}
+	return (0);
+}
+
+int						ft_line_quotes(t_termc *t)
+{
+	char			*tmp;
+	static int		ret;
+	static int		yes;
 
 	if (!t->quotes)
 	{
 		tmp = ft_to_str(t, 0);
 		ret = ft_check_quote(tmp);
+		free(tmp);
 	}
 	if (ret != 0 || yes)
 	{
-		t->quotes = 1;
-		i = 0;
 		tmp = ft_to_str(t, 1);
-		while (i < (int)t->console->total_line)
-		{
-			tputs(t->term->dostr, 1, ft_inputstr);
-			i++;
-		}
-		if (((test = (ft_strchr(tmp, '\\'))) != NULL && (test[ft_strlen(test) - 1] == '\\' || test[ft_strlen(test) - 1] == '\n')) && ret != -1 && ret != -2 && ret != -3)
-		{
-			ret = -4;
-			yes = 1;
-			ft_free_dlist(&t->line);
-			ft_fill_prompt_quotes(t->line, ret);
-			tmp = ft_skel_quote(&tmp, 0);
-			ret = ft_check_quote(tmp);
-			ft_find_history(t);
-			t->quote_no = 1;
+		if (ft_s_quote(t, &yes, &ret, tmp))
 			return (1);
-		}
-		tmp = ft_skel_quote(&tmp, 0);
+		tmp = ft_ret_word_quote(&tmp, 0);
 		ret = ft_check_quote(tmp);
-		if (ret == 0)
-		{
-			tputs(t->term->upstr, 1, ft_inputstr);
-			yes = 0;
-			return (0);
-		}
-		else
-		{
-			ft_free_dlist(&t->line);
-			ft_fill_prompt_quotes(t->line, ret);
-			ft_find_history(t);
-			return (1);
-		}
+		return (ft_doublequotes(ret, &yes, t));
 	}
 	return (0);
 }

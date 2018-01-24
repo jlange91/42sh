@@ -1,23 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   replace_globbing.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 15:48:28 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 15:52:40 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 #include "../../inc/line_edition.h"
 
-static inline char 		*ft_get_word(t_termc *tsh, t_lineterm *end)
+static	inline	void	ft_cpy_simple(char *data, t_termc *tsh)
 {
-	char 		*word;
-	t_lineterm	*begin_t;
+	int					i;
+
+	i = 0;
+	while (data[i])
+	{
+		if (tsh->line->lnk_before)
+			ft_insert_dlnk(tsh->line->end, tsh, data[i], 1);
+		else
+			push_backdlst(tsh->line, data[i], 1);
+		i++;
+	}
+	tsh->repl = 1;
+	tsh->keyflag->k_tab = 0;
+	ft_strdel(&data);
+}
+
+static	inline	char	*ft_get_word(t_termc *tsh, int i)
+{
+	char				*word;
+	t_lineterm			*end;
 
 	word = NULL;
-	begin_t = tsh->line->begin;
-	begin_t = ft_dontGetPrompt2(begin_t);
-	ft_join_all(&end->c, &word, 0);
-	while (begin_t && begin_t != end)
-		begin_t = begin_t->next;
-	while (end && (end = end->prev) && end->c != ' ')
-		ft_join_all(&end->c, &word, 0);
+	if ((word = (char *)malloc(sizeof(char) * (i + 1))) == NULL)
+		return (NULL);
+	end = find_cursor(tsh->line->end, 0);
+	i = 0;
+	while (end && end->c != ' ' && end->index != 0)
+	{
+		word[i] = end->c;
+		i++;
+		end = end->prev;
+	}
+	word[i] = '\0';
 	ft_reverse(word);
-	while (begin_t && (begin_t = begin_t->next) && begin_t->c != ' ')
-		ft_join_all(&end->c, &word, 0);
 	if (!ft_glob_here(word) && !ft_strchr(word, '$') && !ft_strchr(word, '~'))
 	{
 		free(word);
@@ -26,107 +58,86 @@ static inline char 		*ft_get_word(t_termc *tsh, t_lineterm *end)
 	return (word);
 }
 
-static inline int ft_repl_expand(t_termc *tsh, dlist *tmp, char *word, int *ret)
+static	inline	void	ft_repl_expand(char *replace, char *word, t_termc *tsh)
 {
-	int 		i;
-	t_lineterm 	*begin;
-	t_shell 	*sh;
+	int					i;
+	t_lineterm			*begin;
 
-	if (ft_glob_here(word) || (!ft_strchr(word, '$') && !ft_strchr(word, '~')))
-		return (0);
-	sh = ft_ret_sh(NULL);
-	sh->line = ft_strdup(word);
-	ft_replace(sh);
-	i = ft_strlen(word);
-	begin = tmp->begin;
-	if (!(*ret) && ft_strcmp(sh->line, word) != 0 && ft_strlen(sh->line) > 0 &&
-		ft_word_here(begin, word))
+	tsh->keyflag->k_tab = 0;
+	tsh->repl = 1;
+	if (ft_strcmp(replace, word) != 0 && ft_strlen(replace) > 0)
 	{
-		*ret = 1;
-		ft_cpy_to_line(sh->line, tsh);
-		while (tmp->begin && i > 0)
+		begin = find_cursor(tsh->line->end, 0);
+		i = ft_strlen(word) - 1;
+		while (begin)
 		{
-			i--;
-			tmp->begin = tmp->begin->next;
-		}
-		tsh->repl = 1;
-		tsh->keyflag->k_tab = 0;
-		return (ft_returnfree(sh->line, 1, 'f'));
-	}
-	return (ft_returnfree(sh->line, 0, 'f'));
-}
-
-static inline int ft_repl_glob(t_termc *tsh, dlist *tmp, char *word, int *ret)
-{
-	int 		i;
-	char		*glob;
-	t_lineterm 	*begin;
-
-	glob = NULL;
-	i = 0;
-	if (ft_glob_here(word))
-		glob = ft_glob(word);
-	i = ft_strlen(word);
-	begin = tmp->begin;
-	if (!(*ret) && glob != NULL && tmp->begin->c == word[0] &&\
-		ft_word_here(begin, word))
-	{
-		*ret = 1;
-		tsh->keyflag->k_tab = 0;
-		tsh->repl = 1;
-		ft_cpy_to_line(glob, tsh);
-		while (tmp->begin && i > 0)
-		{
-			i--;
-			tmp->begin = tmp->begin->next;
-		}
-		return (ft_returnfree(glob, 1, 'f'));
-	}
-	return (ft_returnfree(glob, 0, 'f'));
-}
-
-static inline void 		ft_split_repl(t_termc *tsh, dlist tmp, char *word)
-{
-	int 	ret;
-
-	ret = 0;
-	while (tmp.begin)
-	{
-		if (tmp.begin->c == word[0])
-		{
-			if (!ft_repl_glob(tsh, &tmp, word, &ret) &&\
-				!ft_repl_expand(tsh, &tmp, word, &ret))
+			if (i > -1 && begin->c == word[i] && begin)
 			{
-				push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
-					tmp.begin->index);
-				tmp.begin = tmp.begin->next;
+				i--;
+				begin->under = 1;
+				begin = begin->prev;
 			}
+			else
+				break ;
+		}
+		ft_cut_line(begin, tsh);
+		ft_cpy_simple(replace, tsh);
+	}
+	else
+		ft_strdel(&replace);
+}
+
+static	inline	void	ft_repl_glob(char *word, t_termc *tsh)
+{
+	int					i;
+	char				*glob;
+	t_lineterm			*begin;
+
+	i = 0;
+	begin = find_cursor(tsh->line->end, 0);
+	i = ft_strlen(word) - 1;
+	if ((glob = ft_glob(word)) == NULL)
+		return ;
+	while (begin)
+	{
+		if (i > -1 && begin->c == word[i] && begin)
+		{
+			i--;
+			begin->under = 1;
+			begin = begin->prev;
 		}
 		else
-		{
-			push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
-				tmp.begin->index);
-			tmp.begin = tmp.begin->next;
-		}
+			break ;
 	}
+	ft_cut_line(begin, tsh);
+	ft_cpy_simple(glob, tsh);
 }
 
-void 		ft_replace_globbling_and_expansion(t_termc *tsh, t_lineterm *end)
+void					ft_replace_glob_exp(t_termc *tsh, t_lineterm *endt)
 {
-	dlist 	tmp;
-	char 	*word;
+	int					i;
+	char				*word;
+	t_lineterm			*end;
+	t_shell				*sh;
 
-	tmp.begin = NULL;
-	tmp.end = NULL;
-	if (!end->next)
-		tsh->line->last = 1;
-	else
-		tsh->line->last = 0;
-	if ((word = ft_get_word(tsh, end)) == NULL)
+	tsh->line->last = (!endt->next) ? 1 : 0;
+	end = find_cursor(tsh->line->end, 0);
+	i = 0;
+	while (end && end->c != ' ' && end->index != 0)
+	{
+		i++;
+		end = end->prev;
+	}
+	if ((word = ft_get_word(tsh, i)) == NULL)
 		return ;
-	ft_dupdlnk(tsh->line, &tmp);
-	ft_clean_line(tsh);
-	ft_split_repl(tsh, tmp, word);
-	ft_freedlnk(&tmp);
+	if (ft_glob_here(word))
+		ft_repl_glob(word, tsh);
+	else if (ft_strchr(word, '$') || ft_strchr(word, '~'))
+	{
+		sh = ft_ret_sh(NULL);
+		sh->line = ft_strdup(word);
+		ft_replace(sh);
+		ft_repl_expand(sh->line, word, tsh);
+	}
 	free(word);
 }

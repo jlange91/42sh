@@ -6,11 +6,11 @@
 #    By: adebrito <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/24 14:18:08 by adebrito          #+#    #+#              #
-#    Updated: 2018/01/03 13:02:27 by adebrito         ###   ########.fr        #
+#    Updated: 2018/01/24 11:26:06 by stvalett         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = /tmp/builtin_help
+NAME = builtin_help
 
 FLAGS = -Wall -Wextra -Werror
 
@@ -44,10 +44,11 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "Compiling Builtin Help"  "..."
+	@cp -R help_book /tmp
 	@make -C libft/
-	@gcc -I includes libft/libft.a -o $(NAME) $(SRCS) -lreadline -ltermcap -g
-	@clear
+	@gcc -I includes libft/libft.a -o $(NAME) $(SRCS) -lreadline -ltermcap
 	@echo "Compiling Builtin Help" $(SUCCESS)
+	@mv $(NAME) /tmp
 
 %.o: %.c
 	@gcc -I includes -o $@ -c $< $(FLAGS)

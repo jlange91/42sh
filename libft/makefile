@@ -71,6 +71,7 @@ SRCS = src/ft_memset.c\
 	   src/ft_strjoin.c\
 	   src/ft_strmap.c\
 	   src/ft_strmapi.c\
+	   src/ft_remove_char.c\
 	   src/ft_strnew.c\
 	   src/ft_strsplit.c\
 	   src/ft_strsplit2.c\

@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   replace_history.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 15:53:06 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 15:54:30 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 
-static inline void *ft_result(t_termc *tsh, dlist *tmp, int flag, int i)
+static	inline	void	*ft_result(t_termc *tsh, dlist *tmp, int flag, int i)
 {
-	t_lineterm *begin;
+	t_lineterm			*begin;
 
 	begin = ft_skip(tmp->begin, i);
 	if (flag == 1 && begin && ft_isdigit(begin->c) && ft_find(tsh, begin, &i))
@@ -26,7 +38,7 @@ static inline void *ft_result(t_termc *tsh, dlist *tmp, int flag, int i)
 	return (NULL);
 }
 
-static inline int ft_replace_pattern(dlist *tmp, t_termc *tsh)
+static	inline	int		ft_replace_pattern(dlist *tmp, t_termc *tsh)
 {
 	if (tmp->begin->c == '\\' || !tmp->begin->next || tmp->begin->c != '!')
 		return (0);
@@ -41,11 +53,11 @@ static inline int ft_replace_pattern(dlist *tmp, t_termc *tsh)
 		if ((tmp = ft_result(tsh, tmp, 1, 2)) != NULL)
 			return (1);
 	}
-	else if (ft_isdigit(tmp->begin->next->c) || ft_isalpha(tmp->begin->next->c)\
- 		|| tmp->begin->next->c == '\\')
+	else if (ft_isdigit(tmp->begin->next->c) || ft_isalpha(tmp->begin->next->c)
+			|| tmp->begin->next->c == '\\')
 	{
-			if ((tmp = ft_result(tsh, tmp, 2, 1)) != NULL)
-				return (1);
+		if ((tmp = ft_result(tsh, tmp, 2, 1)) != NULL)
+			return (1);
 	}
 	else if (tmp->begin->next->c == '?')
 	{
@@ -55,9 +67,9 @@ static inline int ft_replace_pattern(dlist *tmp, t_termc *tsh)
 	return (0);
 }
 
-void 		*ft_skip(t_lineterm *tmp, int len)
+void					*ft_skip(t_lineterm *tmp, int len)
 {
-	int i;
+	int					i;
 
 	if (tmp != NULL && len <= 2)
 	{
@@ -75,27 +87,27 @@ void 		*ft_skip(t_lineterm *tmp, int len)
 	return (NULL);
 }
 
-void 			ft_replace_exp_hist(t_termc *tsh)
+void					ft_replace_exp_hist(t_termc *tsh)
 {
-	dlist 		tmp;
+	dlist				tmp;
 
-	if ((!tsh->histlist && !tsh->histlist->end) || tsh->quote_no)
+	if (!tsh->histlist && !tsh->histlist->end)
 		return ;
 	tmp.begin = NULL;
 	tmp.end = NULL;
 	ft_dupdlnk(tsh->line, &tmp);
 	ft_clean_line(tsh);
-	if (tsh->quotes)
+	if (tsh->quotes || tsh->hdoc)
 		while (tmp.begin && tmp.begin->index == 0)
 			tmp.begin = tmp.begin->next;
 	while (tmp.begin)
 	{
 		if (!ft_replace_pattern(&tmp, tsh))
 		{
-			push_dupdlst(tsh->line, tmp.begin->c, tmp.begin->s_pos,\
-				tmp.begin->index);
+			push_dupdlst(tsh->line, tmp.begin);
 			tmp.begin = tmp.begin->next;
 		}
 	}
 	ft_freedlnk(&tmp);
+	ft_init_simple_autocompl(tsh, 0, NULL);
 }

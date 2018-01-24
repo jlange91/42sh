@@ -71,6 +71,7 @@ void				ft_putstr(char *str);
 void				ft_putstr_fd(char const *s, int fd);
 void				ft_putchar(char c);
 void				ft_putchar_fd(char c, int fd);
+char				*ft_remove_char(char *str, char c);
 char 				*ft_reverse(char *str);
 char				**ft_strsplit(char const *s, char c);
 char				**ft_strsplit2(char const *s);

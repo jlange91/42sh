@@ -50,6 +50,9 @@
 
 # define NAME_HIST    "/.21sh_history"
 
+# define REPLACE	1
+# define CTR_L		2
+
 typedef void(*t_k) (t_lineterm *end, t_termc *shell);
 /**************************************/
 /*DEBUG*/
@@ -58,6 +61,7 @@ typedef void(*t_k) (t_lineterm *end, t_termc *shell);
 /**************************************************************************************/
 /*INIT*/
 t_termc             *init_termc(char **env);
+void 				ft_init_signal(void);
 
 /******************************************************************************/
 /*INIT2*/
@@ -65,6 +69,7 @@ void                ft_init_termc2(t_termc **tsh);
 
 /*INIT3*/
 void				ft_init_termc3(t_termc *tsh);
+t_console			*init_console(void);
 
 /**************************************************************************************/
 /*TERM*/
@@ -92,7 +97,7 @@ int                 ft_add_file_history_no_flag(t_termc *shell);
 /***************************************************************************************/
 /*READLINE*/
 char				*ft_readline(t_termc *shell);
-t_termc		        *ft_ret_tsh(t_termc **arg);
+int 	            ft_what_arrow(long *c, int *stp, char k);
 
 /***************************************************************************************/
 /*UTILS_READ*/
@@ -120,16 +125,29 @@ void                ft_display(t_termc *shell);
 void                ft_display_prompt(t_termc *shell);
 
 /***************************************************************************************/
+/*TOOLS_DISPLAY*/
+int					ft_ret_ligne(t_lineterm *end, t_termc *tsh);
+/***************************************************************************************/
 /*DISPLAY*/
-int 				ft_singleton_down(int len);
 void				ft_display_dlnk(dlist *line, t_lineterm *current, t_termc *shell);
 
-/***************************************************************************************/
-/*KEY*/
-int					ft_is_key(dlist *line, t_termc *sehll, long c);
+/*
+**KEY
+*/
 
-/**************************************************************************************/
-/*FT_KEY2*/
+int					ft_what_key(long *c, int *stp, char k);
+
+/*
+**ACTION_KEY
+*/
+
+int					ft_action_key(dlist *line, t_termc *sehll, long c);
+void 				ft_ctr_d(t_termc *tsh);
+
+/*
+**ACTION_KEY2
+*/
+
 int                 ft_other_key(t_lineterm *end, t_termc *shell, long c);
 
 /*****************************************************************************************/
@@ -153,31 +171,34 @@ void				ft_past_line(t_lineterm *end, t_termc *shell);
 void				ft_cut_line(t_lineterm *end, t_termc *shell);
 
 /*****************************************************************************************/
+/*MOVE_UP_DOWN2*/
+void                ft_move_down_line_auto(t_lineterm *end, t_termc *tsh);
+
+/*****************************************************************************************/
 /*MOVE_UP_DOWN*/
 void                ft_move_up_line(t_lineterm *end, t_termc *shell);
 void                ft_move_down_line(t_lineterm *end, t_termc *shell);
-void                ft_move_down_line_auto(t_lineterm *end, t_termc *tsh);
 void           		ft_move_history(t_termc *shell, t_history **current, int flag);
 
-/*****************************************************************************************/
-/*TOOL*/
+/*
+**TOOL
+*/
+void                ft_clean_line(t_termc *tsh);
+t_lineterm			*ft_ps1(t_lineterm *tmp);
+
+/*
+**FREE
+*/
+
 void                ft_free_autocompletion(t_auto **autocompl);
 void                ft_free_all(t_termc *all);
 void				ft_free_dlist(dlist **line);
-void                ft_clean_line(t_termc *tsh);
-t_lineterm			*ft_dontGetPrompt2(t_lineterm *tmp);
 
 /**************************************************************************************/
 /*SIGNAL*/
 void				ft_handle_signal(int signum);
-void 				ft_init_signal(void);
 
 /**************************************************************************************/
 /*FT_LINE_EDITION*/
 int                 ft_line_edition(t_cmd *cmd);
-
-/*HEREDOCS*/
-char 				*ft_line_hdoc(char *end);
-char				*ft_readline_simple(char *prompt);
-
 #endif

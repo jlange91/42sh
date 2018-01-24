@@ -5,132 +5,56 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/05 19:23:04 by stvalett          #+#    #+#             */
-/*   Updated: 2017/11/16 13:01:18 by stvalett         ###   ########.fr       */
+/*   Created: 2018/01/23 14:16:56 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/23 15:17:06 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
-#include "../../inc/globbing.h"
 
-static inline void 	ft_reset_var(t_termc *tsh, int flag)
+static	void	ft_split_key(long *c, int *stp, char k)
 {
-	if (flag == 1)
-	{
-		if (ft_count_dlnk(tsh, 0) == 0)
-		{
-			ft_init_simple_autocompl(tsh);
-			tsh->autoc->finish = 1;
-			tsh->line->last = 1;
-		}
-		ft_fill_history(tsh);
-	}
-	if (flag == 2  || flag == 3)
-	{
-		tsh->autoc->can_print = 0;
-		tsh->keyflag->k_tab = 0;
-		tsh->auto_active = 0;
-		tsh->multiauto_active = 0;
-	}
-	if (flag == 3)
-	{
-		ft_init_simple_autocompl(tsh);
-		tsh->keyflag->backspace = 1;
-	}
-}
-/************************************************************************************
- * FUNCTION SPLIT TWO PARTS: REMOVE CARACTERE WITH KEY BACKSPACE
- *
- * Explication : Delete one caractere, LOL EASY
- *
- * NO NORME
- * *********************************************************************************/
-static inline int  ft_del_split(dlist **line, t_termc *tsh)
-{
-    t_lineterm  *tmp;
-
-    tmp = (*line)->end;
-    if (!tmp)
-        return (0);
-    (*line)->end = tmp->prev;
-	if ((*line)->end)
-		(*line)->end->next = NULL;
-    else
-    {
-		(*line)->begin = NULL;
-		return (0);
-	}
-	(*line)->end->s_pos = 1;
-	tsh->line->last = 1;
-	return (1);
+	*c = (k == 68 && *stp == 1) ? LEFT : *c;
+	*c = (k == 67 && *stp == 1) ? RIGHT : *c;
+	*c = (k == 65 && *stp == 1) ? UP : *c;
+	*c = (k == 66 && *stp == 1) ? DOWN : *c;
+	*c = (k == -102 && *stp == 3) ? OPT_V : *c;
+	*c = (k == -89 && *stp == 1) ? OPT_C : *c;
+	*c = (k == -120 && *stp == 3) ? OPT_X : *c;
+	*c = (k == 72 && *stp == 1) ? HOME : *c;
+	*c = (k == 70 && *stp == 1) ? END : *c;
+	*c = (k == 68 && *stp == 2) ? OPT_F : *c;
+	*c = (k == 67 && *stp == 2) ? OPT_B : *c;
+	*c = (k == 65 && *stp == 2) ? OPT_UP : *c;
+	*c = (k == 66 && *stp == 2) ? OPT_DOWN : *c;
+	*c = (k == 68 && *stp == 4) ? MAJ_LEFT : *c;
+	*c = (k == 67 && *stp == 4) ? MAJ_RIGHT : *c;
+	*stp = 0;
 }
 
-static inline int	ft_del_caractere(t_lineterm *end, t_termc *tsh)
+int				ft_what_key(long *c, int *stp, char k)
 {
-	t_lineterm *tmp;
-
-	tmp = end;
-	if (!tmp || tmp->index == 0)
+	if (k == 27 || k == -30 || k == -61)
 	{
-		ft_reset_var(tsh, 1);
-		return (0);
+		return ((*stp = *stp + 1));
+		return (1);
 	}
-	else if (!tmp->next && tmp->index != 0)
+	if ((k == 91 && *stp) || (k == -119 && *stp != 3) ||
+			(k == -120 && *stp != 3))
 	{
-		if (!ft_del_split(&(tsh)->line, tsh))
-			return (0);
-		if (tmp->prev->index == 0)
-			ft_reset_var(tsh, 1);
+		if (k == -120 || k == -119)
+			*stp = 3;
+		return (*stp);
 	}
-	else if (tmp->prev && tmp->index != 0)
+	if (*stp && (k == 49 || k == 59 || k == 50))
 	{
-		end->prev->next = tmp->next;
-		end->next->prev = tmp->prev;
-		end->prev->s_pos = 1;
-        tsh->line->last = 0;
+		return ((*stp = 4));
+		return (1);
 	}
-    free(tmp);
-	return (1);
-}
-
-/*************************************************************************************
-  FUNCTION ALL KEYS*/
-/*ALL VARIABLE 	BEGIN WITH O ======> OPT-caractere
- * 		  		BEGIN WITH M ======> SHIFT-caractere
- * 		  		FLAG = 1 FOR NEXT = RIGHT
- * 		  		FLAG = 2 FOR PREV = LEFT
- * 		  		static int count    how time TAB, count == 0 go to TAB MENU or TAB = KEY RIGHT
- *
- * Explication : We fimnd cursor
- *
- * NO NORME
- ************************************************************************************/
-int     ft_is_key(dlist *line, t_termc *tsh, long c)
-{
-    t_lineterm  *tmp;
-
-    tmp = NULL;
-	tmp = find_cursor(line->end, 0);
-	// if (c == TAB && tsh->len_prompt >= (int)get_columns() - 3) // WORK SIGNAL SIGWINCH TONIGHT
-		// return (1);
-	if (c == ' ')													//ATTENTION ENLEVE LA SELECTION CHECK
-		ft_replace_exp_hist(tsh);
-    if (c == TAB && !tsh->quotes && !tsh->hdoc)
-		tsh->keyflag->k_tab = 1;
-    if (c == '\n' && !tsh->quotes && !tsh->hdoc)
-		ft_reset_var(tsh, 2);
-	if (c == BACKSPACE)
-	{
-		ft_reset_var(tsh, 3);
-		if (!ft_del_caractere(tmp, tsh))
-			return (0);
-	}
-    else if (c == UP)
-		ft_move_history(tsh, &tsh->histmp->current, 2);
-	else if (c == DOWN)
-		ft_move_history(tsh, &tsh->histmp->current, 1);
-	else if (!ft_other_key(tmp, tsh, c))
-		return (0);
-	return (1);
+	if (*stp && (k == 68 || k == 67 || k == 65 || k == 66 || k == -102\
+				|| k == 72 || k == 70 || k == -120 || k == -89))
+		ft_split_key(c, stp, k);
+	else
+		*c = k;
+	return (0);
 }

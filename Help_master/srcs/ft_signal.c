@@ -40,19 +40,33 @@ void					abort_term(void)
 	exit(EXIT_FAILURE);
 }
 
-static	void			continue_term(void)
+static	void			continue_term(int flag)
 {
 	t_select	*s;
 
 	s = keep_term(NULL);
-	ft_init_term(&s);
-	ft_putstr_fd("ft_select restored, press an arrow key", 2);
+	if (flag == 1)
+	{
+		tputs(tgetstr("cl", NULL), 1, ft_putc);
+		ft_print_all(&s, 0, 0);
+		return ;
+	}
+	else
+	{
+		ft_init_term(&s);
+		ft_putstr_fd("ft_select restored, press an arrow key", 2);
+	}
 }
 
 static	void			sig_handler(int signo)
 {
+	if (signo == SIGWINCH)
+	{
+		continue_term(1);
+		return ;
+	}
 	if (signo == SIGCONT)
-		continue_term();
+		continue_term(2);
 	else if (signo == SIGTSTP)
 		suspended();
 	else
@@ -67,5 +81,7 @@ int						ft_signal(void)
 		ft_putstr_fd("\ncan't catch SIGTSTP\n", 2);
 	if (signal(SIGINT, sig_handler) == SIG_ERR)
 		ft_putstr_fd("\ncan't catch SIGTSTP\n", 2);
+	if (signal(SIGWINCH, sig_handler) == SIG_ERR)
+		ft_putstr_fd("\ncan't catch SIGWINCH\n", 2);
 	return (0);
 }

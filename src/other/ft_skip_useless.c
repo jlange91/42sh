@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_skip_useless.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/22 16:04:42 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/22 16:04:51 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 int		ft_skip_useless(char *line)
 {
-	int i;
+	int	i;
 
-    i = 0;
-    while (line[i])
-    {
-        if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-            break ;
-	    while (line[i] == ' ' || line[i] == '\t' || line[i] == '\n')
-            i++;
-    }
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
+			break ;
+		while (line[i] == ' ' || line[i] == '\t' || line[i] == '\n')
+			i++;
+	}
 	return (i);
 }

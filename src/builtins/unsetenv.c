@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:41 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/04 16:07:36 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/17 14:55:48 by vmartins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ char				**ft_unsetenv(char *name, char **env)
 
 	if (ft_getenv(name, env) == NULL)
 		return (ft_cp_env(env));
+	if (ft_strcmp(name, "PATH") == 0)
+		ft_reinit_hash();
 	name2 = ft_strjoin(name, "=");
 	new_env = fill_new_env(env, name2, 0, 0);
 	free(name2);
@@ -63,7 +65,7 @@ void				ft_prepare_unsetenv(t_cmd *cmd)
 	char	**tenv;
 	char	**tvar;
 	int		i;
-	
+
 	i = 0;
 	if (ft_ret(cmd))
 		return ;

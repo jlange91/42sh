@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:39:25 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/15 19:00:55 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/23 14:35:39 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ static inline int		exec_path(char **av, char **env)
 	int		ret;
 
 	i = 0;
-	ret = 2;	
-	execve(ft_return_hash(av[0]), av, env);	
+	ret = 2;
+	execve(ft_return_hash(av[0]), av, env);
 	path = fill_path(env);
 	while (path && path[i])
 	{
@@ -69,13 +69,12 @@ static inline int		exec_av(char **av, char **env)
 	return (ret);
 }
 
-int		cd_or_error(t_cmd *cmd, int status)
+int						cd_or_error(t_cmd *cmd, int status)
 {
-
 	if (status == 0)
 		return (0);
 	else if (status != 10752)
-		return (1);		
+		return (1);
 	ft_cd(cmd, 1);
 	return (0);
 }
@@ -99,21 +98,10 @@ void					ft_exec(t_cmd *cmd, char **av, char **env)
 	else if (father == 0)
 	{
 		ret = (av[0][0] == '/' || (av[0][0] == '.' && (av[0][1] == '.' ||
-		av[0][1] == '/'))) ? exec_av(av, env) : exec_path(av, env);
+						av[0][1] == '/'))) ?
+			exec_av(av, env) : exec_path(av, env);
 		if (ret != 0)
-		{
-			DIR		*dir;
-			if ((dir = opendir(cmd->av[0])))
-				exit(42);
-			if (ret == 2)
-			{
-				ft_putstr_fd("shell: command not found: ", 2);
-				ft_putendl_fd(av[0], 2);
-			}
-			else
-				ft_perror("shell", ret, av[0]);
-			exit(1);
-		}
+			exit(ft_exit_exec(cmd, ret));
 	}
 	else
 		ft_perror("fork", errno, NULL);
