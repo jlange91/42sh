@@ -47,16 +47,17 @@ int					ft_ret_ligne(t_lineterm *end, t_termc *tsh)
 	{
 		tmp = end;
 		i = ft_move_next(tmp);
+		k = -1;
 		if (i >= (int)tsh->console->char_pos)
 		{
-			k = -1;
+			if (i % tsh->console->char_pos == 0)
+				return (0);
 			while (++k < i % tsh->console->char_pos + 1)
 				tputs(tsh->term->ndstr, 1, ft_inputstr);
 			tsh->console->char_pos = i % tsh->console->char_pos;
 		}
 		else
 		{
-			k = -1;
 			while (++k < i % get_columns())
 				tputs(tsh->term->ndstr, 1, ft_inputstr);
 		}

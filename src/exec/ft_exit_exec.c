@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit_exec.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/23 14:22:47 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/23 14:29:02 by jlange           ###   ########.fr       */
+/*   Created: 2018/01/30 16:22:34 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/30 16:22:36 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		ft_exit_exec(t_cmd *cmd, int ret)
 	DIR		*dir;
 
 	dir = NULL;
-	if ((dir = opendir(cmd->av[0])))
+	if (!cmd->av[1] && (dir = opendir(cmd->av[0])))
 	{
 		closedir(dir);
 		return (42);

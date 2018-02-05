@@ -19,7 +19,7 @@ void			ft_display_prompt_hdoc(t_termc *tsh)
 	int			i;
 	char		*prompt;
 
-	ft_free_dlist(&tsh->line);
+	ft_free_t_dlst(&tsh->line);
 	tsh->line->lnk_before = 0;
 	prompt = "heredoc> ";
 	i = -1;
@@ -84,7 +84,7 @@ int				ft_signal_here(t_termc *tsh)
 	{
 		tputs(tsh->term->upstr, 1, ft_inputstr);
 		tputs(tsh->term->upstr, 1, ft_inputstr);
-		ft_free_dlist(&tsh->line);
+		ft_free_t_dlst(&tsh->line);
 		ft_ret_word_hdoc(NULL, 1);
 		return (1);
 	}

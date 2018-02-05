@@ -13,7 +13,7 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/quote.h"
 
-void			push_backdlst(dlist *line, int c, int i)
+void			push_backdlst(t_dlst *line, int c, int i)
 {
 	t_lineterm	*new;
 
@@ -33,7 +33,7 @@ void			push_backdlst(dlist *line, int c, int i)
 	line->end = new;
 }
 
-void			push_backhist(hlist *h, const char *str, int index, int n)
+void			push_backhist(t_hist *h, const char *str, int index, int n)
 {
 	t_history	*new;
 

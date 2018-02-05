@@ -16,7 +16,7 @@
 #include "../../inc/sh21.h"
 #include "../../inc/quote.h"
 
-void			push_dupdlst(dlist *line, t_lineterm *src)
+void			push_dupdlst(t_dlst *line, t_lineterm *src)
 {
 	t_lineterm	*new;
 
@@ -36,7 +36,7 @@ void			push_dupdlst(dlist *line, t_lineterm *src)
 	line->end = new;
 }
 
-void			ft_freedlnk(dlist *line)
+void			ft_freedlnk(t_dlst *line)
 {
 	t_lineterm	*del;
 	t_lineterm	*elem;
@@ -56,7 +56,7 @@ void			ft_freedlnk(dlist *line)
 	}
 }
 
-void			ft_dupdlnk(dlist *line, dlist *tmp)
+void			ft_dupdlnk(t_dlst *line, t_dlst *tmp)
 {
 	t_termc		*tsh;
 	t_lineterm	*begin;

@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 15:45:20 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/23 15:45:35 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/31 15:14:30 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,13 @@ t_termc		*ft_ret_tsh(t_termc **arg)
 	if (arg && *arg)
 		tsh = *arg;
 	return (tsh);
+}
+
+char		*ft_var_hrdcpwd(char *arg)
+{
+	static char		*pwd = NULL;
+
+	if (arg)
+		pwd = arg;
+	return (pwd);
 }

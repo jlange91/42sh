@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/11 16:02:48 by stvalett          #+#    #+#             */
-/*   Updated: 2017/03/31 15:49:35 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:50:58 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ char		**ft_strsplit(char const *s, char c)
 	int		j;
 	char	**str;
 
-    str = NULL;
+	str = NULL;
 	if (!s)
 		return (NULL);
 	word = ft_count((char *)s, c);

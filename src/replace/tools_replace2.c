@@ -22,7 +22,7 @@ void		ft_add_space(char **line, char **s_line, char *word)
 
 	if (!(*line) || !(*s_line) || !word)
 		return ;
-	str = ft_strstr(*s_line, word);
+	str = ft_strjoin(*s_line, word);
 	if (str != NULL)
 	{
 		i = 0;
@@ -36,8 +36,10 @@ void		ft_add_space(char **line, char **s_line, char *word)
 			i++;
 		}
 		ft_strdel(&(*s_line));
-		if (str[i] != 0)
+		if (str && str[i] != 0)
 			*s_line = ft_strdup(&str[i]);
+		if (str)
+			free(str);
 	}
 }
 

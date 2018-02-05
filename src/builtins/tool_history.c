@@ -14,7 +14,7 @@
 #include "../../inc/built_in.h"
 #include "../../inc/line_edition.h"
 
-int				ft_split_exec(char *av1, int i, char **av, hlist *hist)
+int				ft_split_exec(char *av1, int i, char **av, t_hist *hist)
 {
 	if (av1[i] == 'p')
 	{
@@ -46,7 +46,7 @@ int				ft_split_error_hist(int flag)
 	return (0);
 }
 
-int				ft_display_history(hlist *histlist)
+int				ft_display_history(t_hist *histlist)
 {
 	t_history	*begin;
 	t_history	*tmp;
@@ -75,7 +75,7 @@ int				ft_display_history(hlist *histlist)
 	return (0);
 }
 
-void			ft_del_elem_history_split(int index, hlist *histlist)
+void			ft_del_elem_history_split(int index, t_hist *histlist)
 {
 	t_history	*tmp;
 
@@ -97,7 +97,7 @@ void			ft_del_elem_history_split(int index, hlist *histlist)
 	}
 }
 
-int				ft_del_elem_history(char *av, hlist *histlist, int flag)
+int				ft_del_elem_history(char *av, t_hist *histlist, int flag)
 {
 	int			index;
 	int			i;

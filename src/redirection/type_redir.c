@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   type_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 16:30:21 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/19 16:34:19 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/31 15:05:56 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int				ft_check_type_redir(char *str)
 	ret = (str[0] == '<' && str[1] == '<') ? 6 : ret;
 	ret = (str[0] == '<' && str[1] == '>') ? 7 : ret;
 	ret = (str[0] == '>' && str[1] == '&' && str[2] == '-' &&
-			(str[3] == ' ' || str[3] == '\t' || str[3] == '\n')) ? 8 : ret;
+			(str[3] == ' ' || str[3] == '\t' || str[3] == '\n' ||
+			!str[3])) ? 8 : ret;
 	str[0] = ' ';
 	if (ret > 2)
 		str[1] = ' ';
@@ -73,7 +74,7 @@ int				directory_fd(char *line, int type)
 	else if (type == 4)
 		fd = open(word, O_WRONLY | O_CREAT, 0644);
 	else if (type == 6)
-		fd = open("/tmp/.heardocs_42sh", O_RDWR | O_CREAT | O_TRUNC, 0644);
+		fd = open(ft_var_hrdcpwd(NULL), O_RDWR | O_CREAT | O_TRUNC, 0644);
 	else if (type == 7)
 		fd = open(word, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd != -1 && type == 4)
@@ -95,16 +96,16 @@ t_redir			*type_redir(char *str, int index, int len, int i)
 		exit(0);
 	}
 	red->in = ft_check_fd_in(&str[-index], index - 1);
+	if (red->in == ft_backup_stdin(0) || red->in == ft_backup_stdout(0) ||
+	red->in == ft_backup_stderr(0))
+		red->in = -2;
 	red->out = (str[1] == '&' && ft_isdigit(str[2])) ? ft_atoi(&str[2]) : -1;
 	red->close = (red->out == -1) ? 1 : 0;
 	if (red->out >= 0)
 	{
 		len = ft_intlen(red->out);
-		while (i < len)
-		{
+		while (++i < len)
 			str[i + 2] = ' ';
-			i++;
-		}
 	}
 	red->type = ft_check_type_redir(str);
 	if (red->type != 8 && red->out == -1)

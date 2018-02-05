@@ -13,6 +13,19 @@
 #include "../../inc/sh21.h"
 #include "../../inc/built_in.h"
 
+static	inline	void	init_without_env(int *test)
+{
+	char	**tmp;
+
+	*test = 1;
+	if ((tmp = (char **)malloc(sizeof(char *) * 2)) == NULL)
+		exit (1);
+	tmp[0] = ft_strdup("SHLVL=1");
+	tmp[1] = NULL;
+	ft_var_var(load_env(tmp));
+	ft_free_tab(tmp);
+}
+
 static	inline	char	*find_value(char *env)
 {
 	char				*new_env;
@@ -28,12 +41,13 @@ static	inline	char	*find_value(char *env)
 	return (new_env);
 }
 
-static	inline	char	**up_sh_lvl(char **env, int i)
+static	inline	char	**up_sh_lvl(char **env, int i, int *test)
 {
 	char				**new_env;
 
 	if (ft_getenv("SHLVL", env) == NULL)
 	{
+		init_without_env(test);
 		new_env = ft_setenv("SHLVL", "1", env);
 		return (new_env);
 	}
@@ -57,10 +71,13 @@ void					ft_fill_env(char **env)
 	char				pwd[PATH_MAX];
 	char				*pwd2;
 	char				**tenv;
+	int					test;
 
-	ft_var_env(up_sh_lvl(env, tab_2d_len(env)));
+	test = 0;
+	ft_var_env(up_sh_lvl(env, tab_2d_len(env), &test));
 	tenv = ft_var_env(NULL);
-	ft_var_var(load_env(tenv));
+	if (!test)
+		ft_var_var(load_env(tenv));
 	ft_var_local(init_local());
 	if ((pwd2 = ft_getenv("PWD", env)) == NULL)
 	{

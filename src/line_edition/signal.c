@@ -31,7 +31,7 @@ static	inline	void	ft_sigwinch(t_termc *tsh)
 	{
 		tputs(tsh->term->clrstr, 1, ft_inputstr);
 		save = ft_to_str(tsh, 0);
-		ft_free_dlist(&tsh->line);
+		ft_free_t_dlst(&tsh->line);
 		ft_init_console(tsh, tsh->line);
 		if (save != NULL)
 		{
@@ -56,7 +56,7 @@ static	inline	void	ft_sigint2(t_termc *tsh)
 		tsh->hdoc = 0;
 		ft_ret_word_hdoc(NULL, 1);
 	}
-	ft_free_dlist(&tsh->line);
+	ft_free_t_dlst(&tsh->line);
 	len = ft_ret_down(-1);
 	if (len != 0)
 		while (len--)
@@ -92,11 +92,12 @@ static	void			ft_suspended(t_termc *tsh)
 	char				cp[2];
 
 	tputs(tsh->term->cdstr, 1, ft_inputstr);
-	ft_end_term(tsh);
 	signal(SIGTSTP, SIG_DFL);
 	cp[0] = tsh->term->term.c_cc[VSUSP];
 	cp[1] = 0;
 	ioctl(0, TIOCSTI, cp);
+	tputs(tsh->term->vestr, 1, ft_inputstr);
+	ft_end_term(tsh);
 }
 
 void					ft_handle_signal(int signum)
@@ -118,4 +119,6 @@ void					ft_handle_signal(int signum)
 	}
 	if (signum == SIGTSTP)
 		ft_suspended(tsh);
+	if (signum == SIGSEGV)
+		ft_putendl("HELLO");
 }

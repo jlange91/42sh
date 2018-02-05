@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:25:16 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/22 16:23:41 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/30 14:45:08 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int						ft_cd_l(char *path, int opt)
 		curpath = ft_strjoin(ft_var_pwd(NULL), "/");
 		curpath = ft_replace_str(ft_strjoin(curpath, path), curpath);
 	}
-	curpath = ft_replace_str(ft_remove_useless_path(curpath), curpath);
 	if (chdir(curpath) == -1)
 	{
 		free(curpath);
@@ -48,6 +47,7 @@ int						ft_cd_l(char *path, int opt)
 		}
 		return (1);
 	}
+	curpath = ft_replace_str(ft_remove_useless_path(curpath), curpath);
 	if (opt == 0)
 		ft_putendl(curpath);
 	ft_var_pwd(ft_replace_str(curpath, ft_var_pwd(NULL)));

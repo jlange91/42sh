@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/25 11:02:47 by stvalett          #+#    #+#             */
-/*   Updated: 2017/04/05 12:04:51 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:54:46 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,7 @@ int				get_next_line(const int fd, char **line)
 
 	len = -1;
 	if (line == NULL || (ft_multi_fd(&list, &current, fd)) == 1)
-    {
 		return (-1);
-    }
 	if (current->ret != 0)
 	{
 		if ((res = ft_read_file(line, current, &len)) == 1)

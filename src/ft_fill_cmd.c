@@ -1,5 +1,17 @@
-# include "../inc/sh21.h"
-# include "../inc/quote.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_fill_cmd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/25 17:38:09 by adebrito          #+#    #+#             */
+/*   Updated: 2018/01/25 17:38:45 by adebrito         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/sh21.h"
+#include "../inc/quote.h"
 
 static int		backslash_word(char *line)
 {
@@ -11,7 +23,7 @@ static int		backslash_word(char *line)
 		return (1);
 }
 
-t_cmd	*ft_create_cmd(char *line, int op)
+t_cmd			*ft_create_cmd(char *line, int op)
 {
 	t_cmd		*ret;
 	static int	top = 0;
@@ -33,7 +45,7 @@ t_cmd	*ft_create_cmd(char *line, int op)
 	return (ret);
 }
 
-void	ft_add_cmd(t_cmd **begin, char *line, int op)
+void			ft_add_cmd(t_cmd **begin, char *line, int op)
 {
 	t_cmd *cmd;
 	t_cmd *new;
@@ -51,7 +63,7 @@ void	ft_add_cmd(t_cmd **begin, char *line, int op)
 	}
 }
 
-int     is_end(char *line)
+int				is_end(char *line)
 {
 	int ret;
 
@@ -64,11 +76,11 @@ int     is_end(char *line)
 	return (ret);
 }
 
-t_cmd	*ft_fill_cmd(char *line, int i, int j)
+t_cmd			*ft_fill_cmd(char *line, int i, int j)
 {
 	t_cmd	*cmd;
-	char    *cline;
-	int     op;
+	char	*cline;
+	int		op;
 
 	cmd = NULL;
 	while (42)
@@ -76,7 +88,7 @@ t_cmd	*ft_fill_cmd(char *line, int i, int j)
 		i += ft_skip_quote(&line[i]);
 		i += ft_skip_dquote(&line[i]);
 		if ((op = is_end(&line[i])))
-		{            
+		{
 			cline = ft_strndup(&line[j], i - j);
 			ft_add_cmd(&cmd, cline, op - 1);
 			free(cline);

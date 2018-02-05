@@ -15,7 +15,7 @@
 #include "../../inc/globbing.h"
 #include "../../inc/sh21.h"
 
-static	inline	void	*ft_result(t_termc *tsh, dlist *tmp, int flag, int i)
+static	inline	void	*ft_result(t_termc *tsh, t_dlst *tmp, int flag, int i)
 {
 	t_lineterm			*begin;
 
@@ -23,22 +23,22 @@ static	inline	void	*ft_result(t_termc *tsh, dlist *tmp, int flag, int i)
 	if (flag == 1 && begin && ft_isdigit(begin->c) && ft_find(tsh, begin, &i))
 	{
 		tmp->begin = ft_skip(tmp->begin, i);
-		return ((dlist *)tmp);
+		return ((t_dlst *)tmp);
 	}
 	else if (flag == 2 && ft_find2(tsh, begin, &i))
 	{
 		tmp->begin = ft_skip(tmp->begin, i);
-		return ((dlist *)tmp);
+		return ((t_dlst *)tmp);
 	}
 	else if (flag == 3 && ft_find3(tsh, begin, &i))
 	{
 		tmp->begin = ft_skip(tmp->begin, i);
-		return ((dlist *)tmp);
+		return ((t_dlst *)tmp);
 	}
 	return (NULL);
 }
 
-static	inline	int		ft_replace_pattern(dlist *tmp, t_termc *tsh)
+static	inline	int		ft_replace_pattern(t_dlst *tmp, t_termc *tsh)
 {
 	if (tmp->begin->c == '\\' || !tmp->begin->next || tmp->begin->c != '!')
 		return (0);
@@ -89,7 +89,7 @@ void					*ft_skip(t_lineterm *tmp, int len)
 
 void					ft_replace_exp_hist(t_termc *tsh)
 {
-	dlist				tmp;
+	t_dlst				tmp;
 
 	if (!tsh->histlist && !tsh->histlist->end)
 		return ;

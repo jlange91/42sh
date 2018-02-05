@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 14:40:50 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/23 19:31:00 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:25:02 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int		init_elem(t_select **select, char **av, int ac)
 int				main(int ac, char **av, char **env)
 {
 	t_select	*s;
-	char			*str;
+	char		*str;
 
 	(void)ac;
 	str = "COPIER/COLLER COUPER/COLLER SE_DEPLACER SELECTION AUTOCOMPLETION \

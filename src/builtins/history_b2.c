@@ -14,7 +14,7 @@
 #include "../../inc/built_in.h"
 #include "../../inc/line_edition.h"
 
-void	ft_opt_a(char *av2, t_history *begin, hlist *hist)
+void	ft_opt_a(char *av2, t_history *begin, t_hist *hist)
 {
 	int		fd;
 	int		i;
@@ -38,7 +38,7 @@ void	ft_opt_a(char *av2, t_history *begin, hlist *hist)
 	}
 }
 
-void	ft_opt_r(char *av2, t_history *begin, hlist *hist)
+void	ft_opt_r(char *av2, t_history *begin, t_hist *hist)
 {
 	int		fd;
 	char	*line;
@@ -57,7 +57,7 @@ void	ft_opt_r(char *av2, t_history *begin, hlist *hist)
 	}
 }
 
-void	ft_opt_w(char *av2, t_history *begin, hlist *hist)
+void	ft_opt_w(char *av2, t_history *begin, t_hist *hist)
 {
 	int		fd;
 	int		i;
@@ -77,7 +77,7 @@ void	ft_opt_w(char *av2, t_history *begin, hlist *hist)
 	}
 }
 
-int		ft_opt_p(char **av, hlist *hist)
+int		ft_opt_p(char **av, t_hist *hist)
 {
 	int		i;
 
@@ -91,7 +91,7 @@ int		ft_opt_p(char **av, hlist *hist)
 	return (0);
 }
 
-int		ft_opt_s(char **av, hlist *hist)
+int		ft_opt_s(char **av, t_hist *hist)
 {
 	int		i;
 	int		len;

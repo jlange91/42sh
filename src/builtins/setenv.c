@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/03 18:26:30 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/23 14:44:02 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/30 14:50:51 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ static inline char		**change_line(char *name, char *value, char **env)
 	name2 = ft_strjoin(name, "=");
 	if (!(new_env = (char**)malloc(sizeof(char*) * (tab_2d_len(env) + 1))))
 		return (NULL);
+	if (ft_strcmp(name, "PATH") == 0)
+		ft_reinit_hash();
 	while (env[i])
 	{
 		if (ft_strncmp(name2, env[i], ft_strlen(name2)))
@@ -96,6 +98,8 @@ char					**ft_setenv(char *name, char *value, char **env)
 		new_env[i] = create_line(name, value);
 		new_env[i + 1] = NULL;
 	}
+	if (ft_getenv(name, ft_var_var(NULL)) == NULL)
+		ft_var_var(rapid_set(create_line(name, value), ft_var_var(NULL), 1));
 	return (new_env);
 }
 

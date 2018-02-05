@@ -12,7 +12,7 @@
 
 #include "../../inc/line_edition.h"
 
-void			ft_free_history(hlist *history)
+void			ft_free_history(t_hist *history)
 {
 	t_history	*tmp;
 	t_history	*del;

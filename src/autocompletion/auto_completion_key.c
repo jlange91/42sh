@@ -20,7 +20,7 @@
 
 static	int		ft_reset_key(t_termc *tsh)
 {
-	if (!tsh->autoc->current || tsh->len_prompt >= (int)get_columns())
+	if (!tsh->autoc->current)
 		return (0);
 	tsh->autoc->updaterow = ft_getcursor(0, tsh->autoc->updaterow, tsh);
 	tsh->autoc->arrow = 1;

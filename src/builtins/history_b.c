@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/22 14:32:19 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/22 16:26:27 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:37:06 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../../inc/built_in.h"
 #include "../../inc/line_edition.h"
 
-static	inline	int		ft_find_index_history(char *av, hlist *hist)
+static	inline	int		ft_find_index_history(char *av, t_hist *hist)
 {
 	t_history			*begin;
 	int					index;
@@ -61,7 +61,7 @@ int						ft_end(char *av1, int flag)
 	return (0);
 }
 
-static	inline	int		ft_split_exec2(char *av1, int i, char **av, hlist *hist)
+static	inline	int		ft_exec2(char *av1, int i, char **av, t_hist *hist)
 {
 	if (av1[i] == 'w')
 	{
@@ -87,7 +87,7 @@ static	inline	int		ft_split_exec2(char *av1, int i, char **av, hlist *hist)
 	return (0);
 }
 
-static	inline	int		ft_execute_opt(char *av1, char **av, hlist *hist)
+static	inline	int		ft_execute_opt(char *av1, char **av, t_hist *hist)
 {
 	int					i;
 
@@ -103,7 +103,7 @@ static	inline	int		ft_execute_opt(char *av1, char **av, hlist *hist)
 	{
 		if (ft_split_exec(av1, i, av, hist))
 			continue ;
-		if (ft_split_exec2(av1, i, av, hist))
+		if (ft_exec2(av1, i, av, hist))
 			continue ;
 	}
 	return (0);

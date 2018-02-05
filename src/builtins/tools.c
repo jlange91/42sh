@@ -6,18 +6,29 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 14:41:21 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/23 14:41:23 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/30 15:44:09 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/sh21.h"
 
-void	check_env_export(char *tmp, char *str)
+void	check_env_export(char *tmp, char *str, int index)
 {
-	if (ft_getenv(tmp, ft_var_env(NULL)) != NULL)
-		basic_replace(tmp, str, ft_var_env(NULL));
-	if (ft_getenv(tmp, ft_var_var(NULL)) != NULL)
-		basic_replace(tmp, str, ft_var_var(NULL));
+	char	*tstr;
+
+	tstr = NULL;
+	if (index == 0)
+	{
+		tstr = str;
+		if (!ft_strchr(str, '='))
+			str = ft_strjoin(str, "=");
+		if (ft_getenv(tmp, ft_var_env(NULL)) != NULL)
+			basic_replace(tmp, str, ft_var_env(NULL));
+		if (ft_getenv(tmp, ft_var_var(NULL)) != NULL)
+			basic_replace(tmp, str, ft_var_var(NULL));
+		if (ft_strcmp(tstr, str))
+			free(str);
+	}
 }
 
 int		place_me(t_cmd *cmd)

@@ -66,7 +66,7 @@ int				ft_fill_history(t_termc *tsh)
 	return (1);
 }
 
-t_history		*ft_concat_string(t_history *begin, hlist *histlist, int i)
+t_history		*ft_concat_string(t_history *begin, t_hist *histlist, int i)
 {
 	char		*tmp;
 
@@ -94,7 +94,7 @@ t_history		*ft_concat_string(t_history *begin, hlist *histlist, int i)
 	return (begin);
 }
 
-void			ft_format_string(hlist *tmp, hlist *histlist)
+void			ft_format_string(t_hist *tmp, t_hist *histlist)
 {
 	int			i;
 
@@ -111,15 +111,15 @@ void			ft_format_string(hlist *tmp, hlist *histlist)
 	}
 }
 
-int				ft_init_fill_history(hlist *histlist)
+int				ft_init_fill_history(t_hist *histlist)
 {
 	int			fd;
 	int			i;
 	int			ret;
 	char		*line;
-	hlist		*tmp;
+	t_hist		*tmp;
 
-	if ((tmp = (hlist *)malloc(sizeof(hlist))) == NULL)
+	if ((tmp = (t_hist *)malloc(sizeof(t_hist))) == NULL)
 		exit(1);
 	tmp->begin = NULL;
 	tmp->current = NULL;

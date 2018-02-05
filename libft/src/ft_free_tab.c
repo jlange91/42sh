@@ -1,17 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_free_tab.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/24 18:42:36 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/24 18:43:00 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/libft.h"
 
-void    ft_free_tab(char **str)
+void	ft_free_tab(char **str)
 {
-    int i;
+	int	i;
 
-    if (str)
-    {
-        i = 0;
-        while (str[i] != NULL)
-        {
+	if (str)
+	{
+		i = 0;
+		while (str[i] != NULL)
+		{
 			free(str[i]);
-            i++;
-        }
-        free(str);
-    }
+			i++;
+		}
+		free(str);
+	}
 }

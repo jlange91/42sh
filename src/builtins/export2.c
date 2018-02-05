@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:13:58 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/24 15:07:44 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:20:49 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,32 +52,33 @@ void	replace_elem(char *compare, char *input, char **env)
 		ft_var_env(rapid_set(input, ft_var_env(NULL), 0));
 }
 
-void	export_flagb(t_cmd *cmd)
+void	export_flagb(t_cmd *cmd, int i)
 {
-	int		i;
-
-	i = 1;
 	while (cmd->av[++i])
 	{
 		if (check_pattern(cmd->av[i]) == 0)
 		{
 			ft_putstr_fd("export: ", 2);
 			ft_putstr_fd(cmd->av[i], 2);
-			ft_putstr_fd(": not a valid identifier", 2);
+			ft_putendl_fd(": not a valid identifier", 2);
 			ft_singleton(1, 1);
+			return ;
 		}
 		else if (!ft_strchr(cmd->av[i], '=') || cmd->av[i][0] == '=')
 		{
-			ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
+			ft_putendl_fd("Error : bad declaration write it like %s=%s", 2);
 			ft_singleton(1, 1);
+			return ;
 		}
 		else if (check_correct_arg(cmd, i) == -1)
+		{
 			ft_singleton(1, 1);
+			return ;
+		}
 	}
 	i = 1;
 	while (cmd->av[++i])
 		export_flag_b(cmd, i);
-	ft_singleton(1, 1);
 }
 
 void	export_no_eq(t_cmd *cmd, int i)
@@ -115,7 +116,7 @@ int		export_with_eq(t_cmd *cmd, int i)
 	str = NULL;
 	if (cmd->av[i][0] == '=')
 	{
-		ft_putstr_fd("Error : bad declaration write it like %s=%s", 2);
+		ft_putendl_fd("Error : bad declaration write it like %s=%s", 2);
 		return (1);
 	}
 	tmp = ft_strsplit(cmd->av[i], '=');

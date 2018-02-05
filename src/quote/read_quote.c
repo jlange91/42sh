@@ -13,7 +13,7 @@
 #include "../../inc/quote.h"
 #include "../../inc/line_edition.h"
 
-static inline int		ft_fill_prompt_quotes(dlist *line, int ret)
+static inline int		ft_fill_prompt_quotes(t_dlst *line, int ret)
 {
 	char	*str;
 	int		i;
@@ -47,7 +47,7 @@ static	inline	int		ft_doublequotes(int ret, int *yes, t_termc *t)
 	}
 	else
 	{
-		ft_free_dlist(&t->line);
+		ft_free_t_dlst(&t->line);
 		ft_fill_prompt_quotes(t->line, ret);
 		ft_find_history(t);
 		return (1);
@@ -73,7 +73,7 @@ static	inline	int		ft_s_quote(t_termc *t, int *yes, int *ret, char *tmp)
 	{
 		*ret = -4;
 		*yes = 1;
-		ft_free_dlist(&t->line);
+		ft_free_t_dlst(&t->line);
 		ft_fill_prompt_quotes(t->line, *ret);
 		tmp = ft_ret_word_quote(&tmp, 0);
 		*ret = ft_check_quote(tmp);

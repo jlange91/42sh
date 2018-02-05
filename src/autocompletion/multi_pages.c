@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:25:50 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/23 17:27:50 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:14:17 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,8 @@ static	void	ft_clscreen(t_auto *select, t_termc *tsh, int *ecrase, int *e_s)
 
 	tputs(tgoto(tgetstr("cm", NULL), 0, select->row + 4), 1, ft_inputstr);
 	row = select->row + 4;
-	tputs(tparm(tsh->term->upstru, row), 1, ft_inputstr);
+	while (row--)
+		tputs(tsh->term->upstr, 1, ft_inputstr);
 	what_pages(tsh, select, ecrase, e_s);
 }
 

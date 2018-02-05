@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 14:41:06 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/24 15:26:08 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/30 15:39:50 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,16 @@ void	exec_local(char *str)
 {
 	char	**tmp;
 	char	*str_tmp;
+	int		index;
 
+	index = 0;
 	tmp = ft_strsplit(str, '=');
 	str_tmp = NULL;
 	if (ft_getenv(tmp[0], ft_var_local(NULL)) && !ft_strchr(str, '='))
+	{
 		ft_putstr(ft_getenv(tmp[0], ft_var_local(NULL)));
+		index = 1;
+	}
 	else if (ft_getenv(tmp[0], ft_var_local(NULL)) != NULL \
 			&& ft_strchr(str, '='))
 		basic_replace(tmp[0], str, ft_var_local(NULL));
@@ -54,7 +59,7 @@ void	exec_local(char *str)
 	}
 	else
 		ft_var_local(rapid_set(str, ft_var_local(NULL), 0));
-	check_env_export(tmp[0], str);
+	check_env_export(tmp[0], str, index);
 	ft_free_tab(tmp);
 }
 

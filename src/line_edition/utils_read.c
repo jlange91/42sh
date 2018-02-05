@@ -61,7 +61,7 @@ int					ft_save_line(t_termc *tsh)
 	tmp = tsh->line->begin;
 	tmp = ft_ps1(tmp);
 	if (tsh->line_dup->begin)
-		ft_free_dlist(&tsh->line_dup);
+		ft_free_t_dlst(&tsh->line_dup);
 	while (tmp)
 	{
 		push_backdlst(tsh->line_dup, tmp->c, 1);

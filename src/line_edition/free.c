@@ -6,13 +6,13 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 15:24:13 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/23 15:31:06 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/25 11:25:43 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/line_edition.h"
 
-void			ft_free_dlist(dlist **line)
+void			ft_free_t_dlst(t_dlst **line)
 {
 	t_lineterm	*del;
 	t_lineterm	*elem;
@@ -55,9 +55,9 @@ void			ft_free_autocompletion(t_auto **autoc)
 
 void			ft_free_all(t_termc *tsh)
 {
-	ft_free_dlist(&tsh->line);
+	ft_free_t_dlst(&tsh->line);
 	free(tsh->line);
-	ft_free_dlist(&tsh->line_dup);
+	ft_free_t_dlst(&tsh->line_dup);
 	free(tsh->line_dup);
 	free(tsh->console);
 	free(tsh->histmp);

@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/22 15:48:28 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/22 15:52:40 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/30 12:25:34 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static	inline	char	*ft_get_word(t_termc *tsh, int i)
 	}
 	word[i] = '\0';
 	ft_reverse(word);
-	if (!ft_glob_here(word) && !ft_strchr(word, '$') && !ft_strchr(word, '~'))
+	if (!ft_glob_here(word) && !ft_strchr(word, '$'))
 	{
 		free(word);
 		return (NULL);
@@ -132,7 +132,7 @@ void					ft_replace_glob_exp(t_termc *tsh, t_lineterm *endt)
 		return ;
 	if (ft_glob_here(word))
 		ft_repl_glob(word, tsh);
-	else if (ft_strchr(word, '$') || ft_strchr(word, '~'))
+	else if (ft_strchr(word, '$'))
 	{
 		sh = ft_ret_sh(NULL);
 		sh->line = ft_strdup(word);

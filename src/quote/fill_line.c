@@ -6,7 +6,7 @@
 /*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 16:46:46 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/23 17:43:17 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/25 15:49:54 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	ft_fill_line(t_termc *tsh)
 	char	*tmp;
 	char	*line;
 
+	line = NULL;
 	line = ft_readline(tsh);
 	if (tsh->quotes)
 	{

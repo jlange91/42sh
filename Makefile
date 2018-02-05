@@ -3,16 +3,11 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+         #
+#    By: stvalett <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2017/03/31 11:29:38 by stvalett          #+#    #+#              #
-#    Updated: 2018/01/23 19:53:51 by stvalett         ###   ########.fr        #
+#    Created: 2018/01/30 16:19:42 by stvalett          #+#    #+#              #
+#    Updated: 2018/01/31 14:29:45 by jlange           ###   ########.fr        #
 #                                                                              #
-# **************************************************************************** #
-
-#                                                                              #
-# **************************************************************************** #
-
 # **************************************************************************** #
 
 .PHONY : all clean fclean re
@@ -22,7 +17,7 @@ NAME = 21sh
 CC = gcc
 
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 
 LDFLAGS = -L libft
 
@@ -30,21 +25,20 @@ LDLIBS = -lft
 
 LDCURSE = -lncurses
 
-SRCS = src/line_edition/line_edition.c						\
-	   src/line_edition/term.c								\
-	   src/line_edition/init.c								\
-	   src/line_edition/init2.c								\
-	   src/line_edition/readline.c							\
-	   src/line_edition/utils_read.c						\
-	   src/line_edition/tools_readline.c					\
+SRCS = 	src/line_edition/term.c								\
+	   	src/line_edition/init.c								\
+	   	src/line_edition/init2.c							\
+	   	src/line_edition/readline.c							\
+	   	src/line_edition/utils_read.c						\
+	   	src/line_edition/tools_readline.c					\
 		src/line_edition/key.c								\
-	   src/line_edition/action_key.c						\
-	   src/line_edition/action_key2.c						\
-	   src/line_edition/signal.c							\
-	   src/line_edition/move_selection.c					\
-	   src/line_edition/move_word.c							\
-	   src/line_edition/move_up_down.c						\
-	   src/line_edition/move_up_down2.c						\
+	   	src/line_edition/action_key.c						\
+	   	src/line_edition/action_key2.c						\
+	   	src/line_edition/signal.c							\
+	   	src/line_edition/move_selection.c					\
+	   	src/line_edition/move_word.c						\
+	   	src/line_edition/move_up_down.c						\
+	   	src/line_edition/move_up_down2.c					\
 	   src/line_edition/cpy_cut_dup.c						\
 	   src/line_edition/display.c							\
 	   src/line_edition/tools_display.c						\
@@ -84,6 +78,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/perror/ft_perror.c								\
 	   src/perror/error.c									\
 	   src/perror/ft_useless_norme.c						\
+	   src/builtins/builtins.c								\
 	   src/builtins/cd.c									\
 	   src/builtins/cd2.c									\
 	   src/builtins/cdpath.c								\
@@ -115,6 +110,7 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/replace/ft_replace_line.c						\
 	   src/replace/ft_add_escape.c							\
 	   src/exec/ft_exec.c									\
+	   src/exec/builtin_and_exec.c							\
 	   src/exec/ft_exec_pipe.c								\
 	   src/exec/ft_exit_exec.c								\
 	   src/exec/hash.c										\
@@ -147,15 +143,17 @@ SRCS = src/line_edition/line_edition.c						\
 	   src/heredoc/read_heredoc.c							\
 	   src/heredoc/tool_heredoc.c							\
 	   src/main.c 											\
-	   src/builtins/ft_theme.c \
-	   src/builtins/ft_theme2.c \
-	   src/line_edition/init3.c \
-	   src/check/ft_check_cmd.c \
-	   src/check/ft_check_redir.c \
-	   src/builtins/ft_local.c \
-	   src/other/singleton2.c \
-	   src/builtins/tools.c \
-	   src/other/update_export.c \
+	   src/free2.c											\
+	   src/builtins/ft_theme.c								\
+	   src/builtins/ft_theme2.c								\
+	   src/line_edition/init3.c								\
+	   src/check/ft_check_cmd.c								\
+	   src/check/ft_check_redir.c							\
+	   src/builtins/ft_local.c								\
+	   src/other/singleton2.c								\
+	   src/builtins/tools.c									\
+	   src/other/update_export.c							\
+	   src/exec/builtin_and_exec2.c							\
 
 OBJ = $(SRCS:.c=.o)
 
@@ -166,7 +164,6 @@ OBJ : $(OBJ)
 
 $(NAME) : $(OBJ)
 	@make -C libft
-	@make -C help_master
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) $(LDLIBS) $(LDCURSE)
 	@echo COMPIALTION 21SH OK !!!!
 

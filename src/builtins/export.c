@@ -6,7 +6,7 @@
 /*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/08 16:10:40 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/24 15:09:42 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:22:12 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int		find_flagp_not1(t_cmd *cmd, int indicator, int i)
 		if (ft_strcmp(cmd->av[i], "-p") && ft_strcmp(cmd->av[i], "-b")
 				&& cmd->av[i][0] == '-')
 		{
-			ft_putstr_fd(" invalid option, only -p and -b can be used", 2);
+			ft_putendl_fd(" invalid option, only -p and -b can be used", 2);
 			return (0);
 		}
 	}
@@ -70,7 +70,7 @@ int		find_flagp_not1(t_cmd *cmd, int indicator, int i)
 			indicator = 1;
 	}
 	if (indicator == 1)
-		ft_putstr_fd("export; -p not valid in this context", 2);
+		ft_putendl_fd("export; -p not valid in this context", 2);
 	return (1);
 }
 
@@ -87,7 +87,7 @@ int		export_process(t_cmd *cmd)
 		{
 			ft_putstr_fd("export: ", 2);
 			ft_putstr_fd(cmd->av[i], 2);
-			ft_putstr_fd(": not a valid identifier", 2);
+			ft_putendl_fd(": not a valid identifier", 2);
 			if (cmd->av[2] == NULL)
 				return (ft_singleton(1, 1));
 		}
@@ -115,13 +115,13 @@ void	prepare_export(t_cmd *cmd)
 			ft_display_export(ft_var_var(NULL));
 		else if (!ft_strcmp(cmd->av[1], "-b") && cmd->av[2] == NULL)
 		{
-			ft_putstr_fd("Not valid in this context", 2);
+			ft_putendl_fd("Not valid in this context", 2);
 			ft_singleton(1, 1);
 		}
 		else if (!ft_strcmp(cmd->av[1], "-p") && cmd->av[2] != NULL)
 			print_var(cmd);
 		else if (!ft_strcmp(cmd->av[1], "-b") && cmd->av[2] != NULL)
-			export_flagb(cmd);
+			export_flagb(cmd, 1);
 		else
 			export_process(cmd);
 	}

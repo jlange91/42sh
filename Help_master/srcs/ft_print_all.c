@@ -6,7 +6,7 @@
 /*   By: adebrito <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 10:07:37 by adebrito          #+#    #+#             */
-/*   Updated: 2018/01/09 16:57:35 by adebrito         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:24:37 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,13 @@ static	void			ft_print2(t_select **select, int i, int col, int tmp)
 	if (i == (s->cursor_line - 1))
 	{
 		if (i % 4 == 0)
-		ft_putstr_fd(RED, 2);
+			ft_putstr_fd(RED, 2);
 		else if (i % 3 == 0)
-		ft_putstr_fd(GRN, 2);
+			ft_putstr_fd(GRN, 2);
 		else if (i % 2 == 1)
-		ft_putstr_fd(CYN, 2);
+			ft_putstr_fd(CYN, 2);
 		else if (i % 2 == 0)
-		ft_putstr_fd(YEL, 2);
+			ft_putstr_fd(YEL, 2);
 		ft_putstr_fd("  ~> ", 2);
 		print_again(select, i, NULL);
 		ft_putstr_fd(" <~", 2);

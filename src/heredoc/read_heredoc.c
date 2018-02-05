@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/20 15:04:12 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/23 16:00:20 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/31 15:11:07 by jlange           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static	char	*ft_readline_hdoc(char *word, t_termc *tsh)
 				break ;
 			ft_display(tsh);
 		}
-		ft_free_dlist(&tsh->line);
+		ft_free_t_dlst(&tsh->line);
 		write(1, "\n", 1);
 		return (ft_ret_word_hdoc(NULL, 0));
 	}
@@ -72,11 +72,15 @@ static	char	*ft_readline_hdoc(char *word, t_termc *tsh)
 static void		fill_cmd_hrdc(t_cmd *cmd, t_termc *tsh, int i)
 {
 	char		*word;
+	char		*ret;
 
 	word = ft_ret_word(&cmd->line[i]);
 	if (cmd->hrdc)
 		free(cmd->hrdc);
-	cmd->hrdc = ft_strdup(ft_readline_hdoc(word, tsh));
+	ret = ft_readline_hdoc(word, tsh);
+	if (!ret)
+		ret = "\0";
+	cmd->hrdc = ft_strdup(ret);
 	if (word)
 		free(word);
 	ft_ret_word_hdoc(NULL, 1);

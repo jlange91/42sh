@@ -13,12 +13,12 @@
 #include "../../inc/line_edition.h"
 #include "../../inc/autocompletion.h"
 
-static	inline	hlist		*init_history(void)
+static	inline	t_hist		*init_history(void)
 {
-	hlist					*h;
+	t_hist					*h;
 
 	h = NULL;
-	if ((h = (hlist *)malloc(sizeof(hlist))) == NULL)
+	if ((h = (t_hist *)malloc(sizeof(t_hist))) == NULL)
 	{
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);
@@ -71,12 +71,12 @@ static	inline	t_auto		*init_autocompletion(void)
 	return (autoc);
 }
 
-static	inline	dlist		*init_lineterm(void)
+static	inline	t_dlst		*init_lineterm(void)
 {
-	dlist					*line;
+	t_dlst					*line;
 
 	line = NULL;
-	if ((line = (dlist *)malloc(sizeof(dlist))) == NULL)
+	if ((line = (t_dlst *)malloc(sizeof(t_dlst))) == NULL)
 	{
 		ft_putendl_fd("Error malloc", 2);
 		return (NULL);

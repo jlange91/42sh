@@ -65,7 +65,7 @@ void			ft_cut_line(t_lineterm *end, t_termc *tsh)
 	if (tmp != NULL)
 	{
 		if (tsh->line_dup->begin)
-			ft_free_dlist(&tsh->line_dup);
+			ft_free_t_dlst(&tsh->line_dup);
 		while (ret)
 		{
 			while (tmp && tmp->under == 0)
@@ -87,7 +87,7 @@ void			ft_dup_line(t_lineterm *end, t_termc *tsh)
 	(void)end;
 	i = 1;
 	if (tsh->line_dup->begin)
-		ft_free_dlist(&tsh->line_dup);
+		ft_free_t_dlst(&tsh->line_dup);
 	begin = tsh->line->begin;
 	if (begin)
 		while (begin)

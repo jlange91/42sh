@@ -6,7 +6,7 @@
 /*   By: stvalett <stvalett@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:56 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/23 14:55:06 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:05:59 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static	void	ft_print_diff_mode(t_termc *tsh, int mode)
 			push_backdlst(tsh->line, tmp->c, 1);
 			tmp = tmp->next;
 		}
-		ft_free_dlist(&tsh->line_dup);
+		ft_free_t_dlst(&tsh->line_dup);
 		ft_display(tsh);
 	}
 }

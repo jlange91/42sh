@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_redirection.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlange <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: jlange <jlange@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/19 16:28:44 by jlange            #+#    #+#             */
-/*   Updated: 2018/01/19 16:34:33 by jlange           ###   ########.fr       */
+/*   Updated: 2018/01/25 17:53:06 by adebrito         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ int						ft_redirection(t_cmd *cmd)
 		if ((cmd->line[i] == '>' || cmd->line[i] == '<') &&
 				!(i > 0 && cmd->line[i - 1] == '\\'))
 		{
-			red = type_redir(&cmd->line[i], i, 0, 0);
-			if (red->out == -1)
+			red = type_redir(&cmd->line[i], i, 0, -1);
+			if (red->out == -1 && red->type != 8)
 				return (-1);
 			exec_red(red, cmd);
 			free(red);

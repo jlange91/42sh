@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/05 19:23:20 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/23 15:17:50 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:11:16 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,12 @@ static	inline	void		ft_init_move(t_term *term)
 	ft_memset(term->bp, '\0', 2048);
 	ft_memset(term->area, '\0', 2048);
 	term->lestr = tgetstr("le", (char **)term->area);
-	term->lestru = tgetstr("LE", (char **)term->area);
-	term->ristr = tgetstr("RI", (char **)term->area);
 	term->dcstr = tgetstr("dc", (char **)term->area);
 	term->ndstr = tgetstr("nd", (char **)term->area);
 	term->cbstr = tgetstr("cb", (char **)term->area);
 	term->dlstr = tgetstr("dl", (char **)term->area);
 	term->dostr = tgetstr("do", (char **)term->area);
 	term->upstr = tgetstr("up", (char **)term->area);
-	term->upstru = tgetstr("UP", (char **)term->area);
 	term->cdstr = tgetstr("cd", (char **)term->area);
 	term->cestr = tgetstr("ce", (char **)term->area);
 	term->clrstr = tgetstr("cl", (char **)term->area);

@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/22 19:06:22 by stvalett          #+#    #+#             */
-/*   Updated: 2018/01/22 19:06:32 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/25 16:05:59 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int			ft_init_terminal_mode(t_termc *tsh)
 	return (0);
 }
 
-int			ft_fill_prompt(dlist *line)
+int			ft_fill_prompt(t_dlst *line)
 {
 	char	*str;
 	int		i;
@@ -53,7 +53,7 @@ int			ft_fill_prompt(dlist *line)
 	return (0);
 }
 
-void		ft_init_console(t_termc *tsh, dlist *line)
+void		ft_init_console(t_termc *tsh, t_dlst *line)
 {
 	tsh->console->total_line = 1;
 	tsh->console->char_pos = 0;
@@ -70,6 +70,6 @@ void		ft_end_term(t_termc *tsh)
 	if (tcsetattr(0, TCSANOW, &tsh->term->old_termios) == -1)
 	{
 		ft_putendl_fd("Error, don't put tsetattr", 2);
-		exit(1);
+		return ;
 	}
 }

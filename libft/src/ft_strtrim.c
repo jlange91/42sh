@@ -6,7 +6,7 @@
 /*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/10 18:35:08 by stvalett          #+#    #+#             */
-/*   Updated: 2017/03/31 15:52:07 by stvalett         ###   ########.fr       */
+/*   Updated: 2018/01/24 18:53:27 by stvalett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strtrim(char const *s)
 	char const	*start;
 	char const	*end;
 
-    start = NULL;
+	start = NULL;
 	if (!s)
 		return (NULL);
 	while (*s)
@@ -28,7 +28,7 @@ char	*ft_strtrim(char const *s)
 			start = (start == NULL) ? s : start;
 			end = s;
 		}
-        s++;
+		s++;
 	}
 	if (start == NULL)
 		return (ft_strnew(1));

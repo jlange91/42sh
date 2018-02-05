@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_return.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: stvalett <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/01/24 18:47:22 by stvalett          #+#    #+#             */
+/*   Updated: 2018/01/24 18:47:45 by stvalett         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/libft.h"
 
-int ft_returnfree(char *str, int ret, char c)
+int	ft_returnfree(char *str, int ret, char c)
 {
-    if (c == 'f')
-    {
-        if (str)
-            free(str);
-    }
-    return (ret);
+	if (c == 'f')
+	{
+		if (str)
+			free(str);
+	}
+	return (ret);
 }

@@ -65,7 +65,7 @@ static	inline	void	ft_reset_var(t_termc *tsh, int flag)
 		ft_init_simple_autocompl(tsh, 0, NULL);
 }
 
-static	inline	int		ft_del_split(dlist **line, t_termc *tsh)
+static	inline	int		ft_del_split(t_dlst **line, t_termc *tsh)
 {
 	t_lineterm			*tmp;
 
@@ -113,7 +113,7 @@ static	inline	int		ft_del_caractere(t_lineterm *end, t_termc *tsh)
 	return (1);
 }
 
-int						ft_action_key(dlist *line, t_termc *tsh, long c)
+int						ft_action_key(t_dlst *line, t_termc *tsh, long c)
 {
 	t_lineterm			*tmp;
 
