@@ -33,7 +33,7 @@ int		ft_glob_here(char *str)
 	{
 		if ((str[i] == '*' || str[i] == '?'
 					|| str[i] == '[' || str[i] == '{')
-				&& str[i - 1] != '\\')
+				&& !(i > 0 && str[i - 1] == '\\'))
 			return (1);
 	}
 	return (0);
@@ -52,11 +52,11 @@ int		ft_syntax_braces(char *word)
 	comma = 0;
 	while (word[++i])
 	{
-		if (word[i] == '{' && word[i - 1] != '\\')
+		if (word[i] == '{' && !(i > 0 && word[i - 1] != '\\'))
 			count++;
-		if (word[i] == '}' && word[i - 1] != '\\')
+		if (word[i] == '}' && !(i > 0 && word[i - 1] != '\\'))
 			count2++;
-		if (word[i] == ',' && word[i - 1] != '\\')
+		if (word[i] == ',' && !(i > 0 && word[i - 1] != '\\'))
 			comma = 1;
 	}
 	if (!count && !count2 && !comma)
@@ -78,12 +78,12 @@ int		ft_syntax_bracket(char *word)
 	count2 = 0;
 	while (word[++i])
 	{
-		if (word[i] == '[' && word[i - 1] != '\\')
+		if (word[i] == '[' && !(i > 0 && word[i - 1] != '\\'))
 			count++;
-		if ((word[i] == '{' && word[i - 1] != '\\' && count != 0)
-				|| (word[i] == '}' && word[i - 1] != '\\' && count2 == 0))
+		if (((word[i] == '{' && count != 0) || (word[i] == '}' && count2 == 0))
+		&& !(i > 0 && word[i - 1] != '\\'))
 			return (0);
-		if (word[i] == ']' && word[i - 1] != '\\')
+		if (word[i] == ']' && !(i > 0 && word[i - 1] != '\\'))
 			count2++;
 	}
 	if (count == count2)
