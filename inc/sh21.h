@@ -361,8 +361,8 @@ int				ft_backup_stdout(int nb);
 int				ft_backup_stderr(int nb);
 t_redir			*type_redir(char *str, int index, int len, int i);
 void			ft_redirr_type8(t_redir *red);
-void			ft_redirr_type1(t_redir *red);
-void			ft_redirr_type2(t_redir *red);
+int				ft_redirr_type1(t_redir *red);
+int				ft_redirr_type2(t_redir *red);
 
 /*
 **check

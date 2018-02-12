@@ -96,9 +96,6 @@ t_redir			*type_redir(char *str, int index, int len, int i)
 		exit(0);
 	}
 	red->in = ft_check_fd_in(&str[-index], index - 1);
-	if (red->in == ft_backup_stdin(0) || red->in == ft_backup_stdout(0) ||
-	red->in == ft_backup_stderr(0))
-		red->in = -2;
 	red->out = (str[1] == '&' && ft_isdigit(str[2])) ? ft_atoi(&str[2]) : -1;
 	red->close = (red->out == -1) ? 1 : 0;
 	if (red->out >= 0)

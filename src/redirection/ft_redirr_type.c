@@ -22,12 +22,50 @@ void		ft_redirr_type8(t_redir *red)
 		close(red->in);
 }
 
-void		ft_redirr_type1(t_redir *red)
+int			ft_redirr_type1(t_redir *red)
 {
-	dup2(red->out, (red->in == -1) ? 1 : red->in);
+	char *nb;
+
+	if (red->in == ft_backup_stdin(0) || red->in == ft_backup_stdout(0) ||
+		red->in == ft_backup_stderr(0))
+	{
+		nb = ft_itoa(red->in);
+		ft_putstr_fd("shell: protected fd: ", 2);
+		ft_putstr_fd(nb, 2);
+		write(2, "\n", 1);
+		free(nb);
+		return (1);
+	}
+	if (dup2(red->out, (red->in == -1) ? 1 : red->in) == -1)
+	{
+		nb = ft_itoa(red->out);
+		ft_perror("shell", errno, nb);
+		free(nb);
+		return (1);
+	}
+	return (0);
 }
 
-void		ft_redirr_type2(t_redir *red)
+int			ft_redirr_type2(t_redir *red)
 {
-	dup2(red->out, (red->in == -1) ? 0 : red->in);
+	char *nb;
+
+	if (red->in == ft_backup_stdin(0) || red->in == ft_backup_stdout(0) ||
+		red->in == ft_backup_stderr(0))
+	{
+		nb = ft_itoa(red->in);
+		ft_putstr_fd("shell: protected fd: ", 2);
+		ft_putstr_fd(nb, 2);
+		write(2, "\n", 1);
+		free(nb);
+		return (1);
+	}
+	if (dup2(red->out, (red->in == -1) ? 0 : red->in) == -1)
+	{
+		nb = ft_itoa(red->out);
+		ft_perror("shell", errno, nb);
+		free(nb);
+		return (1);
+	}
+	return (0);
 }

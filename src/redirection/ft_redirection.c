@@ -23,15 +23,21 @@ static inline int		backslash_word(char *line)
 		return (1);
 }
 
-static inline void		exec_red(t_redir *red, t_cmd *cmd)
+static inline int		exec_red(t_redir *red, t_cmd *cmd)
 {
 	if (red->type == 8)
 		ft_redirr_type8(red);
 	else if (red->type == 1 || red->type == 4 ||
 			red->type == 3 || red->type == 7)
-		ft_redirr_type1(red);
+	{
+		if (ft_redirr_type1(red))
+			return (1);
+	}
 	else if (red->type == 2 || red->type == 5)
-		ft_redirr_type2(red);
+	{
+		if (ft_redirr_type2(red))
+			return (1);
+	}
 	else if (red->type == 6)
 	{
 		if (cmd->hrdc)
@@ -41,8 +47,9 @@ static inline void		exec_red(t_redir *red, t_cmd *cmd)
 			ft_redirr_type2(red);
 		}
 	}
-	if (red->close)
-		close(red->out);
+//	if (red->close)
+//		close(red->out);
+	return (0);
 }
 
 static inline void		init_backup(int *i)
@@ -67,9 +74,8 @@ int						ft_redirection(t_cmd *cmd)
 				!(i > 0 && cmd->line[i - 1] == '\\'))
 		{
 			red = type_redir(&cmd->line[i], i, 0, -1);
-			if (red->out == -1 && red->type != 8)
+			if ((red->out == -1 && red->type != 8) || exec_red(red, cmd))
 				return (-1);
-			exec_red(red, cmd);
 			free(red);
 		}
 		if (backslash_word(&cmd->line[i]) > 0)

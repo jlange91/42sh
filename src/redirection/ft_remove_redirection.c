@@ -12,6 +12,18 @@
 
 #include "../../inc/sh21.h"
 
+void		ft_test_fd(void)
+{
+	int i;
+
+	i = 3;
+	while (i < 10000)
+	{
+		close(i);
+		i++;
+	}
+}
+
 void		ft_remove_redirection(void)
 {
 	dup2(ft_backup_stdin(0), 0);
@@ -20,4 +32,5 @@ void		ft_remove_redirection(void)
 	close(ft_backup_stdout(0));
 	dup2(ft_backup_stderr(0), 2);
 	close(ft_backup_stderr(0));
+	ft_test_fd();
 }
