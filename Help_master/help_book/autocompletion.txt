@@ -1,0 +1,15 @@
+NAME		AUTOCOMPLETION
+
+SYNOPSIS
+        AUCUN
+
+DESCRIPTION
+		
+		Complete votre MOT, soit un path ou soit une commande.
+		1) S'il n'y a rien sur la ligne, l'autocompletion proposera
+			les fichier/dossiers ou vous etes actuellement.
+		2) S'il y a plusieurs commandes qui match avec votre mot,
+			il vous proposera toutes les commandes qui ont match.
+
+Command : 
+		TAB = Pour activer l'autocompletion et ENTER pour valider.

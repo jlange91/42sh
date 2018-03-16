@@ -1,0 +1,14 @@
+NAME
+
+SYNOPSIS
+        AUCUN
+
+DESCRIPTION
+
+        Selectioner les caracteres avec "SHIFT + ARROW" LEFT ou RIGHT.
+		Pour deselectionner les caracteres, repasser le curseur sur les
+		caracteres deja selectionner.
+
+Command :
+		SHIFT + ARROW LEFT = Selection les caracteres de gauche
+		SHIFT + ARROW RIGHT = Selection les carateres de droite

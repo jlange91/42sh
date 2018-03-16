@@ -1,0 +1,17 @@
+NAME
+
+SYNOPSIS
+
+DESCRIPTION
+
+        ARROW LEFT          	: Se deplace vers la gauche.
+
+        ARROW RIGHT          	: Se deplacer vers la droite.
+
+        ALT + ARROW LEFT 		: Se deplacer de mot en mot vers la gauche.
+
+        ALT + ARROW RIGHT 		: Se deplacer de mot en mot vers la droite.
+
+        Home                    : Met le curseur au début de la ligne.
+
+        End                     : Met le curseur à la fin de la ligne.
